@@ -1,0 +1,28 @@
+<h1>¡Bienvenidos a mis sitio web !</h1>
+
+{% extends './navegación.html'%}
+{% block pag%}
+
+
+<h2>Productos</h2>
+
+<div class="contenedor-productos">
+    {% for producto in productos %}
+        <div class="card">
+            <a href="{% url 'producto_detail' producto.id_producto %}">
+                {% if producto.imagenes.all %}
+                    <img src="{{ producto.imagenes.first.imagen.url }}" alt="{{ producto.nombre }}">
+                {% endif %}
+            </a>
+            <a href="{% url 'producto_detail' producto.id_producto %}">
+                <h3>{{ producto.nombre }}</h3>
+            </a>
+            <span>${{ producto.precio_kg }}</span>
+            <button type="button">Agregar</button>
+        </div>
+
+    {% empty %}
+        <p>No hay productos registrados.</p>
+    {% endfor %}
+</div>
+{% endblock %}

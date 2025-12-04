@@ -1,0 +1,27 @@
+{% extends './navegación.html' %}
+{% block pag %}
+
+<h1>{{ producto.nombre }}</h1>
+
+<div class="detalle-producto">
+
+    <div class="imagenes">
+        {% for img in imagenes %}
+            <img src="{{ img.imagen.url }}" alt="{{ producto.nombre }}">
+        {% empty %}
+            <p>Sin imágenes</p>
+        {% endfor %}
+    </div>
+
+    <div class="info">
+        <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+        <p><strong>Precio por kg:</strong> ${{ producto.precio_kg }}</p>
+        <p><strong>Peso disponible:</strong> {{ producto.peso_disponible_kg }} kg</p>
+        <p><strong>Pureza:</strong> {{ producto.get_pureza_display }}</p>
+        <p><strong>Estado:</strong> {{ producto.get_estado_display }}</p>
+        <p><strong>Fecha de publicación:</strong> {{ producto.fecha_publicacion }}</p>
+    </div>
+
+</div>
+
+{% endblock %}

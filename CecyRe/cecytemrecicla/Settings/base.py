@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'applications.MarketPlace',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -36,7 +38,7 @@ ROOT_URLCONF = 'cecytemrecicla.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR.parent /'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,3 +80,7 @@ USE_I18N = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Archivos Media Se usa para archvios que suben los usuarios
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR.parent / 'media'

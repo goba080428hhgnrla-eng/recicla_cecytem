@@ -1,0 +1,18 @@
+<h2>Agregar Producto</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <h3>Datos del producto</h3>
+    {{ form.as_p }}
+
+    <h3>Imágenes del producto</h3>
+    {{ formset.management_form }}
+    {% for f in formset %}
+        <div class="imagen-field">
+            {{ f.as_p }}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Guardar</button>
+</form>
