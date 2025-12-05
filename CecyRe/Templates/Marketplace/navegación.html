@@ -1,44 +1,36 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% load static %}
+    
     <link rel="stylesheet" href="{% static 'estilos.css' %}" />
+
     <title>CECyTEM Recicla</title>
   </head>
   <body>
-    <header>
-      <img src="/media/Logo.png" alt="Logo" />
-      <h1>CECyTEM Recicla</h1>
-      <a href="#"><img src="/media/usuario.png" alt="Usuario" /></a>
-      <a href="#"><img src="/media/carro.png" alt="Carrito" /></a>
+    <header class="card"> <img src="/media/iconos/Logo.png" alt="Logo" id="logo"/> 
+      <h1>CECyTEM Recicla</h1> 
+      <a href="#"><img src="/media/iconos/usuario.png" alt="Usuario" /></a> 
+      <a href="#"><img src="/media/iconos/carro.png" alt="Carrito" /></a> 
     </header>
 
     <nav>
       <ul>
-        <li>
-          <a href="{% url 'home'%}">Inicio</a>
-        </li>
-        <li>
-          <a href="#">Carrito</a>
-        </li>
-        <li>
-          <a href="#">Finalizar Compra</a>
-        </li>
-        <li>
-          <a href="{% url 'registro'%}">Mi Cuenta</a>
-        </li>
+        <li><a href="{% url 'home'%}">Inicio</a></li>
+        <li><a href="#">Carrito</a></li>
+        <li><a href="#">Finalizar Compra</a></li>
+        <li><a href="{% url 'registro'%}">Mi Cuenta</a></li>
       </ul>
     </nav>
 
     <main>
       {% block pag %}
-
       {% endblock %}
     </main>
 
-    <footer>
+    <footer class="card">
       <h1>Derechos reservados CECyTEM Recicla</h1>
     </footer>
   </body>

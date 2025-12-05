@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
+
 
 class Categoria(models.Model):
     id_categoria = models.AutoField(primary_key=True)
@@ -21,16 +23,22 @@ class Usuario(models.Model):
     ]
 
     id_usuario = models.AutoField(primary_key=True)
-    password = models.CharField(max_length=50, null=False)
-    rol = models.CharField(max_length=10, choices=ROLES, null=False)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=100, blank=True, null=True)
     nombre = models.CharField(max_length=50, blank=True, null=True)
     apellido_paterno = models.CharField(max_length=50, blank=True, null=True)
     apellido_materno = models.CharField(max_length=50, blank=True, null=True)
+    rol = models.CharField(max_length=10, choices=ROLES, null=False)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=100, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
+    password = models.CharField(max_length=50, null=False)
     correo=models.EmailField(max_length=80)
 
+    def save(self, *args, **kwargs):
+        # Evita volver a cifrar contraseñas ya cifradas
+        if not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+        
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
@@ -39,7 +47,6 @@ class Usuario(models.Model):
             models.Index(fields=['rol']),
             models.Index(fields=['fecha_registro']),
         ]
-
     def __str__(self):
         return f"{self.nombre} {self.apellido_paterno}"
 
