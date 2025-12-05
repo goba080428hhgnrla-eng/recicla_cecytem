@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'applications.MarketPlace',
+    'applications.Ingresos',
     'django_extensions',
 ]
 
