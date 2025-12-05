@@ -1,9 +1,6 @@
-<h1>¡Bienvenidos a mis sitio web !</h1>
+{% extends './navegación.html' %}
 
-{% extends './navegación.html'%}
-{% block pag%}
-
-
+{% block pag %}
 <h2>Productos</h2>
 
 <div class="contenedor-productos">
@@ -20,7 +17,6 @@
             <span>${{ producto.precio_kg }}</span>
             <button type="button">Agregar</button>
         </div>
-
     {% empty %}
         <p>No hay productos registrados.</p>
     {% endfor %}
