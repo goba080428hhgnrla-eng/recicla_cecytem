@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador</title>
+<link rel="stylesheet" href="{% static 'cssingresos/estilos_ingresos.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Tinos:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+   <nav class="tituloventana">
+      <ul class="mimenu">
+    <li class="opcionesmenu {% if request.resolver_match.url_name == 'dashboardadmin' %}active{% endif %}">
+    <a href="{% url 'dashboardadmin' %}">
+        <img src="{% static 'iconos_ingresos/inicio.png' %}" width="18">
+        Inicio
+    </a>
+</li>
+
+<li class="opcionesmenu {% if request.resolver_match.url_name == 'ventainterna' %}active{% endif %}">
+    <a href="{% url 'ventainterna' %}">
+        <img src="{% static 'iconos_ingresos/carrito.png' %}" width="18">
+        Ventas Internas
+    </a>
+</li>
+
+<li class="opcionesmenu {% if request.resolver_match.url_name == 'ventaexterna' %}active{% endif %}">
+    <a href="{% url 'ventaexterna' %}">
+        <img src="{% static 'iconos_ingresos/signopesos.png' %}" width="18">
+        Ventas Externas
+    </a>
+</li>
+
+<li class="opcionesmenu {% if request.resolver_match.url_name == 'registrogasto' %}active{% endif %}">
+    <a href="{% url 'registrogasto' %}">
+        <img src="{% static 'iconos_ingresos/gastos.png' %}" width="18">
+        Gastos
+    </a>
+</li>
+
+<li class="opcionesmenu {% if request.resolver_match.url_name == 'genreportes' %}active{% endif %}">
+    <a href="{% url 'genreportes' %}">
+        <img src="{% static 'iconos_ingresos/reportes.png' %}" width="18">
+        Reportes
+    </a>
+</li>
+
+</ul>
+
+    </nav>
+    
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{% static 'estilos_ingresos.css' %}">
+
+    <title>Document</title>
+</head>
+<body>
+    <header  class="miheader">
+            <div class="logotitulo1">
+        <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
+    </div> 
+
+     <center> <h1>REGISTRAR GASTO</h1></center>
+
+       <div class="logotitulo2">
+        <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
+    </div>
+    </header>
+ <nav>
+            {% include "Ingresos/menu_navegacion.html" %}
+    </nav>
+    
+<footer>
+      {% include "Ingresos/footter_ingresos.html" %}
+</footer>
+</body>
+</html>
