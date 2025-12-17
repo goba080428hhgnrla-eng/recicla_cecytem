@@ -1,18 +1,81 @@
-<h2>Agregar Producto</h2>
+{% extends './navegación.html' %}
+{% block pag %}
 
-<form method="post">
-    {% csrf_token %}
+<div class="pub-container">
+    <h2 class="pub-title">⬆ Publicar Productos</h2>
 
-    <h3>Datos del producto</h3>
-    {{ form.as_p }}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-    <h3>Imágenes del producto</h3>
-    {{ formset.management_form }}
-    {% for f in formset %}
-        <div class="imagen-field">
-            {{ f.as_p }}
+    <form method="post" enctype="multipart/form-data" class="pub-form">
+        {% csrf_token %}
+        
+        <!-- Errores del formulario principal -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ field }}: {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="pub-form-grid">
+            <div class="pub-col">
+                <label>Nombre del Producto:</label>
+                {{ form.nombre }}
+                {{ form.nombre.errors }}
+
+                <label>Categoría:</label>
+                {{ form.id_categoria }}
+                {{ form.id_categoria.errors }}
+
+                <label>Peso Disponible (Kg):</label>
+                {{ form.peso_disponible_kg }}
+                {{ form.peso_disponible_kg.errors }}
+
+                <label>Precio ($/Kg):</label>
+                {{ form.precio_kg }}
+                {{ form.precio_kg.errors }}
+
+                <label>Pureza:</label>
+                {{ form.pureza }}
+                {{ form.pureza.errors }}
+            </div>
+
+            <div class="pub-col">
+                <label>Descripción:</label>
+                {{ form.descripcion }}
+                {{ form.descripcion.errors }}
+
+                <label>Estado:</label>
+                {{ form.estado }}
+                {{ form.estado.errors }}
+
+                <label>Imágenes (Máx. 5):</label>
+                {{ formset.management_form }}
+                
+                {% for form_img in formset %}
+                    <div class="pub-img-field">
+                        {{ form_img.imagen.label_tag }}
+                        {{ form_img.imagen }}
+                        {{ form_img.imagen.errors }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    {% endfor %}
 
-    <button type="submit">Guardar</button>
-</form>
+        <div class="pub-buttons">
+            <button type="submit" class="btn btn-primary">Publicar Producto</button>
+            <a href="{% url 'escritorio' %}" class="btn btn-danger">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

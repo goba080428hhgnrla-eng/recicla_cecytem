@@ -30,8 +30,8 @@ class Usuario(models.Model):
     fecha_registro = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=100, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
-    password = models.CharField(max_length=50, null=False)
-    correo=models.EmailField(max_length=80)
+    password = models.CharField(max_length=200, null=False)
+    correo = models.EmailField(max_length=80)
 
     def save(self, *args, **kwargs):
         # Evita volver a cifrar contraseñas ya cifradas
@@ -76,7 +76,7 @@ class Producto(models.Model):
     class Meta:
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
-        ordering = ['-fecha_publicacion']  # Más recientes primero
+        ordering = ['-fecha_publicacion'] 
         indexes = [
             models.Index(fields=['estado']),
             models.Index(fields=['pureza']),

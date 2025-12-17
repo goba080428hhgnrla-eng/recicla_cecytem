@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+db.sqlite3
+CecyRe/0.2.2
+.env
+venv/
+*.log
+local_settings.py
+*.sqlite3

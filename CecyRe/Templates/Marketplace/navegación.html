@@ -5,25 +5,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <link rel="stylesheet" href="{% static 'estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'Marketplace/estilos.css' %}" />
 
     <title>CECyTEM Recicla</title>
   </head>
   <body>
-    <header class="card"> <img src="/media/iconos/Logo.png" alt="Logo" id="logo"/> 
+    <header class="card"> 
+      <img src="/media/iconos/Logo.png" alt="Logo" id="logo"/> 
       <h1>CECyTEM Recicla</h1> 
-      <div class=".icon-container">
-        <a href="#"><img id="usua" src="/media/iconos/usuario.png" alt="Usuario" /></a> 
-        <a href="#"><img id="car" src="/media/iconos/carro.png" alt="Carrito" /></a> 
+
+      <div class="icon-container">
+        {% if request.session.usuario_id %}
+          <a href="{% url 'registro' %}">
+            <img id="usua" src="/media/iconos/usuario.png" alt="Usuario" />
+          </a>
+
+          <a href="{% url 'registro' %}">
+            <img id="car" src="/media/iconos/carro.png" alt="Carrito" />
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}">
+            <img id="usua" src="/media/iconos/usuario.png" alt="Usuario" />
+          </a>
+
+          <a href="{% url 'login' %}">
+            <img id="car" src="/media/iconos/carro.png" alt="Carrito" />
+          </a>
+        {% endif %}
       </div>
     </header>
 
     <nav>
       <ul>
-        <li><a href="{% url 'home'%}">Inicio</a></li>
-        <li><a href="#">Carrito</a></li>
-        <li><a href="#">Finalizar Compra</a></li>
-        <li><a href="{% url 'registro'%}">Mi Cuenta</a></li>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
+
+        {% if request.session.usuario_id %}
+          <li><a href="{% url 'registro' %}">Carrito</a></li>
+          <li><a href="{% url 'registro' %}">Finalizar Compra</a></li>
+          <li><a href="{% url 'registro' %}">
+            Mi Cuenta
+          </a></li>
+          <li><a href="{% url 'escritorio' %}">
+            Escritorio
+          </a></li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Carrito</a></li>
+          <li><a href="{% url 'login' %}">Finalizar Compra</a></li>
+          <li><a href="{% url 'login' %}">Mi Cuenta</a></li>
+        {% endif %}
       </ul>
     </nav>
 

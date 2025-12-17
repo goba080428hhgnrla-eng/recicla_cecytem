@@ -1,0 +1,31 @@
+{% extends './navegación.html' %}
+{% load static %}
+
+{% block pag %}
+<div class="card">
+<h2>Escritorio</h2>
+    <div>
+        <h3>Productos del usuario {{ usuario.nombre }}</h3>
+
+        {% if productos %}
+            <ul>
+            {% for prod in productos %}
+                <li>
+                    <p><strong>{{ prod.nombre }}</strong></p>
+
+                    {% if prod.imagen %}
+                        <img src="{{ prod.imagen.url }}" width="150">
+                    {% endif %}
+
+                    <p>Precio: ${{ prod.precio }}</p>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tienes productos agregados.</p>
+        {% endif %}
+
+        <a href="{% url 'agregar_producto' %}" class="btn btn-primary">Agregar más productos</a>
+    </div>
+</div>
+{% endblock %}
