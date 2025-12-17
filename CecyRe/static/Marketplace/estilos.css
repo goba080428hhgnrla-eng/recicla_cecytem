@@ -295,7 +295,95 @@ header img {
 
 .contenedor-productos {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 por fila */
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     padding: 20px;
 }
+
+/* ============================================================
+   ESTILO SOLO PARA "Publicar Productos" (NO AFECTA OTROS)
+   ============================================================ */
+
+.pub-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.pub-title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: var(--text-2xl);
+}
+
+.pub-estado {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: var(--text-lg);
+}
+
+.estado-activo {
+    font-weight: bold;
+    color: var(--color-success);
+}
+
+.pub-img-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.pub-upload-box {
+    background: #e0e0e0;
+    width: 220px;
+    height: 150px;
+    border-radius: 8px;
+    border: 2px dashed black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    color: black;
+}
+
+.pub-preview-gallery img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.pub-form {
+    background: var(--color-panel);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    width: 80%;
+    margin: auto;
+}
+
+.pub-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.pub-col label {
+    font-weight: bold;
+    margin: 10px 0 5px;
+    display: block;
+}
+
+.pub-img-field {
+    margin: 10px 0;
+}
+
+.pub-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
