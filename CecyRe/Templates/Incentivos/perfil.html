@@ -1,0 +1,180 @@
+{% extends 'Incentivos/base.html' %}
+
+{% block title %}Mi Perfil - Incentivos{% endblock %}
+
+{% block content %}
+<!-- Encabezado del perfil -->
+<div class="profile-section">
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+            <div class="profile-avatar">
+                {{ recolector.usuario.first_name|first|upper }}{{ recolector.usuario.last_name|first|upper }}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1>{{ recolector.usuario.get_full_name|default:recolector.usuario.username }}</h1>
+            <div class="rank-badge-large mb-3">
+                <i class="fas fa-trophy"></i> {{ recolector.rango_actual.nombre|default:"ECO-RECOLLECTOR" }}
+            </div>
+            <p class="lead mb-0">
+                <i class="fas fa-id-card"></i> Código: <strong>{{ recolector.codigo_qr }}</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Información personal -->
+    <div class="col-md-4 mb-4">
+        <div class="eco-card h-100">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
+            </div>
+            <div class="card-body">
+                <div class="info-item">
+                    <strong><i class="fas fa-user"></i> Usuario:</strong>
+                    <span class="float-end">{{ recolector.usuario.username }}</span>
+                </div>
+                <div class="info-item">
+                    <strong><i class="fas fa-envelope"></i> Email:</strong>
+                    <span class="float-end">{{ recolector.usuario.email|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <strong><i class="fas fa-calendar-alt"></i> Registro:</strong>
+                    <span class="float-end">{{ recolector.fecha_registro|date:"d/m/Y" }}</span>
+                </div>
+                <div class="info-item">
+                    <strong><i class="fas fa-qrcode"></i> Código QR:</strong>
+                    <span class="float-end">{{ recolector.codigo_qr }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estadisticas -->
+    <div class="col-md-8 mb-4">
+        <div class="eco-card h-100">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-chart-bar"></i> Mis Estadísticas</h3>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle">
+                            <span class="fs-4">{{ recolector.puntos_acumulados }}</span>
+                            <small>Puntos</small>
+                        </div>
+                        <p class="mt-2 mb-0">Total acumulado</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+                            <span class="fs-4">{{ entregas_recientes.count }}</span>
+                            <small>Entregas</small>
+                        </div>
+                        <p class="mt-2 mb-0">Entregas totales</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2);">
+                            <span class="fs-4">{{ canjes.count }}</span>
+                            <small>Canjes</small>
+                        </div>
+                        <p class="mt-2 mb-0">Recompensas canjeadas</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+                            <span class="fs-4">0</span>
+                            <small>kg</small>
+                        </div>
+                        <p class="mt-2 mb-0">Material reciclado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historial  -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="eco-card h-100">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-history"></i> Últimas Entregas</h3>
+            </div>
+            <div class="card-body">
+                {% if entregas_recientes %}
+                    <div class="list-group">
+                        {% for entrega in entregas_recientes|slice:":5" %}
+                        <div class="list-group-item border-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <i class="fas fa-recycle text-success"></i>
+                                    <strong>Entrega #{{ entrega.id }}</strong>
+                                </div>
+                                <span class="text-muted">{{ entrega.fecha_hora_entrega|date:"d/m/Y" }}</span>
+                            </div>
+                            <small class="text-muted">
+                                {% for detalle in entrega.detalles.all|slice:":2" %}
+                                    {{ detalle.material.nombre }} ({{ detalle.peso_kg }}kg) 
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </small>
+                            <div class="text-end">
+                                <span class="badge bg-warning text-dark">{{ entrega.total_puntos_obtenidos }} pts</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-inbox fa-2x text-muted"></i>
+                        <p class="text-muted mt-2">No hay entregas registradas</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="eco-card h-100">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-gifts"></i> Últimos Canjes</h3>
+            </div>
+            <div class="card-body">
+                {% if canjes %}
+                    <div class="list-group">
+                        {% for canje in canjes|slice:":5" %}
+                        <div class="list-group-item border-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <i class="fas fa-gift text-primary"></i>
+                                    <strong>{{ canje.recompensa.nombre }}</strong>
+                                </div>
+                                <span class="text-muted">{{ canje.fecha_canje|date:"d/m/Y" }}</span>
+                            </div>
+                            <small class="text-muted">Código: {{ canje.codigo_retiro|default:"Pendiente" }}</small>
+                            <div class="text-end">
+                                <span class="badge {% if canje.estado == 'aprobado' %}bg-success{% elif canje.estado == 'pendiente' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                    {{ canje.estado|title }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-gift fa-2x text-muted"></i>
+                        <p class="text-muted mt-2">No hay canjes realizados</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Botones -->
+<div class="text-center mt-4">
+    <a href="{% url 'Incentivos:dashboard' %}" class="btn btn-eco-secondary">
+        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+{% endblock %}

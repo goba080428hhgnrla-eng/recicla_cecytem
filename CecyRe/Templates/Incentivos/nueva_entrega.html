@@ -1,0 +1,152 @@
+{% extends 'Incentivos/base.html' %}
+
+{% block title %}Nueva Entrega{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="eco-card entrega-card">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-plus-circle"></i> Registrar Nueva Entrega</h3>
+            </div>
+            
+            <div class="card-body">
+                <form method="post" id="entregaForm">
+                    {% csrf_token %}
+                    
+                    <!-- seleccionar material -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="fas fa-recycle"></i> 1. Selecciona el material</h5>
+                        <div class="row">
+                            {% for material in materiales %}
+                            <div class="col-md-6 mb-3">
+                                <div class="material-card" onclick="selectMaterial({{ material.id }}, {{ material.puntos_por_kg }})" 
+                                     id="material-{{ material.id }}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="material" 
+                                               id="material{{ material.id }}" value="{{ material.id }}" required>
+                                        <label class="form-check-label w-100" for="material{{ material.id }}">
+                                            <h6 class="mb-1">{{ material.nombre }}</h6>
+                                            <p class="mb-1 text-muted small">
+                                                <i class="fas fa-star text-warning"></i> 
+                                                {{ material.puntos_por_kg }} puntos/kg
+                                            </p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> 
+                                    No hay materiales disponibles en este momento.
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- peso -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="fas fa-weight"></i> 2. Especifica el peso</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="peso_kg" class="form-label">Peso (kilogramos)</label>
+                                    <input type="number" class="form-control form-control-eco" 
+                                           id="peso_kg" name="peso_kg" step="0.1" min="0.1" 
+                                           placeholder="Ej: 2.5" required>
+                                    <div class="form-text">
+                                        Introduce el peso en kilogramos (ej: 1.5, 2.0, 0.5)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- vista previa -->
+                                <div class="points-preview">
+                                    <h6>Puntos estimados</h6>
+                                    <h2 id="puntosPreview" class="text-warning fw-bold">0</h2>
+                                    <small class="text-muted" id="materialSelected">
+                                        Selecciona un material y peso
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- info del recolector -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Información:</strong><br>
+                        • Recolector: {{ request.user.recolector.usuario.username }}<br>
+                        • Puntos actuales: {{ request.user.recolector.puntos_acumulados }}<br>
+                        • Código QR: {{ request.user.recolector.codigo_qr }}
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'Incentivos:dashboard' %}" class="btn btn-eco-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-eco">
+                            <i class="fas fa-check"></i> Registrar Entrega
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedMaterial = null;
+    let selectedPuntosPorKg = 0;
+    
+    function selectMaterial(materialId, puntosPorKg) {
+        // deseleccionar todos
+        document.querySelectorAll('.material-card').forEach(card => {
+            card.classList.remove('material-selected');
+        });
+        
+        // seleccionar el nuevo
+        const card = document.getElementById(`material-${materialId}`);
+        card.classList.add('material-selected');
+        
+        // Marcar el radio button
+        const radio = document.getElementById(`material${materialId}`);
+        radio.checked = true;
+        
+        // Guardar valores
+        selectedMaterial = materialId;
+        selectedPuntosPorKg = puntosPorKg;
+        
+        // Actualizar vista previa
+        updatePointsPreview();
+        
+        // Actualizar texto del material seleccionado
+        document.getElementById('materialSelected').textContent = 
+            `Material: ${card.querySelector('h6').textContent} (${puntosPorKg} pts/kg)`;
+    }
+    
+    function updatePointsPreview() {
+        const pesoInput = document.getElementById('peso_kg');
+        const peso = parseFloat(pesoInput.value) || 0;
+        const puntos = peso * selectedPuntosPorKg;
+        
+        document.getElementById('puntosPreview').textContent = Math.round(puntos);
+    }
+    
+    // event listeners
+    document.getElementById('peso_kg').addEventListener('input', updatePointsPreview);
+    
+    // Seleccionar el primer material por defecto
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstMaterial = document.querySelector('.material-card');
+        if (firstMaterial) {
+            const materialId = firstMaterial.id.split('-')[1];
+            const puntosPorKg = parseFloat(firstMaterial.querySelector('.text-muted').textContent.match(/(\d+(\.\d+)?)/)[0]);
+            selectMaterial(materialId, puntosPorKg);
+        }
+    });
+</script>
+{% endblock %}
