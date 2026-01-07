@@ -2,7 +2,7 @@ from django.urls import path
 from . import views  
 from .views import AgregarProducto
 from .views import ProductoDetailView
-from .views import login_view, home
+from .views import login_view, home, PerfilUpdateView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -12,5 +12,12 @@ urlpatterns = [
     path('producto/<int:pk>/', ProductoDetailView.as_view(), name='producto_detail'),
     path('login/', login_view, name='login'),
     path('escritorio/', views.escritorio_view, name='escritorio'),
+    path('productos/actualizar/<int:pk>/', 
+         views.ProductoUpdateView.as_view(), 
+         name='actualizar_producto'),
+    path('productos/eliminar/<int:pk>/', 
+         views.ProductoDeleteView.as_view(), 
+         name='eliminar_producto'),
     #path('productos/', views.productos_list, name="productos_list"),
+    path('perfil/', PerfilUpdateView.as_view(), name='perfil'),
 ]

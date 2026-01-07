@@ -1,12 +1,75 @@
 {% extends './navegación.html' %}
 {% block pag %}
-<div class="card">
-    <form action="" method="post" >
-    {% csrf_token %}
-    <h2>Registrarse</h2>
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+<div class="register-container">
+    <div class="card register-card">
+        <form action="" method="post" class="register-form">
+            {% csrf_token %}
+            
+            <h2 class="register-title">Crear Cuenta</h2>
+            
+            <div class="form-intro">
+                <p class="form-intro-text">Completa los siguientes datos para crear tu cuenta</p>
+            </div>
+            
+            <div class="form-fields">
+                {% for field in form %}
+                    <div class="form-group {% if field.errors %}has-error{% endif %}">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="required-mark">*</span>
+                            {% endif %}
+                        </label>
+                        
+                        <div class="field-wrapper">
+                            {{ field }}
+                            
+                            {% if field.help_text %}
+                                <small class="help-text">{{ field.help_text }}</small>
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="error-messages">
+                                    {% for error in field.errors %}
+                                        <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="form-terms">
+                <label class="terms-label">
+                    <input type="checkbox" name="accept_terms" required>
+                    <span>Acepto los <a href="#" class="terms-link">términos y condiciones</a> y la <a href="#" class="terms-link">política de privacidad</a></span>
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary register-btn">
+                    <i class="fas fa-user-plus me-2"></i> Crear Cuenta
+                </button>
+            </div>
+            
+            <div class="form-footer">
+                <p class="login-link-text">
+                    ¿Ya tienes una cuenta?
+                    <a href="{% url 'login' %}" class="login-link">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </form>
+    </div>
 </div>
 
+{% if form.non_field_errors %}
+    <div class="form-global-errors">
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger form-global-error">
+                <i class="fas fa-exclamation-triangle me-2"></i> {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}

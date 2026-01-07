@@ -21,7 +21,7 @@ class AgregarForm(forms.ModelForm):
 class ImagenProductoForm(forms.ModelForm):
     class Meta:
         model = ImagenProducto
-        fields = ('imagen', 'orden')
+        fields = ('imagen',)  
         widgets = {
             'orden': forms.NumberInput(attrs={'min': 1})
         }

@@ -1,0 +1,143 @@
+{% extends './navegación.html' %}
+
+{% block pag %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ titulo|default:"Editar Producto" }}</h2>
+        <a href="{% url 'escritorio' %}" class="btn btn-secondary">
+            ← Volver al escritorio
+        </a>
+    </div>
+    
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" class="form-producto">
+            {% csrf_token %}
+            
+            <!-- Errores generales -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.nombre.id_for_label }}">Nombre del producto</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                        <div class="error-text">{{ form.nombre.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.precio_kg.id_for_label }}">Precio por kg ($)</label>
+                    {{ form.precio_kg }}
+                    {% if form.precio_kg.errors %}
+                        <div class="error-text">{{ form.precio_kg.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.peso_disponible_kg.id_for_label }}">Peso disponible (kg)</label>
+                    {{ form.peso_disponible_kg }}
+                    {% if form.peso_disponible_kg.errors %}
+                        <div class="error-text">{{ form.peso_disponible_kg.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.id_categoria.id_for_label }}">Categoría</label>
+                    {{ form.id_categoria }}
+                    {% if form.id_categoria.errors %}
+                        <div class="error-text">{{ form.id_categoria.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.pureza.id_for_label }}">Pureza</label>
+                    {{ form.pureza }}
+                    {% if form.pureza.errors %}
+                        <div class="error-text">{{ form.pureza.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.estado.id_for_label }}">Estado</label>
+                    {{ form.estado }}
+                    {% if form.estado.errors %}
+                        <div class="error-text">{{ form.estado.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
+                {{ form.descripcion }}
+                {% if form.descripcion.errors %}
+                    <div class="error-text">{{ form.descripcion.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <!-- Imágenes existentes -->
+            <div class="form-group">
+                <label>Imágenes actuales</label>
+                <div class="imagenes-actuales">
+                    {% for imagen in object.imagenes.all %}
+                        <div class="imagen-item">
+                            <img src="{{ imagen.imagen.url }}" alt="Imagen {{ forloop.counter }}" width="100">
+                            <div>
+                                <p>Orden: {{ imagen.orden }}</p>
+                                <label>
+                                    <input type="checkbox" name="delete_images" value="{{ imagen.id_imagen }}">
+                                    Eliminar
+                                </label>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No hay imágenes</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Formset para imágenes nuevas -->
+            <div class="form-group">
+                <label>Agregar nuevas imágenes</label>
+                {{ formset.management_form }}
+                <div class="imagenes-nuevas">
+                    {% for form_img in formset %}
+                        <div class="imagen-form">
+                            {{ form_img.id }}
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Imagen</label>
+                                    {{ form_img.imagen }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Orden</label>
+                                    {{ form_img.orden }}
+                                </div>
+                            </div>
+                            {% if form_img.errors %}
+                                <div class="error-text">{{ form_img.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+                <a href="{% url 'escritorio' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'applications.MarketPlace',
     'applications.Ingresos',
+    'applications.Incentivos',
     'django_extensions',
 ]
 

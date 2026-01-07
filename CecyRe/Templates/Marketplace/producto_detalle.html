@@ -1,27 +1,162 @@
 {% extends './navegación.html' %}
 {% block pag %}
 
-<h1>{{ producto.nombre }}</h1>
+<section class="detalle-wrapper">
+    <div class="detalle-panel">
+        <div class="card detalle-card">
+            <div class="detalle-imagen">
+                {% if imagenes %}
+                    <div class="carousel-simple">
+                        <!-- Imagen principal con flechas -->
+                        <div class="carousel-main-img">
+                            <img id="imagen-principal"
+                                 src="{{ imagenes.first.imagen.url }}"
+                                 alt="{{ producto.nombre }}"
+                                 class="detalle-img-main"
+                                 loading="lazy">
+                            
+                            <!-- Flechas de navegación -->
+                            {% if imagenes|length > 1 %}
+                                <button class="carousel-arrow prev detalle-prev-btn" onclick="cambiarImagenPrev()">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="carousel-arrow next detalle-next-btn" onclick="cambiarImagenNext()">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                                
+                                <!-- Indicador de posición -->
+                                <div class="image-counter detalle-image-counter">
+                                    <span id="current-index">1</span> / {{ imagenes|length }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="sin-imagen detalle-no-image">
+                        <i class="fas fa-image"></i>
+                        <span>Sin imagen disponible</span>
+                    </div>
+                {% endif %}
+            </div>
 
-<div class="detalle-producto">
-
-    <div class="imagenes">
-        {% for img in imagenes %}
-            <img src="{{ img.imagen.url }}" alt="{{ producto.nombre }}">
-        {% empty %}
-            <p>Sin imágenes</p>
-        {% endfor %}
+            <div class="detalle-info">
+                <h1 class="detalle-titulo">{{ producto.nombre }}</h1>
+                <p class="detalle-precio">
+                    <span class="detalle-price-main">${{ producto.precio_kg }}</span>
+                    <span class="precio-unidad">/ kg</span>
+                </p>
+                
+                <div class="detalle-descripcion-container">
+                    <h3 class="detalle-subtitle">Descripción</h3>
+                    <p class="detalle-descripcion">
+                        {{ producto.descripcion|default:"No hay descripción disponible" }}
+                    </p>
+                </div>
+                
+                <div class="detalle-datos">
+                    <h3 class="detalle-subtitle">Detalles del producto</h3>
+                    <div class="detalle-datos-grid">
+                        <div class="detalle-dato-item">
+                            <span class="detalle-dato-label">Peso disponible:</span>
+                            <span class="detalle-dato-value">{{ producto.peso_disponible_kg }} kg</span>
+                        </div>
+                        <div class="detalle-dato-item">
+                            <span class="detalle-dato-label">Pureza:</span>
+                            <span class="detalle-dato-value">{{ producto.get_pureza_display }}</span>
+                        </div>
+                        <div class="detalle-dato-item">
+                            <span class="detalle-dato-label">Estado:</span>
+                            <span class="detalle-dato-value">{{ producto.get_estado_display }}</span>
+                        </div>
+                        <div class="detalle-dato-item">
+                            <span class="detalle-dato-label">Categoría:</span>
+                            <span class="detalle-dato-value">{{ producto.categoria.nombre|default:"No especificada" }}</span>
+                        </div>
+                        <div class="detalle-dato-item">
+                            <span class="detalle-dato-label">Publicado:</span>
+                            <span class="detalle-dato-value detalle-fecha">{{ producto.fecha_publicacion|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detalle-acciones">
+                    <button class="btn btn-primary detalle-btn-cart">
+                        <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary detalle-btn-back">
+                        <i class="fas fa-arrow-left me-2"></i> Volver
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="info">
-        <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
-        <p><strong>Precio por kg:</strong> ${{ producto.precio_kg }}</p>
-        <p><strong>Peso disponible:</strong> {{ producto.peso_disponible_kg }} kg</p>
-        <p><strong>Pureza:</strong> {{ producto.get_pureza_display }}</p>
-        <p><strong>Estado:</strong> {{ producto.get_estado_display }}</p>
-        <p><strong>Fecha de publicación:</strong> {{ producto.fecha_publicacion }}</p>
-    </div>
+<script>
+let imagenesUrls = [
+    {% for img in imagenes %}
+        "{{ img.imagen.url }}"{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+let currentIndex = 0;
 
-</div>
+function cambiarImagenSimple(url) {
+    const imagenPrincipal = document.getElementById('imagen-principal');
+    imagenPrincipal.classList.add('fade-out');
+    
+    setTimeout(() => {
+        imagenPrincipal.src = url;
+        imagenPrincipal.classList.remove('fade-out');
+        imagenPrincipal.classList.add('fade-in');
+        
+        setTimeout(() => {
+            imagenPrincipal.classList.remove('fade-in');
+        }, 300);
+    }, 150);
+    
+    currentIndex = imagenesUrls.indexOf(url);
+    document.getElementById('current-index').textContent = currentIndex + 1;
+}
+
+function cambiarImagenPrev() {
+    if (imagenesUrls.length === 0) return;
+    currentIndex = (currentIndex - 1 + imagenesUrls.length) % imagenesUrls.length;
+    cambiarImagenSimple(imagenesUrls[currentIndex]);
+}
+
+function cambiarImagenNext() {
+    if (imagenesUrls.length === 0) return;
+    currentIndex = (currentIndex + 1) % imagenesUrls.length;
+    cambiarImagenSimple(imagenesUrls[currentIndex]);
+}
+
+// Navegación con teclado
+document.addEventListener('keydown', function(e) {
+    if (imagenesUrls.length <= 1) return;
+    if (e.key === 'ArrowLeft') cambiarImagenPrev();
+    if (e.key === 'ArrowRight') cambiarImagenNext();
+});
+
+// Eventos para botones de carrito y volver
+document.addEventListener('DOMContentLoaded', function() {
+    const btnCart = document.querySelector('.detalle-btn-cart');
+    if (btnCart) {
+        btnCart.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check me-2"></i> Añadido al carrito';
+            this.classList.add('btn-success');
+            this.classList.remove('btn-primary');
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('btn-success');
+                this.classList.add('btn-primary');
+            }, 2000);
+            
+            console.log('Producto añadido al carrito:', '{{ producto.nombre }}');
+        });
+    }
+});
+</script>
 
 {% endblock %}

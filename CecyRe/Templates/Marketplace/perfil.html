@@ -1,0 +1,369 @@
+{% extends './navegación.html' %}
+{% block pag %}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    <i class="fas fa-user"></i>
+                </div>
+                <button type="button" class="btn-avatar-edit" id="avatarEditBtn">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            
+            <div class="profile-info">
+                <h1 class="profile-name">{{ usuario_info.nombre }}</h1>
+                <div class="profile-meta">
+                    <span class="profile-email">
+                        <i class="fas fa-envelope"></i> {{ usuario_info.correo }}
+                    </span>
+                    <span class="profile-role">
+                        <i class="fas fa-user-tag"></i> {{ usuario_info.get_rol_display }}
+                    </span>
+                    <span class="profile-joined">
+                        <i class="fas fa-calendar-alt"></i> Miembro desde: {{ usuario_info.fecha_registro|date:"d/m/Y" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ productos_count }}</span>
+                    <span class="stat-label">Productos</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ productos_activos }}</span>
+                    <span class="stat-label">Activos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-tabs">
+            <button class="tab-btn active" data-tab="edit">
+                <i class="fas fa-user-edit me-2"></i> Editar Perfil
+            </button>
+            <button class="tab-btn" data-tab="security">
+                <i class="fas fa-shield-alt me-2"></i> Seguridad
+            </button>
+        </div>
+        
+        <div class="tab-content">
+            <!-- Pestaña de Editar Perfil -->
+            <div class="tab-pane active" id="editTab">
+                <div class="card profile-form-card">
+                    <div class="card-header">
+                        <h3 class="form-title">
+                            <i class="fas fa-user-edit me-2"></i> Información Personal
+                        </h3>
+                        <p class="form-subtitle">Actualiza tu información de contacto y preferencias</p>
+                    </div>
+                    
+                    <form method="post" class="profile-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <div class="form-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-id-card me-2"></i> Datos Básicos
+                                </h4>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user me-1"></i> Nombre Completo
+                                        <span class="required-mark">*</span>
+                                    </label>
+                                    {{ form.nombre }}
+                                    {{ form.nombre.errors }}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.correo.id_for_label }}" class="form-label">
+                                        <i class="fas fa-envelope me-1"></i> Correo Electrónico
+                                        <span class="required-mark">*</span>
+                                    </label>
+                                    {{ form.correo }}
+                                    {{ form.correo.errors }}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.telefono.id_for_label }}" class="form-label">
+                                        <i class="fas fa-phone me-1"></i> Teléfono
+                                    </label>
+                                    {{ form.telefono }}
+                                    {{ form.telefono.errors }}
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary save-btn">
+                                <i class="fas fa-save me-2"></i> Guardar Cambios
+                            </button>
+                            <button type="reset" class="btn btn-secondary reset-btn">
+                                <i class="fas fa-undo me-2"></i> Restablecer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Pestaña de Seguridad -->
+            <div class="tab-pane" id="securityTab">
+                <div class="card security-card">
+                    <div class="card-header">
+                        <h3 class="form-title">
+                            <i class="fas fa-shield-alt me-2"></i> Seguridad de la Cuenta
+                        </h3>
+                        <p class="form-subtitle">Gestiona la seguridad de tu cuenta y contraseña</p>
+                    </div>
+                    
+                    <div class="security-content">
+                        <div class="security-section">
+                            <h4 class="security-title">
+                                <i class="fas fa-key me-2"></i> Cambiar Contraseña
+                            </h4>
+                            <form method="post" class="password-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="change_password">
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lock me-1"></i> Contraseña Actual
+                                    </label>
+                                    <input type="password" name="current_password" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lock me-1"></i> Nueva Contraseña
+                                    </label>
+                                    <input type="password" name="new_password1" class="form-control" required>
+                                    <small class="form-help">Mínimo 8 caracteres con letras y números</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lock me-1"></i> Confirmar Nueva Contraseña
+                                    </label>
+                                    <input type="password" name="new_password2" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-key me-2"></i> Cambiar Contraseña
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h4 class="security-title">
+                                <i class="fas fa-user-shield me-2"></i> Seguridad de la Cuenta
+                            </h4>
+                            
+                            <div class="security-items">
+                                <div class="security-item">
+                                    <div class="security-item-content">
+                                        <i class="fas fa-sign-in-alt security-icon"></i>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                                    </button>
+                                </div>
+                                
+                                <div class="security-item">
+                                    <div class="security-item-content">
+                                        <i class="fas fa-trash-alt security-icon"></i>
+                                        <div>
+                                            <h5>Eliminar Cuenta</h5>
+                                            <p>Elimina permanentemente tu cuenta y todos tus datos</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                        <i class="fas fa-trash me-1"></i> Eliminar Cuenta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para eliminar cuenta -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Eliminar Cuenta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>¡Advertencia!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p>Al eliminar tu cuenta:</p>
+                <ul class="text-danger">
+                    <li>Todos tus productos serán eliminados</li>
+                    <li>Tu historial de compras/ventas se perderá</li>
+                    <li>No podrás recuperar tu cuenta</li>
+                    <li>Todos tus datos serán eliminados permanentemente</li>
+                </ul>
+                <p>¿Estás completamente seguro de que deseas eliminar tu cuenta?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmDelete">
+                    <label class="form-check-label" for="confirmDelete">
+                        Entiendo que esta acción es permanente e irreversible
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                    <i class="fas fa-trash me-2"></i> Sí, eliminar cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejo de pestañas
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remover clase active de todos los botones
+                tabBtns.forEach(b => b.classList.remove('active'));
+                // Agregar clase active al botón clickeado
+                this.classList.add('active');
+                
+                // Ocultar todos los paneles
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                // Mostrar el panel correspondiente
+                document.getElementById(tabId + 'Tab').classList.add('active');
+            });
+        });
+        
+        // Validación de formulario
+        const profileForm = document.querySelector('.profile-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                const nombre = document.getElementById('{{ form.nombre.id_for_label }}').value.trim();
+                const correo = document.getElementById('{{ form.correo.id_for_label }}').value.trim();
+                
+                if (!nombre) {
+                    e.preventDefault();
+                    alert('Por favor, ingresa tu nombre');
+                    return;
+                }
+                
+                if (!correo) {
+                    e.preventDefault();
+                    alert('Por favor, ingresa tu correo electrónico');
+                    return;
+                }
+                
+                // Validar formato de correo
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(correo)) {
+                    e.preventDefault();
+                    alert('Por favor, ingresa un correo electrónico válido');
+                    return;
+                }
+            });
+        }
+        
+        // Manejo del modal de eliminar cuenta
+        const confirmDeleteCheckbox = document.getElementById('confirmDelete');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        
+        if (confirmDeleteCheckbox && confirmDeleteBtn) {
+            confirmDeleteCheckbox.addEventListener('change', function() {
+                confirmDeleteBtn.disabled = !this.checked;
+            });
+            
+            confirmDeleteBtn.addEventListener('click', function() {
+                // Aquí iría la lógica para eliminar la cuenta
+                alert('Función de eliminar cuenta aún no implementada');
+            });
+        }
+        
+        // Avatar upload (solo visual)
+        const avatarEditBtn = document.getElementById('avatarEditBtn');
+        if (avatarEditBtn) {
+            avatarEditBtn.addEventListener('click', function() {
+                alert('Funcionalidad de cambiar avatar próximamente disponible');
+            });
+        }
+        
+        // Contador de caracteres para biografía
+        const biografiaField = document.getElementById('{{ form.biografia.id_for_label }}');
+        if (biografiaField) {
+            const counter = document.createElement('small');
+            counter.className = 'char-counter';
+            counter.style.display = 'block';
+            counter.style.textAlign = 'right';
+            counter.style.marginTop = '5px';
+            counter.style.color = 'var(--color-text-secondary)';
+            counter.style.fontSize = 'var(--text-xs)';
+            
+            biografiaField.parentNode.appendChild(counter);
+            
+            function updateCounter() {
+                const length = biografiaField.value.length;
+                counter.textContent = `${length}/500 caracteres`;
+                
+                if (length > 500) {
+                    counter.style.color = 'var(--color-error)';
+                } else if (length > 450) {
+                    counter.style.color = 'var(--color-warning)';
+                } else {
+                    counter.style.color = 'var(--color-text-secondary)';
+                }
+            }
+            
+            biografiaField.addEventListener('input', updateCounter);
+            updateCounter(); // Inicializar
+        }
+        
+        // Toggle switches
+        const switches = document.querySelectorAll('.switch input[type="checkbox"]');
+        switches.forEach(sw => {
+            sw.addEventListener('change', function() {
+                const parent = this.closest('.preference-item');
+                if (this.checked) {
+                    parent.classList.add('enabled');
+                } else {
+                    parent.classList.remove('enabled');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

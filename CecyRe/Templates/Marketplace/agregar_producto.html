@@ -1,81 +1,417 @@
 {% extends './navegación.html' %}
 {% block pag %}
 
-<div class="pub-container">
-    <h2 class="pub-title">⬆ Publicar Productos</h2>
+<div class="publish-container">
+    <div class="publish-header">
+        <h2 class="publish-title">
+            <i class="fas fa-upload publish-title-icon"></i>
+            Publicar Nuevo Producto
+        </h2>
+        <p class="publish-subtitle">Completa la información para agregar un nuevo producto a tu catálogo</p>
+    </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data" class="pub-form">
-        {% csrf_token %}
-        
-        <!-- Errores del formulario principal -->
-        {% if form.errors %}
-            <div class="alert alert-danger">
-                {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                        <p>{{ field }}: {{ error }}</p>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <div class="pub-form-grid">
-            <div class="pub-col">
-                <label>Nombre del Producto:</label>
-                {{ form.nombre }}
-                {{ form.nombre.errors }}
-
-                <label>Categoría:</label>
-                {{ form.id_categoria }}
-                {{ form.id_categoria.errors }}
-
-                <label>Peso Disponible (Kg):</label>
-                {{ form.peso_disponible_kg }}
-                {{ form.peso_disponible_kg.errors }}
-
-                <label>Precio ($/Kg):</label>
-                {{ form.precio_kg }}
-                {{ form.precio_kg.errors }}
-
-                <label>Pureza:</label>
-                {{ form.pureza }}
-                {{ form.pureza.errors }}
-            </div>
-
-            <div class="pub-col">
-                <label>Descripción:</label>
-                {{ form.descripcion }}
-                {{ form.descripcion.errors }}
-
-                <label>Estado:</label>
-                {{ form.estado }}
-                {{ form.estado.errors }}
-
-                <label>Imágenes (Máx. 5):</label>
-                {{ formset.management_form }}
-                
-                {% for form_img in formset %}
-                    <div class="pub-img-field">
-                        {{ form_img.imagen.label_tag }}
-                        {{ form_img.imagen }}
-                        {{ form_img.imagen.errors }}
+    <div class="card publish-card">
+        <form method="post" enctype="multipart/form-data" class="publish-form" id="productForm">
+            {% csrf_token %}
+            
+            <!-- Errores generales del formulario -->
+            {% if form.errors %}
+                <div class="alert alert-danger form-errors">
+                    <div class="errors-header">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Corrige los siguientes errores:</strong>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
+                    <ul class="errors-list">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|title }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-        <div class="pub-buttons">
-            <button type="submit" class="btn btn-primary">Publicar Producto</button>
-            <a href="{% url 'escritorio' %}" class="btn btn-danger">Cancelar</a>
-        </div>
-    </form>
+            <!-- Errores del formset de imágenes -->
+            {% if formset.errors %}
+                <div class="alert alert-warning formset-errors">
+                    <i class="fas fa-image me-2"></i>
+                    <strong>Problemas con las imágenes:</strong>
+                    <ul>
+                        {% for form in formset %}
+                            {% if form.errors %}
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>Imagen {{ forloop.parentloop.counter }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="form-content">
+                <div class="form-grid">
+                    <!-- Columna izquierda: Información básica -->
+                    <div class="form-column">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-info-circle section-icon"></i>
+                                Información básica
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                                    <i class="fas fa-tag label-icon"></i>
+                                    Nombre del Producto
+                                    <span class="required-mark">*</span>
+                                </label>
+                                {{ form.nombre }}
+                                {% if form.nombre.help_text %}
+                                    <small class="form-help">{{ form.nombre.help_text }}</small>
+                                {% endif %}
+                                {{ form.nombre.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.id_categoria.id_for_label }}" class="form-label">
+                                    <i class="fas fa-list-alt label-icon"></i>
+                                    Categoría
+                                    <span class="required-mark">*</span>
+                                </label>
+                                {{ form.id_categoria }}
+                                {{ form.id_categoria.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                                    <i class="fas fa-align-left label-icon"></i>
+                                    Descripción
+                                </label>
+                                {{ form.descripcion }}
+                                <small class="form-help">Describe tu producto de manera clara y detallada</small>
+                                {{ form.descripcion.errors }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: Especificaciones y estado -->
+                    <div class="form-column">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-balance-scale section-icon"></i>
+                                Especificaciones
+                            </h3>
+                            
+                            <div class="specs-grid">
+                                <div class="form-group">
+                                    <label for="{{ form.peso_disponible_kg.id_for_label }}" class="form-label">
+                                        <i class="fas fa-weight label-icon"></i>
+                                        Peso Disponible (kg)
+                                        <span class="required-mark">*</span>
+                                    </label>
+                                    {{ form.peso_disponible_kg }}
+                                    <small class="form-help">Peso total disponible para venta</small>
+                                    {{ form.peso_disponible_kg.errors }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.precio_kg.id_for_label }}" class="form-label">
+                                        <i class="fas fa-dollar-sign label-icon"></i>
+                                        Precio ($/kg)
+                                        <span class="required-mark">*</span>
+                                    </label>
+                                    {{ form.precio_kg }}
+                                    <small class="form-help">Precio por kilogramo</small>
+                                    {{ form.precio_kg.errors }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.pureza.id_for_label }}" class="form-label">
+                                        <i class="fas fa-filter label-icon"></i>
+                                        Nivel de Pureza
+                                    </label>
+                                    {{ form.pureza }}
+                                    {{ form.pureza.errors }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.estado.id_for_label }}" class="form-label">
+                                        <i class="fas fa-check-circle label-icon"></i>
+                                        Estado del Producto
+                                    </label>
+                                    {{ form.estado }}
+                                    {{ form.estado.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-images section-icon"></i>
+                                Imágenes del Producto
+                                <span class="images-counter">(Máximo 5)</span>
+                            </h3>
+                            
+                            <div class="images-upload">
+                                {{ formset.management_form }}
+                                
+                                <div class="images-grid" id="imagesContainer">
+                                    {% for form_img in formset %}
+                                        <div class="image-upload-item">
+                                            <div class="image-upload-header">
+                                                <span class="image-number">Imagen {{ forloop.counter }}</span>
+                                                {% if not forloop.first %}
+                                                    <button type="button" class="btn-remove-image" data-index="{{ forloop.counter0 }}">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                            <div class="image-upload-box">
+                                                <label for="{{ form_img.imagen.id_for_label }}" class="image-upload-label">
+                                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                                    <span class="upload-text">Haz clic para seleccionar</span>
+                                                    <span class="upload-hint">JPEG, PNG o WEBP (Max. 5MB)</span>
+                                                </label>
+                                                {{ form_img.imagen }}
+                                            </div>
+                                            <div class="image-preview" id="preview{{ forloop.counter0 }}">
+                                                <!-- Preview será insertado por JavaScript -->
+                                            </div>
+                                            {{ form_img.imagen.errors }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="images-actions">
+                                    <button type="button" class="btn btn-outline-primary btn-add-image" id="addImageBtn">
+                                        <i class="fas fa-plus me-1"></i> Agregar otra imagen
+                                    </button>
+                                    <small class="images-help">Puedes agregar hasta 5 imágenes para mostrar tu producto</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary publish-submit-btn">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Publicar Producto
+                    </button>
+                    
+                    <div class="action-buttons">
+                        <a href="{% url 'escritorio' %}" class="btn btn-outline-danger cancel-btn">
+                            <i class="fas fa-times me-2"></i> Cancelar
+                        </a>
+                        <button type="reset" class="btn btn-outline-warning reset-btn">
+                            <i class="fas fa-undo me-2"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
+<!-- Template para imágenes adicionales -->
+<template id="imageTemplate">
+    <div class="image-upload-item">
+        <div class="image-upload-header">
+            <span class="image-number">Imagen {number}</span>
+            <button type="button" class="btn-remove-image">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="image-upload-box">
+            <label class="image-upload-label">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <span class="upload-text">Haz clic para seleccionar</span>
+                <span class="upload-hint">JPEG, PNG o WEBP (Max. 5MB)</span>
+            </label>
+            <input type="file" name="imagenes-{index}-imagen" accept="image/*" class="image-input">
+        </div>
+        <div class="image-preview" id="preview{index}"></div>
+        <input type="hidden" name="imagenes-{index}-id">
+        <input type="hidden" name="imagenes-{index}-DELETE">
+    </div>
+</template>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('productForm');
+        const imagesContainer = document.getElementById('imagesContainer');
+        const addImageBtn = document.getElementById('addImageBtn');
+        const imageTemplate = document.getElementById('imageTemplate');
+        const totalFormsInput = document.getElementById('id_imagenes-TOTAL_FORMS');
+        let formCount = parseInt(totalFormsInput.value);
+        const maxImages = 5;
+
+        // Actualizar preview en tiempo real
+        const updatePreview = () => {
+            document.getElementById('previewNombre').textContent = 
+                document.getElementById('{{ form.nombre.id_for_label }}').value || '-';
+            
+            const categoriaSelect = document.getElementById('{{ form.id_categoria.id_for_label }}');
+            document.getElementById('previewCategoria').textContent = 
+                categoriaSelect.options[categoriaSelect.selectedIndex]?.text || '-';
+            
+            document.getElementById('previewPeso').textContent = 
+                (document.getElementById('{{ form.peso_disponible_kg.id_for_label }}').value || '-') + ' kg';
+            
+            document.getElementById('previewPrecio').textContent = 
+                (document.getElementById('{{ form.precio_kg.id_for_label }}').value || '-') + ' $/kg';
+            
+            const estadoSelect = document.getElementById('{{ form.estado.id_for_label }}');
+            document.getElementById('previewEstado').textContent = 
+                estadoSelect.options[estadoSelect.selectedIndex]?.text || '-';
+        };
+
+        // Escuchar cambios en los campos
+        ['{{ form.nombre.id_for_label }}', 
+         '{{ form.id_categoria.id_for_label }}', 
+         '{{ form.peso_disponible_kg.id_for_label }}',
+         '{{ form.precio_kg.id_for_label }}',
+         '{{ form.estado.id_for_label }}'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', updatePreview);
+                element.addEventListener('change', updatePreview);
+            }
+        });
+
+        // Preview inicial
+        updatePreview();
+
+        // Manejo de imágenes
+        const createImagePreview = (input, previewId) => {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="preview-img">
+                        <button type="button" class="btn-remove-preview">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Botón para eliminar preview
+                    preview.querySelector('.btn-remove-preview').addEventListener('click', function() {
+                        input.value = '';
+                        preview.innerHTML = '';
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        // Agregar nueva imagen
+        addImageBtn.addEventListener('click', function() {
+            if (formCount >= maxImages) {
+                alert(`Máximo ${maxImages} imágenes permitidas`);
+                return;
+            }
+
+            const template = imageTemplate.innerHTML
+                .replace(/{number}/g, formCount + 1)
+                .replace(/{index}/g, formCount);
+
+            const div = document.createElement('div');
+            div.innerHTML = template;
+            imagesContainer.appendChild(div.firstElementChild);
+
+            // Configurar el nuevo input de imagen
+            const newInput = div.querySelector('.image-input');
+            const previewId = `preview${formCount}`;
+            
+            newInput.addEventListener('change', function() {
+                createImagePreview(this, previewId);
+            });
+
+            // Botón para eliminar imagen
+            div.querySelector('.btn-remove-image').addEventListener('click', function() {
+                this.closest('.image-upload-item').remove();
+                formCount--;
+                totalFormsInput.value = formCount;
+                updateImageNumbers();
+            });
+
+            formCount++;
+            totalFormsInput.value = formCount;
+            updateImageNumbers();
+        });
+
+        // Actualizar números de imágenes
+        function updateImageNumbers() {
+            document.querySelectorAll('.image-number').forEach((span, index) => {
+                span.textContent = `Imagen ${index + 1}`;
+            });
+        }
+
+        // Configurar imágenes existentes
+        document.querySelectorAll('.image-upload-item').forEach((item, index) => {
+            const input = item.querySelector('input[type="file"]');
+            const previewId = `preview${index}`;
+            
+            if (input) {
+                input.addEventListener('change', function() {
+                    createImagePreview(this, previewId);
+                });
+            }
+
+            const removeBtn = item.querySelector('.btn-remove-image');
+            if (removeBtn && index > 0) {
+                removeBtn.addEventListener('click', function() {
+                    const deleteInput = this.closest('.image-upload-item').querySelector('input[name$="-DELETE"]');
+                    if (deleteInput) {
+                        deleteInput.value = 'on';
+                        this.closest('.image-upload-item').style.opacity = '0.5';
+                        this.disabled = true;
+                    } else {
+                        this.closest('.image-upload-item').remove();
+                        formCount--;
+                        totalFormsInput.value = formCount;
+                        updateImageNumbers();
+                    }
+                });
+            }
+        });
+
+        // Botón de vista previa
+        document.getElementById('previewBtn').addEventListener('click', function() {
+            // Aquí podrías implementar una vista previa más completa
+            alert('Vista previa del producto:\n' + 
+                  'Nombre: ' + (document.getElementById('{{ form.nombre.id_for_label }}').value || 'No especificado') + '\n' +
+                  'Precio: $' + (document.getElementById('{{ form.precio_kg.id_for_label }}').value || '0') + '/kg\n' +
+                  'Peso: ' + (document.getElementById('{{ form.peso_disponible_kg.id_for_label }}').value || '0') + ' kg');
+        });
+
+        // Validación antes de enviar
+        form.addEventListener('submit', function(e) {
+            const nombre = document.getElementById('{{ form.nombre.id_for_label }}').value.trim();
+            const precio = document.getElementById('{{ form.precio_kg.id_for_label }}').value;
+            const peso = document.getElementById('{{ form.peso_disponible_kg.id_for_label }}').value;
+            
+            if (!nombre) {
+                e.preventDefault();
+                alert('Por favor, ingresa un nombre para el producto');
+                return;
+            }
+            
+            if (!precio || parseFloat(precio) <= 0) {
+                e.preventDefault();
+                alert('Por favor, ingresa un precio válido (mayor a 0)');
+                return;
+            }
+            
+            if (!peso || parseFloat(peso) <= 0) {
+                e.preventDefault();
+                alert('Por favor, ingresa un peso válido (mayor a 0)');
+                return;
+            }
+        });
+    });
+</script>
 {% endblock %}

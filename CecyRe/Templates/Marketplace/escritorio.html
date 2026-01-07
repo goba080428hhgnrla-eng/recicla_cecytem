@@ -2,30 +2,172 @@
 {% load static %}
 
 {% block pag %}
-<div class="card">
-<h2>Escritorio</h2>
-    <div>
-        <h3>Productos del usuario {{ usuario.nombre }}</h3>
+<div class="desktop-container">
+    <div class="card desktop-card">
+        <div class="desktop-header">
+            <h2 class="desktop-title">Escritorio</h2>
+            <div class="user-welcome">
+                <i class="fas fa-user-circle user-icon"></i>
+                <span class="user-greeting">Bienvenido, {{ usuario.nombre }}</span>
+            </div>
+        </div>
+        
+        <div class="desktop-content">
+            <div class="desktop-section">
+                <h3 class="section-title">Mis Productos</h3>
+                
+                {% if productos %}
+                    <div class="desktop-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">{{ productos|length }}</span>
+                                <span class="stat-label">Productos totales</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="productos-grid">
+                        {% for prod in productos %}
+                            <div class="producto-card desktop-product-card">
+                                <div class="producto-imagen">
+                                    {% if prod.imagenes.all %}
+                                        <img src="{{ prod.imagenes.first.imagen.url }}" 
+                                             alt="{{ prod.nombre }}"
+                                             class="producto-img">
+                                    {% else %}
+                                        <div class="sin-imagen desktop-no-image">
+                                            <i class="fas fa-image"></i>
+                                            <span>Sin imagen</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if prod.estado == 'disponible' %}
+                                        <span class="producto-badge badge-disponible">Disponible</span>
+                                    {% elif prod.estado == 'vendido' %}
+                                        <span class="producto-badge badge-vendido">Vendido</span>
+                                    {% else %}
+                                        <span class="producto-badge badge-otro">{{ prod.get_estado_display }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="producto-info">
+                                    <h4 class="producto-nombre">{{ prod.nombre|truncatechars:40 }}</h4>
+                                    <div class="producto-detalles">
+                                        <div class="detalle-item">
+                                            <i class="fas fa-dollar-sign detalle-icon"></i>
+                                            <span class="detalle-text">
+                                                <strong>${{ prod.precio_kg }}</strong> / kg
+                                            </span>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <i class="fas fa-weight detalle-icon"></i>
+                                            <span class="detalle-text">{{ prod.peso_disponible_kg }} kg</span>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <i class="fas fa-filter detalle-icon"></i>
+                                            <span class="detalle-text">{{ prod.get_pureza_display }}</span>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <i class="fas fa-calendar detalle-icon"></i>
+                                            <span class="detalle-text">{{ prod.fecha_publicacion|date:"d/m/Y" }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="producto-acciones">
+                                        <a href="{% url 'actualizar_producto' prod.id_producto %}" 
+                                           class="btn btn-sm btn-primary desktop-btn-edit">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a>
+                                        
+                                        <!-- Modal de eliminación -->
+                                        <button type="button" 
+                                                class="btn btn-sm btn-danger desktop-btn-delete" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#modalEliminar{{ prod.id_producto }}">
+                                            <i class="fas fa-trash me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-        {% if productos %}
-            <ul>
-            {% for prod in productos %}
-                <li>
-                    <p><strong>{{ prod.nombre }}</strong></p>
-
-                    {% if prod.imagen %}
-                        <img src="{{ prod.imagen.url }}" width="150">
-                    {% endif %}
-
-                    <p>Precio: ${{ prod.precio }}</p>
-                </li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <p>No tienes productos agregados.</p>
-        {% endif %}
-
-        <a href="{% url 'agregar_producto' %}" class="btn btn-primary">Agregar más productos</a>
+                            <!-- Modal de eliminación -->
+                            <div class="modal fade desktop-modal" id="modalEliminar{{ prod.id_producto }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content desktop-modal-content">
+                                        <div class="modal-header desktop-modal-header">
+                                            <h5 class="modal-title desktop-modal-title">
+                                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                                Confirmar Eliminación
+                                            </h5>
+                                            <button type="button" class="btn-close desktop-modal-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body desktop-modal-body">
+                                            <div class="modal-warning">
+                                                <i class="fas fa-exclamation-circle modal-warning-icon"></i>
+                                                <p>¿Estás seguro de eliminar el producto <strong>"{{ prod.nombre }}"</strong>?</p>
+                                            </div>
+                                            <div class="modal-details">
+                                                <p><strong>Precio:</strong> ${{ prod.precio_kg }} / kg</p>
+                                                <p><strong>Peso disponible:</strong> {{ prod.peso_disponible_kg }} kg</p>
+                                                <p><strong>Estado:</strong> {{ prod.get_estado_display }}</p>
+                                            </div>
+                                            <div class="alert alert-warning modal-alert">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Esta acción no se puede deshacer.
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer desktop-modal-footer">
+                                            <button type="button" class="btn btn-secondary desktop-btn-cancel" data-bs-dismiss="modal">
+                                                <i class="fas fa-times me-1"></i> Cancelar
+                                            </button>
+                                            <form action="{% url 'eliminar_producto' prod.id_producto %}" method="post" class="modal-form">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger desktop-btn-confirm">
+                                                    <i class="fas fa-trash me-1"></i> Sí, eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state desktop-empty-state">
+                        <div class="empty-content">
+                            <i class="fas fa-box-open empty-icon"></i>
+                            <h3 class="empty-title">No tienes productos</h3>
+                            <p class="empty-text">Comienza agregando tu primer producto</p>
+                            <a href="{% url 'agregar_producto' %}" class="btn btn-primary empty-btn">
+                                <i class="fas fa-plus me-1"></i> Agregar primer producto
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="desktop-actions">
+                <a href="{% url 'agregar_producto' %}" class="btn btn-primary desktop-btn-add">
+                    <i class="fas fa-plus-circle me-2"></i> Agregar nuevo producto
+                </a>
+                
+                <div class="quick-actions">
+                    <h4 class="quick-actions-title">Acciones rápidas</h4>
+                    <div class="quick-actions-grid">
+                        <a href="#" class="quick-action-card">
+                            <i class="fas fa-chart-line quick-action-icon"></i>
+                            <span class="quick-action-text">Ver Dashboard</span>
+                        </a>
+                        <a href="#" class="quick-action-card">
+                            <i class="fas fa-cog quick-action-icon"></i>
+                            <span class="quick-action-text">Configuración</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

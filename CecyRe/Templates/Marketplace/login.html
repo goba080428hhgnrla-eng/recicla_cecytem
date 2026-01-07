@@ -1,24 +1,69 @@
 {% extends './navegación.html' %}
 {% block pag %}
-<h2>Iniciar Sesión</h2>
-<div class="card">
-    <form method="POST">
-        {% csrf_token %}
+<div class="login-container">
+    <div class="card login-card">
+        <h2 class="login-title">Iniciar Sesión</h2>
         
-        <label>Correo:</label>
-        <input type="email" name="correo" required><br><br>
+        <form method="POST" class="login-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="correo" class="form-label">Correo electrónico:</label>
+                <input type="email" 
+                       id="correo" 
+                       name="correo" 
+                       class="form-control login-input"
+                       required 
+                       placeholder="tu@ejemplo.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       class="form-control login-input"
+                       required 
+                       placeholder="Ingresa tu contraseña">
+            </div>
+            
+            <div class="form-group form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remember">
+                    <span>Recordar sesión</span>
+                </label>
+                
+                <a href="#" class="forgot-link">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary login-btn">
+                    <i class="fas fa-sign-in-alt me-2"></i> Entrar
+                </button>
+            </div>
+            
+            <div class="login-divider">
+                <span>¿No tienes cuenta?</span>
+            </div>
+            
+            <div class="login-register">
+                <a href="{% url 'registro' %}" class="btn btn-secondary register-btn">
+                    <i class="fas fa-user-plus me-2"></i> Crear cuenta
+                </a>
+            </div>
+        </form>
 
-        <label>Contraseña:</label>
-        <input type="password" name="password" required><br><br>
-
-        <button type="submit">Entrar</button>
-    </form>
-
-    {% if messages %}
-        {% for m in messages %}
-            <p style="color:red">{{ m }}</p>
-        {% endfor %}
-    {% endif %}
+        {% if messages %}
+            <div class="login-messages">
+                {% for m in messages %}
+                    <div class="alert alert-danger login-alert" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> {{ m }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </div>
-
 {% endblock %}
