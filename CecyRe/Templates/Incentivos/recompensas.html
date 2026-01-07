@@ -1,0 +1,284 @@
+{% extends 'Incentivos/base.html' %}
+
+{% load static %}
+
+{% block title %}Canje de Recompensas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="fas fa-gift"></i> Canje de Recompensas</h1>
+        <p class="lead text-muted">Intercambia tus puntos por recompensas ecológicas</p>
+    </div>
+    <div class="col-md-4">
+        <div class="points-display">
+            <h4 class="mb-0">Tus Puntos Disponibles</h4>
+            <h2 class="text-warning fw-bold">{{ puntos_disponibles }}</h2>
+            <small class="text-muted">Puntos acumulados</small>
+        </div>
+    </div>
+</div>
+
+<!-- Recompensas disponibles -->
+<div class="row">
+    {% for recompensa in recompensas %}
+    <div class="col-md-4 mb-4">
+        <div class="eco-card h-100 reward-card">
+            <div class="card-body">
+                <!-- IMAGEN local según tipo de recompensa - CORREGIDO -->
+                <div class="reward-image-container">
+                    {% if "cupón" in recompensa.nombre|lower or "descuento" in recompensa.nombre|lower %}
+                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="Cupón" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                    {% else %}
+                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                    {% endif %}
+                </div>
+                
+                <h5 class="text-center mt-3">{{ recompensa.nombre }}</h5>
+                
+                {% if recompensa.descripcion %}
+                <p class="text-center text-muted small">{{ recompensa.descripcion|truncatechars:100 }}</p>
+                {% endif %}
+                
+                <div class="text-center mb-3">
+                    <!-- CORRECCIÓN: Sin categoría, solo "General" -->
+                    <span class="badge bg-info">General</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="fw-bold fs-4 text-success">{{ recompensa.costo_puntos }}</span>
+                        <span class="text-muted"> puntos</span>
+                    </div>
+                    <div>
+                        <small class="text-muted">
+                            <i class="fas fa-box"></i> Stock: {{ recompensa.stock }}
+                        </small>
+                    </div>
+                </div>
+                
+                <!-- Botón de canje - VERSIÓN CORREGIDA -->
+                {% if puntos_disponibles >= recompensa.costo_puntos and recompensa.stock > 0 %}
+                    <button class="btn btn-eco w-100" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#confirmModal{{ recompensa.id }}">
+                        <i class="fas fa-shopping-cart"></i> Canjear Ahora
+                    </button>
+                {% elif recompensa.stock <= 0 %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="fas fa-times-circle"></i> Agotado
+                    </button>
+                {% else %}
+                    <!-- CORRECCIÓN: Cálculo correcto de puntos faltantes -->
+                    {% with puntos_faltantes=recompensa.costo_puntos|add:"-"|add:puntos_disponibles %}
+                    <button class="btn btn-outline-secondary w-100" disabled>
+                        <i class="fas fa-lock"></i> 
+                        Faltan {{ puntos_faltantes }} pts
+                    </button>
+                    {% endwith %}
+                {% endif %}
+            </div>
+            
+            <div class="card-footer text-center">
+                <small class="text-muted">
+                    {% if recompensa.stock <= 3 and recompensa.stock > 0 %}
+                        <i class="fas fa-exclamation-triangle text-warning"></i> ¡Últimas unidades!
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmación - VERSIÓN CORREGIDA -->
+        <div class="modal fade" id="confirmModal{{ recompensa.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Confirmar Canje</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-3">
+                            <!-- Imagen en el modal también -->
+                            <div class="modal-image-container">
+                                {% if "cupón" in recompensa.nombre|lower or "descuento" in recompensa.nombre|lower %}
+                                    <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="Cupón" class="modal-reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/imgd1.jpg' %}'">
+                                {% else %}
+                                    <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="modal-reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/imgd1.jpg' %}'">
+                                {% endif %}
+                            </div>
+                            <h4 class="mt-2">{{ recompensa.nombre }}</h4>
+                        </div>
+                        <p>¿Estás seguro de canjear <strong>{{ recompensa.nombre }}</strong> por <strong>{{ recompensa.costo_puntos }} puntos</strong>?</p>
+                        <div class="alert alert-light border">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <strong>Tus puntos:</strong><br>
+                                    <span class="fs-4 text-success">{{ puntos_disponibles }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Después del canje:</strong><br>
+                                    <span class="fs-4 text-warning">{{ puntos_disponibles|add:"-"|add:recompensa.costo_puntos }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Esta acción no se puede deshacer. Presenta el código de canje para reclamar tu recompensa.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <a href="{% url 'Incentivos:canjear_recompensa' recompensa.id %}" class="btn btn-eco">
+                            <i class="fas fa-check"></i> Confirmar Canje
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="eco-card text-center py-5">
+            <i class="fas fa-gift fa-4x text-muted mb-3"></i>
+            <h3>No hay recompensas disponibles</h3>
+            <p class="text-muted">Vuelve más tarde para ver nuevas recompensas</p>
+            {% if user.is_staff %}
+            <a href="/admin/Incentivos/recompensa/add/" class="btn btn-eco mt-3">
+                <i class="fas fa-plus"></i> Crear Recompensa (Admin)
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Estilos para las imágenes -->
+<style>
+.reward-image-container {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.reward-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    padding: 10px;
+}
+
+.reward-card:hover .reward-img {
+    transform: scale(1.05);
+}
+
+.modal-image-container {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.modal-reward-img {
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: contain;
+}
+
+.points-display {
+    background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    border: 2px dashed #FF9800;
+}
+
+.reward-card {
+    transition: all 0.3s ease;
+    border: 2px solid #E8F5E9;
+    display: flex;
+    flex-direction: column;
+}
+
+.reward-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.reward-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: #4CAF50;
+}
+
+/* Animación de entrada */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reward-image-container {
+        height: 120px;
+    }
+    
+    .modal-image-container {
+        height: 80px;
+    }
+    
+    .modal-reward-img {
+        max-height: 80px;
+    }
+}
+</style>
+
+<!-- JavaScript para manejar modales -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar todos los modales de Bootstrap
+    var modals = document.querySelectorAll('.modal');
+    modals.forEach(function(modal) {
+        var modalInstance = new bootstrap.Modal(modal);
+        
+        modal.addEventListener('show.bs.modal', function(event) {
+            console.log('Modal abierto para recompensa');
+        });
+    });
+    
+    // Mostrar mensaje si no hay recompensas
+    var recompensas = document.querySelectorAll('.reward-card');
+    if (recompensas.length === 0) {
+        console.log('No hay recompensas disponibles para mostrar');
+    }
+    
+    // Efecto hover en tarjetas
+    cards = document.querySelectorAll('.reward-card');
+    cards.forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}
