@@ -80,10 +80,32 @@
                 </div>
                 
                 <div class="detalle-acciones">
-                    <button class="btn btn-primary detalle-btn-cart">
-                        <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
+                    {% if producto.estado == 'disponible' %}
+                    <form method="POST" action="{% url 'agregar_al_carrito' producto.id_producto %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="detalle">
+                        <div class="input-group mb-3" style="max-width: 200px;">
+                            <input type="number" 
+                                name="cantidad" 
+                                value="1" 
+                                min="0.5" 
+                                max="{{ producto.peso_disponible_kg }}"
+                                step="0.5"
+                                class="form-control"
+                                style="border-right: 0;">
+                            <span class="input-group-text">kg</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary detalle-btn-cart">
+                            <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary detalle-btn-cart" disabled>
+                        <i class="fas fa-ban me-2"></i> No disponible
                     </button>
-                    <a href="{% url 'home' %}" class="btn btn-secondary detalle-btn-back">
+                    {% endif %}
+                    
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary detalle-btn-back">
                         <i class="fas fa-arrow-left me-2"></i> Volver
                     </a>
                 </div>

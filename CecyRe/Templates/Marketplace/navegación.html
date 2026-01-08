@@ -59,9 +59,14 @@
                                         <i class="fas fa-user me-2"></i> Perfil
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'registro' %}">
-                                        <i class="fas fa-shopping-cart me-2"></i> Carrito
+                                <li class="nav-item">
+                                    <a class="nav-link position-relative" href="{% url 'carrito' %}">
+                                        <i class="fas fa-shopping-cart"></i> Carrito
+                                        {% if request.session.carrito_count and request.session.carrito_count > 0 %}
+                                        <span class="badge bg-primary rounded-pill position-absolute top-0 start-100 translate-middle">
+                                            {{ request.session.carrito_count }}
+                                        </span>
+                                        {% endif %}
                                     </a>
                                 </li>
                                 <li>
@@ -80,7 +85,7 @@
                         
                         <!-- Iconos en navbar para móviles -->
                         <li class="nav-item d-lg-none">
-                            <a class="nav-link" href="{% url 'registro' %}">
+                            <a class="nav-link" href="{% url 'carrito' %}">
                                 <i class="fas fa-shopping-cart me-1"></i> Carrito
                                 <span class="badge marketplace-badge ms-1">0</span>
                             </a>
@@ -109,7 +114,7 @@
                 <!-- Iconos del carrito y usuario para desktop -->
                 <div class="d-none d-lg-flex ms-3 align-items-center">
                     {% if request.session.usuario_id %}
-                        <a href="{% url 'registro' %}" class="btn marketplace-btn-outline me-2 position-relative">
+                        <a href="{% url 'carrito' %}" class="btn marketplace-btn-outline me-2 position-relative">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill marketplace-badge">
                                 0
@@ -160,8 +165,8 @@
     <!-- Footer -->
     <footer class="footer marketplace-footer py-4 mt-5">
         <div class="container text-center">
-            <span class="footer-text">CECyTEM Recicla Marketplace &copy; {% now "Y" %}</span>
-            <p class="footer-subtext small mt-2">Todos los derechos reservados</p>
+            <!--<span class="footer-text">CECyTEM Recicla  &copy; {% now "Y" %}</span>
+            <p class="footer-subtext small mt-2">Todos los derechos reservados</p>-->
         </div>
     </footer>
 

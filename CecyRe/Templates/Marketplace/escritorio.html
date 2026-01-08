@@ -156,10 +156,18 @@
                 <div class="quick-actions">
                     <h4 class="quick-actions-title">Acciones rápidas</h4>
                     <div class="quick-actions-grid">
+                        {% if usuario.rol == 'admin' %}
                         <a href="#" class="quick-action-card">
                             <i class="fas fa-chart-line quick-action-icon"></i>
                             <span class="quick-action-text">Ver Dashboard</span>
                         </a>
+                        {% else %}
+                        <a href="#" class="quick-action-card">
+                            <i class="fas fa-chart-bar quick-action-icon"></i>
+                            <span class="quick-action-text">Ver mi Estadística</span>
+                        </a>
+                        {% endif %}
+                        
                         <a href="#" class="quick-action-card">
                             <i class="fas fa-cog quick-action-icon"></i>
                             <span class="quick-action-text">Configuración</span>
