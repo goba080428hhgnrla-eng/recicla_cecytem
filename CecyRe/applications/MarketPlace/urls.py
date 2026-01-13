@@ -25,4 +25,20 @@ urlpatterns = [
     path('carrito/agregar/<int:producto_id>/', agregar_al_carrito, name='agregar_al_carrito'),
     path('carrito/eliminar/<int:item_id>/', eliminar_del_carrito, name='eliminar_del_carrito'),
     path('carrito/actualizar/<int:item_id>/', actualizar_cantidad_carrito, name='actualizar_cantidad_carrito'),
+    path('terminos', terminos, name='terminos_condiciones'),
+    path('politica', politica, name='politica'),
+    path('checkout/', checkout_view, name='checkout'),
+    path('crear-orden/', crear_orden, name='crear_orden'),
+    path('ordenes/', ordenes_usuario, name='ordenes_usuario'),
+    path('orden/<int:orden_id>/', detalle_orden, name='detalle_orden'),
+    
+    # PayPal
+    path('pago/paypal/crear/<int:orden_id>/', crear_pago_paypal, name='crear_pago_paypal'),
+    path('pago/paypal/ejecutar/<int:orden_id>/', ejecutar_pago_paypal, name='ejecutar_pago_paypal'),
+    path('pago/paypal/cancelado/', pago_paypal_cancelado, name='pago_paypal_cancelado'),
+    
+    # Tarjeta
+    path('pago/tarjeta/<int:orden_id>/', procesar_tarjeta, name='procesar_tarjeta'),
+    path('logout/', logout_view, name='logout'),
 ]
+

@@ -1,0 +1,123 @@
+<!-- templates/MarketPlace/pago_tarjeta.html -->
+{% extends "./navegación.html" %}
+{% load static %}
+
+{% block pag %}
+<div class="container py-4 desktop-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card publish-card">
+                <div class="card-header bg-primary text-white publish-header">
+                    <h4 class="mb-0 form-title">
+                        <i class="fas fa-credit-card me-2"></i>Pago con Tarjeta
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4 publish-alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Orden #{{ orden.id_orden }}</strong> - Total: ${{ orden.total }}
+                    </div>
+                    
+                    <form method="post" id="tarjeta-form" class="login-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="numero_tarjeta" class="form-label">Número de Tarjeta</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-credit-card"></i>
+                                </span>
+                                <input type="text" class="form-control login-input" id="numero_tarjeta"
+                                       name="numero_tarjeta" placeholder="1234 5678 9012 3456" 
+                                       required maxlength="19">
+                            </div>
+                            <div class="form-help">Ingresa el número de tu tarjeta sin espacios</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="fecha_expiracion" class="form-label">Fecha de Expiración</label>
+                                <input type="month" class="form-control login-input" id="fecha_expiracion"
+                                       name="fecha_expiracion" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control login-input" id="cvv"
+                                           name="cvv" placeholder="123" required maxlength="4">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="nombre_titular" class="form-label">Nombre del Titular</label>
+                            <input type="text" class="form-control login-input" id="nombre_titular"
+                                   name="nombre_titular" value="{{ usuario.nombre }} {{ usuario.apellido_paterno }}"
+                                   required>
+                        </div>
+                        
+                        <div class="alert alert-warning small publish-alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Nota:</strong> Esta es una simulación. En producción, 
+                            integrarías con una pasarela de pago segura como Stripe.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg login-btn">
+                                <i class="fas fa-lock me-2"></i>
+                                Pagar ${{ orden.total }}
+                            </button>
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-secondary marketplace-btn-outline">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-3 publish-card">
+                <div class="card-body text-center">
+                    <h6 class="mb-2 form-label">
+                        <i class="fas fa-shield-alt text-success me-2"></i>
+                        Pago 100% Seguro
+                    </h6>
+                    <div class="small text-muted">
+                        <i class="fab fa-cc-visa me-2"></i>
+                        <i class="fab fa-cc-mastercard me-2"></i>
+                        <i class="fab fa-cc-amex me-2"></i>
+                        <i class="fab fa-cc-discover"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formatear número de tarjeta
+    const tarjetaInput = document.getElementById('numero_tarjeta');
+    tarjetaInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+        e.target.value = formatted.substring(0, 19);
+    });
+    
+    // Validar formulario
+    const form = document.getElementById('tarjeta-form');
+    form.addEventListener('submit', function(e) {
+        // Aquí agregarías validaciones adicionales
+        const cvv = document.getElementById('cvv').value;
+        if (cvv.length < 3) {
+            e.preventDefault();
+            alert('El CVV debe tener al menos 3 dígitos');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

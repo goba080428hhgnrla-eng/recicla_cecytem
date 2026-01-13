@@ -1,4 +1,5 @@
 from pathlib import Path
+import paypalrestsdk
 
 # BASE_DIR apunta a la carpeta raíz del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -16,6 +17,7 @@ INSTALLED_APPS = [
     'applications.Ingresos',
     'applications.Incentivos',
     'django_extensions',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -26,6 +28,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'cecytemrecicla.urls'
@@ -61,3 +64,19 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+# PayPal Configuration
+PAYPAL_MODE = 'sandbox'  # Cambia a 'live' para producción
+PAYPAL_CLIENT_ID = 'tu_client_id'
+PAYPAL_CLIENT_SECRET = 'tu_client_secret'
+
+# Configurar SDK de PayPal
+paypalrestsdk.configure({
+    "mode": PAYPAL_MODE,
+    "client_id": PAYPAL_CLIENT_ID,
+    "client_secret": PAYPAL_CLIENT_SECRET
+})
+
+CORS_ALLOW_ALL_ORIGINS = True

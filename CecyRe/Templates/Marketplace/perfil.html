@@ -182,11 +182,12 @@
                                     <div class="security-item-content">
                                         <i class="fas fa-sign-in-alt security-icon"></i>
                                     </div>
-                                    <button class="btn btn-outline-danger btn-sm">
+                                    <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                                    <button class="btn btn-outline-danger btn-sm" type="submit">
                                         <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
                                     </button>
+                                    </form>
                                 </div>
-                                
                                 <div class="security-item">
                                     <div class="security-item-content">
                                         <i class="fas fa-trash-alt security-icon"></i>

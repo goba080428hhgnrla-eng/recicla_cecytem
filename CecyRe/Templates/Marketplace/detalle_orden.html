@@ -1,0 +1,138 @@
+<!-- templates/MarketPlace/detalle_orden.html -->
+{% extends "./navegación.html" %}
+{% load static %}
+
+{% block pag %}
+<div class="container py-4 desktop-container">
+    <div class="d-flex justify-content-between align-items-center mb-4 profile-header">
+        <h2 class="desktop-title">Detalle de Orden #{{ orden.id_orden }}</h2>
+        <a href="{% url 'ordenes_usuario' %}" class="btn btn-outline-primary marketplace-btn-outline">
+            <i class="fas fa-arrow-left me-2"></i>Volver a mis órdenes
+        </a>
+    </div>
+    
+    <div class="row">
+        <!-- Información de la orden -->
+        <div class="col-lg-8">
+            <div class="card mb-4 publish-card">
+                <div class="card-header bg-primary text-white publish-header">
+                    <h4 class="mb-0 form-title"><i class="fas fa-box me-2"></i>Productos</h4>
+                </div>
+                <div class="card-body">
+                    {% if detalles %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-end">Precio Unitario</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detalle in detalles %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ detalle.id_producto.nombre }}</strong><br>
+                                            <small class="text-muted caption">
+                                                Vendedor: {{ orden.id_usuario_vendedor.nombre }}
+                                            </small>
+                                        </td>
+                                        <td class="text-center">{{ detalle.cantidad_kg }} kg</td>
+                                        <td class="text-end">${{ detalle.precio_unitario }}</td>
+                                        <td class="text-end">${{ detalle.subtotal }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumen y estado -->
+        <div class="col-lg-4">
+            <div class="card mb-4 publish-card">
+                <div class="card-header bg-success text-white publish-header">
+                    <h4 class="mb-0 form-title"><i class="fas fa-receipt me-2"></i>Resumen</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong class="form-label">Fecha:</strong><br>
+                        {{ orden.fecha|date:"d/m/Y H:i" }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong class="form-label">Estado:</strong><br>
+                        <span class="badge 
+                            {% if orden.estado_orden == 'completada' %}bg-success
+                            {% elif orden.estado_orden == 'pendiente' %}bg-warning
+                            {% else %}bg-secondary{% endif %}">
+                            {{ orden.get_estado_orden_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong class="form-label">Vendedor:</strong><br>
+                        {{ orden.id_usuario_vendedor.nombre }} {{ orden.id_usuario_vendedor.apellido_paterno }}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 form-title">Total:</h5>
+                        <h4 class="mb-0 text-primary">${{ orden.total }}</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información de pago -->
+            {% if pago %}
+            <div class="card publish-card">
+                <div class="card-header bg-info text-white publish-header">
+                    <h4 class="mb-0 form-title"><i class="fas fa-credit-card me-2"></i>Información de Pago</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong class="form-label">Método:</strong><br>
+                        {{ pago.get_metodo_pago_display }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong class="form-label">Estado del pago:</strong><br>
+                        <span class="badge 
+                            {% if pago.estado_pago == 'completado' %}bg-success
+                            {% elif pago.estado_pago == 'pendiente' %}bg-warning
+                            {% elif pago.estado_pago == 'fallido' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ pago.get_estado_pago_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong class="form-label">Fecha del pago:</strong><br>
+                        {{ pago.fecha|date:"d/m/Y H:i" }}
+                    </div>
+                    
+                    {% if pago.transaccion_id %}
+                    <div class="mb-3">
+                        <strong class="form-label">ID de Transacción:</strong><br>
+                        <small class="text-muted caption">{{ pago.transaccion_id }}</small>
+                    </div>
+                    {% endif %}
+                    
+                    {% if pago.paypal_payment_id %}
+                    <div class="mb-3">
+                        <strong class="form-label">ID PayPal:</strong><br>
+                        <small class="text-muted caption">{{ pago.paypal_payment_id }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

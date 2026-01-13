@@ -34,7 +34,6 @@ class Usuario(models.Model):
     correo = models.EmailField(max_length=80)
 
     def save(self, *args, **kwargs):
-        # Evita volver a cifrar contraseñas ya cifradas
         if not self.password.startswith('pbkdf2_'):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
@@ -42,7 +41,7 @@ class Usuario(models.Model):
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-        ordering = ['-fecha_registro']  # Más recientes primero
+        ordering = ['-fecha_registro']  
         indexes = [
             models.Index(fields=['rol']),
             models.Index(fields=['fecha_registro']),
@@ -235,11 +234,14 @@ class DetalleOrden(models.Model):
     def __str__(self):
         return f"Detalle {self.id_detalle} de orden {self.id_orden}"
 
+# models.py - Modificar el modelo Pago
 class Pago(models.Model):
     METODOS = [
         ('tarjeta', 'Tarjeta'),
         ('transferencia', 'Transferencia'),
         ('efectivo', 'Efectivo'),
+        ('paypal', 'PayPal'),
+        ('stripe', 'Stripe'),
         ('otro', 'Otro'),
     ]
 
@@ -247,6 +249,8 @@ class Pago(models.Model):
         ('pendiente', 'Pendiente'),
         ('completado', 'Completado'),
         ('fallido', 'Fallido'),
+        ('cancelado', 'Cancelado'),
+        ('reembolsado', 'Reembolsado'),
     ]
 
     id_pago = models.AutoField(primary_key=True)
@@ -254,8 +258,17 @@ class Pago(models.Model):
     metodo_pago = models.CharField(max_length=15, choices=METODOS)
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateTimeField(auto_now_add=True)
-    estado_pago = models.CharField(max_length=15, choices=ESTADO_PAGO)
-
+    estado_pago = models.CharField(max_length=15, choices=ESTADO_PAGO, default='pendiente')
+    
+    # Nuevos campos para pagos electrónicos
+    transaccion_id = models.CharField(max_length=100, blank=True, null=True)
+    referencia_pago = models.CharField(max_length=200, blank=True, null=True)
+    datos_pago = models.JSONField(blank=True, null=True)  # Para almacenar datos adicionales
+    
+    # Campos específicos para PayPal
+    paypal_payment_id = models.CharField(max_length=100, blank=True, null=True)
+    paypal_payer_id = models.CharField(max_length=100, blank=True, null=True)
+    
     class Meta:
         verbose_name = 'Pago'
         verbose_name_plural = 'Pagos'
@@ -265,6 +278,8 @@ class Pago(models.Model):
             models.Index(fields=['estado_pago']),
             models.Index(fields=['metodo_pago']),
             models.Index(fields=['fecha']),
+            models.Index(fields=['transaccion_id']),
+            models.Index(fields=['paypal_payment_id']),
         ]
         constraints = [
             models.CheckConstraint(
@@ -274,7 +289,7 @@ class Pago(models.Model):
         ]
 
     def __str__(self):
-        return f"Pago {self.id_pago} - {self.metodo_pago}"
+        return f"Pago {self.id_pago} - {self.metodo_pago} - {self.estado_pago}"
 
 class Conversacion(models.Model):
     id_conversacion = models.AutoField(primary_key=True)

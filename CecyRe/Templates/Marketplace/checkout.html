@@ -1,0 +1,158 @@
+<!-- templates/MarketPlace/checkout.html -->
+{% extends "./navegación.html" %}
+{% load static %}
+
+{% block pag %}
+<div class="container py-4 desktop-container">
+    <h2 class="mb-4 desktop-title">Finalizar Compra</h2>
+    
+    <div class="row">
+        <!-- Resumen del pedido -->
+        <div class="col-lg-8">
+            <div class="card card-eco mb-4 publish-card">
+                <div class="card-header bg-primary text-white publish-header">
+                    <h4 class="mb-0 form-title"><i class="fas fa-shopping-cart me-2"></i>Resumen del Pedido</h4>
+                </div>
+                <div class="card-body">
+                    {% if items %}
+                        <div class="table-responsive">
+                            <table class="table" style="color: #f8f9fa;">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-end">Precio</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ item.id_producto.nombre }}</strong><br>
+                                            <small class="text-muted caption">{{ item.id_producto.id_categoria.nombre }}</small>
+                                        </td>
+                                        <td class="text-center">{{ item.cantidad_kg }} kg</td>
+                                        <td class="text-end">${{ item.precio_unitario }}</td>
+                                        <td class="text-end">${{ item.subtotal }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light" style="color: black;">
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                        <td class="text-end"><strong>${{ total }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center empty-subtitle">No hay productos en el carrito</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Métodos de pago -->
+        <div class="col-lg-4">
+            <div class="card card-innovacion publish-card">
+                <div class="card-header bg-success text-white publish-header">
+                    <h4 class="mb-0 form-title"><i class="fas fa-credit-card me-2"></i>Método de Pago</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'crear_orden' %}" id="checkout-form" class="login-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h5 class="form-title">Selecciona tu método de pago:</h5>
+                            
+                            {% for metodo in metodos_pago %}
+                            <div class="form-check mb-3 border rounded p-3 metodo-pago-option">
+                                <input class="form-check-input" type="radio" 
+                                       name="metodo_pago" id="metodo_{{ metodo.id }}" 
+                                       value="{{ metodo.id }}" required>
+                                <label class="form-check-label w-100" for="metodo_{{ metodo.id }}">
+                                    <div class="d-flex align-items-center">
+                                        <i class="{{ metodo.icono }} fa-2x me-3"></i>
+                                        <div>
+                                            <h6 class="mb-0 form-label">{{ metodo.nombre }}</h6>
+                                            <small class="text-muted caption">
+                                                {% if metodo.id == 'paypal' %}
+                                                    Paga de forma segura con PayPal
+                                                {% elif metodo.id == 'tarjeta' %}
+                                                    Tarjeta de crédito o débito
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg login-btn" 
+                                    {% if not items %}disabled{% endif %}>
+                                <i class="fas fa-lock me-2"></i>
+                                Proceder al Pago
+                            </button>
+                        </div>
+                        
+                        <div class="mt-3 text-center">
+                            <a href="{% url 'carrito' %}" class="text-decoration-none forgot-link">
+                                <i class="fas fa-arrow-left me-1"></i> Volver al carrito
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Información adicional -->
+            <div class="card mt-3 publish-card">
+                <div class="card-body">
+                    <h6 class="form-label"><i class="fas fa-shield-alt me-2 text-success"></i>Compra Segura</h6>
+                    <p class="small mb-0 caption">
+                        Tu información está protegida con encriptación SSL de 256 bits.
+                        Nunca almacenamos datos de tu tarjeta.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.metodo-pago-option {
+    transition: all 0.3s;
+    cursor: pointer;
+    background: var(--color-input);
+    border: 1px solid var(--color-panel) !important;
+}
+.metodo-pago-option:hover {
+    background-color: #f8f9fa;
+    border-color: var(--color-primary) !important;
+}
+.metodo-pago-option input[type="radio"]:checked + label {
+    color: var(--color-primary);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mejorar experiencia de selección de método de pago
+    const options = document.querySelectorAll('.metodo-pago-option');
+    options.forEach(option => {
+        option.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Remover clase activa de todas las opciones
+            options.forEach(opt => opt.classList.remove('border-primary', 'bg-light'));
+            
+            // Agregar clase activa a la opción seleccionada
+            this.classList.add('border-primary', 'bg-light');
+        });
+    });
+});
+</script>
+{% endblock %}
