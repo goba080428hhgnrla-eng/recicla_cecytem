@@ -1,0 +1,527 @@
+{% extends './navegación.html' %}
+<!-- NOTA: Ya NO cargamos custom_filters -->
+{% block pag %}
+<div class="row">
+    <!-- Sidebar de filtros -->
+    <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-filter me-2"></i> Filtros</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{% url 'buscar_productos' %}" id="filtros-form">
+                    <!-- Búsqueda -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Buscar</label>
+                        <input type="text" 
+                               name="q" 
+                               class="form-control" 
+                               placeholder="Nombre o descripción..."
+                               value="{{ query }}">
+                    </div>
+                    
+                    <!-- Categorías -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Categoría</label>
+                        <select name="categoria" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria.id_categoria }}" 
+                                    {% if filtros.categoria_id == categoria.id_categoria|stringformat:"i" %}selected{% endif %}>
+                                {{ categoria.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Pureza -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nivel de Pureza</label>
+                        <select name="pureza" class="form-select">
+                            <option value="">Todos los niveles</option>
+                            {% for key, value in PUREZA_CHOICES %}
+                            <option value="{{ key }}" 
+                                    {% if filtros.pureza == key %}selected{% endif %}>
+                                {{ value }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Rango de precio -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Precio por kg</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" 
+                                       name="precio_min" 
+                                       class="form-control" 
+                                       placeholder="Mín" 
+                                       step="0.01"
+                                       value="{{ filtros.precio_min }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" 
+                                       name="precio_max" 
+                                       class="form-control" 
+                                       placeholder="Máx" 
+                                       step="0.01"
+                                       value="{{ filtros.precio_max }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Estado -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Estado</label>
+                        <select name="estado" class="form-select">
+                            {% for key, value in ESTADO_CHOICES %}
+                            <option value="{{ key }}" 
+                                    {% if filtros.estado == key %}selected{% endif %}>
+                                {{ value }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Ordenar por -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ordenar por</label>
+                        <select name="ordenar_por" class="form-select">
+                            <option value="recientes" {% if filtros.ordenar_por == 'recientes' %}selected{% endif %}>
+                                Más recientes primero
+                            </option>
+                            <option value="precio_asc" {% if filtros.ordenar_por == 'precio_asc' %}selected{% endif %}>
+                                Precio: menor a mayor
+                            </option>
+                            <option value="precio_desc" {% if filtros.ordenar_por == 'precio_desc' %}selected{% endif %}>
+                                Precio: mayor a menor
+                            </option>
+                            <option value="nombre" {% if filtros.ordenar_por == 'nombre' %}selected{% endif %}>
+                                Nombre A-Z
+                            </option>
+                            <option value="peso" {% if filtros.ordenar_por == 'peso' %}selected{% endif %}>
+                                Mayor peso disponible
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i> Aplicar filtros
+                        </button>
+                        <a href="{% url 'buscar_productos' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i> Limpiar filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Mostrar filtros activos - VERSIÓN SIMPLIFICADA -->
+            {% if query or filtros.categoria_id or filtros.pureza %}
+            <div class="card-footer">
+                <h6 class="mb-2">Filtros activos:</h6>
+                <div class="d-flex flex-wrap gap-2" id="filtros-activos">
+                    {% if query %}
+                    <span class="badge bg-info" data-param="q" data-value="{{ query }}">
+                        "{{ query }}"
+                        <button type="button" class="btn-close btn-close-white btn-close-filtro" 
+                                style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                    </span>
+                    {% endif %}
+                    
+                    {% if filtros.categoria_id %}
+                    {% for categoria in categorias %}
+                        {% if categoria.id_categoria|stringformat:"i" == filtros.categoria_id %}
+                        <span class="badge bg-primary" data-param="categoria" data-value="{{ categoria.id_categoria }}">
+                            {{ categoria.nombre }}
+                            <button type="button" class="btn-close btn-close-white btn-close-filtro" 
+                                    style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                        </span>
+                        {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    
+                    {% if filtros.pureza %}
+                    <span class="badge bg-secondary" data-param="pureza" data-value="{{ filtros.pureza }}">
+                        Pureza: {{ filtros.pureza|title }}
+                        <button type="button" class="btn-close btn-close-white btn-close-filtro" 
+                                style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                    </span>
+                    {% endif %}
+                    
+                    {% if filtros.precio_min or filtros.precio_max %}
+                    <span class="badge bg-warning text-dark" data-param="precio">
+                        Precio: 
+                        {% if filtros.precio_min %}{{ filtros.precio_min }}{% endif %}
+                        {% if filtros.precio_min and filtros.precio_max %} - {% endif %}
+                        {% if filtros.precio_max %}{{ filtros.precio_max }}{% endif %}
+                        <button type="button" class="btn-close btn-close-dark btn-close-filtro" 
+                                style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Resultados de búsqueda -->
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+                {% if query %}
+                    Resultados para "{{ query }}"
+                {% else %}
+                    Productos Disponibles
+                {% endif %}
+                <small class="text-muted">({{ productos.paginator.count }} productos)</small>
+            </h2>
+            
+            <!-- Botón para mostrar/ocultar filtros en móvil -->
+            <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosMobile">
+                <i class="fas fa-filter me-1"></i> Filtros
+            </button>
+        </div>
+        
+        <!-- Filtros móviles (colapsable) -->
+        <div class="collapse d-lg-none mb-4" id="filtrosMobile">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" action="{% url 'buscar_productos' %}">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control mb-2" 
+                               placeholder="Buscar..."
+                               value="{{ query }}">
+                        <select name="categoria" class="form-select mb-2">
+                            <option value="">Todas las categorías</option>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria.id_categoria }}">{{ categoria.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Aplicar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de productos -->
+        {% if productos %}
+        <div class="contenedor-productos">
+            {% for producto in productos %}
+                <div class="card-prod">
+                    <a href="{% url 'producto_detail' producto.id_producto %}" class="card-prod-link">
+                        {% if producto.imagenes.all %}
+                            <div class="card-prod-img-container">
+                                <img src="{{ producto.imagenes.first.imagen.url }}" 
+                                     alt="{{ producto.nombre }}"
+                                     class="card-prod-img">
+                            </div>
+                        {% else %}
+                            <div class="card-prod-img-container card-prod-no-image">
+                                <span class="no-image-text">Sin imagen</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                    
+                    <div class="card-prod-content">
+                        <a href="{% url 'producto_detail' producto.id_producto %}" class="card-prod-title">
+                            <h3 class="card-prod-name">{{ producto.nombre|truncatechars:30 }}</h3>
+                        </a>
+                        
+                        <div class="card-prod-info">
+                            <div class="card-prod-price">
+                                <span class="price-main">${{ producto.precio_kg }}</span>
+                                <span class="price-unit">/kg</span>
+                            </div>
+                            
+                            {% if producto.id_categoria %}
+                            <div class="card-prod-category">
+                                <span class="category-badge">{{ producto.id_categoria.nombre }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Info adicional de pureza -->
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-flask me-1"></i>
+                                Pureza: {{ producto.get_pureza_display }}
+                            </small>
+                        </div>
+                        
+                        <!-- Peso disponible -->
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-weight-hanging me-1"></i>
+                                Disponible: {{ producto.peso_disponible_kg }} kg
+                            </small>
+                        </div>
+                        
+                        {% if producto.estado == 'disponible' %}
+                            <form method="POST" action="{% url 'agregar_al_carrito' producto.id_producto %}" class="d-inline-block w-100">
+                                {% csrf_token %}
+                                <input type="hidden" name="cantidad" value="1">
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit" class="btn btn-primary btn-add-to-cart w-100">
+                                    <i class="fas fa-cart-plus me-1"></i> Agregar
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary w-100" disabled>
+                                <i class="fas fa-ban me-1"></i> No disponible
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Paginación - VERSIÓN SIMPLIFICADA -->
+        {% if productos.has_other_pages %}
+        <nav aria-label="Navegación de productos" class="pagination-container mt-4">
+            <ul class="pagination justify-content-center">
+                {% if productos.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ productos.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}" aria-label="Anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                {% endif %}
+                
+                {% for i in productos.paginator.page_range %}
+                    {% if productos.number == i %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ i }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}">{{ i }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if productos.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ productos.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}" aria-label="Siguiente">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h3 class="empty-title">No se encontraron productos</h3>
+                <p class="empty-subtitle">
+                    {% if query %}
+                        No hay productos que coincidan con "{{ query }}"
+                    {% else %}
+                        No hay productos con los filtros aplicados
+                    {% endif %}
+                </p>
+                <a href="{% url 'buscar_productos' %}" class="btn btn-primary mt-2">
+                    <i class="fas fa-times me-1"></i> Limpiar filtros
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JavaScript para manejar filtros -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para remover un parámetro de la URL
+    function removeUrlParameter(url, parameter) {
+        const urlObj = new URL(url, window.location.origin);
+        urlObj.searchParams.delete(parameter);
+        
+        // Caso especial para precio (elimina min y max)
+        if (parameter === 'precio') {
+            urlObj.searchParams.delete('precio_min');
+            urlObj.searchParams.delete('precio_max');
+        }
+        
+        return urlObj.toString();
+    }
+    
+    // Manejar clic en botones para cerrar filtros
+    document.querySelectorAll('.btn-close-filtro').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const badge = this.closest('.badge');
+            const param = badge.getAttribute('data-param');
+            const currentUrl = window.location.href;
+            const newUrl = removeUrlParameter(currentUrl, param);
+            window.location.href = newUrl;
+        });
+    });
+    
+    // Auto-submit al cambiar algunos filtros
+    document.querySelectorAll('#filtros-form select[name="ordenar_por"], #filtros-form select[name="estado"]').forEach(function(select) {
+        select.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    });
+    
+    // Validar rangos de precio
+    const precioMin = document.querySelector('input[name="precio_min"]');
+    const precioMax = document.querySelector('input[name="precio_max"]');
+    
+    if (precioMin && precioMax) {
+        document.querySelector('#filtros-form').addEventListener('submit', function(e) {
+            const min = parseFloat(precioMin.value) || 0;
+            const max = parseFloat(precioMax.value) || Infinity;
+            
+            if (min > max && max !== Infinity) {
+                e.preventDefault();
+                alert('El precio mínimo no puede ser mayor al precio máximo');
+                precioMin.focus();
+            }
+        });
+    }
+    
+    // Efecto hover en tarjetas de productos
+    document.querySelectorAll('.card-prod').forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+        });
+    });
+    
+    // Manejar agregar al carrito
+    document.querySelectorAll('.btn-add-to-cart').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            const form = this.closest('form');
+            if (form) {
+                // Mostrar feedback visual
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Agregando...';
+                this.disabled = true;
+                
+                // Enviar el formulario
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(new FormData(form))
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.innerHTML = '<i class="fas fa-check me-1"></i> Agregado';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-success');
+                        
+                        // Actualizar contador del carrito si existe
+                        const carritoBadge = document.querySelector('.marketplace-badge');
+                        if (carritoBadge && data.carrito_count) {
+                            carritoBadge.textContent = data.carrito_count;
+                        }
+                        
+                        // Restaurar después de 2 segundos
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-primary');
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        alert(data.error || 'Error al agregar al carrito');
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al agregar al carrito');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+                
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+
+<!-- Estilos adicionales -->
+<style>
+    .search-input {
+        border-radius: 20px 0 0 20px;
+        border: 1px solid #6c757d;
+    }
+    
+    .search-btn {
+        border-radius: 0 20px 20px 0;
+        border: 1px solid #6c757d;
+        border-left: none;
+    }
+    
+    .btn-close-filtro {
+        padding: 0.25rem;
+        margin-left: 0.25rem;
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    
+    .btn-close-filtro:hover {
+        opacity: 1;
+    }
+    
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35em 0.65em;
+        font-size: 0.85em;
+    }
+    
+    .card-prod {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-prod:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .contenedor-productos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        .contenedor-productos {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+    }
+</style>
+{% endblock %}

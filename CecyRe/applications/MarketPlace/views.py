@@ -845,3 +845,122 @@ def detalle_orden(request, orden_id):
         'pago': pago,
         'usuario': usuario,
     })
+    
+
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+def buscar_productos(request):
+    """Vista para buscar productos con filtros"""
+    query = request.GET.get('q', '')
+    categoria_id = request.GET.get('categoria', '')
+    pureza = request.GET.get('pureza', '')
+    precio_min = request.GET.get('precio_min', '')
+    precio_max = request.GET.get('precio_max', '')
+    estado = request.GET.get('estado', 'disponible')
+    ordenar_por = request.GET.get('ordenar_por', 'recientes')
+    
+    # Obtener todos los productos inicialmente
+    productos = Producto.objects.filter(estado='disponible')
+    
+    # Aplicar búsqueda por texto
+    if query:
+        productos = productos.filter(
+            Q(nombre__icontains=query) |
+            Q(descripcion__icontains=query) |
+            Q(id_categoria__nombre__icontains=query)
+        )
+    
+    # Aplicar filtros
+    if categoria_id:
+        productos = productos.filter(id_categoria_id=categoria_id)
+    
+    if pureza:
+        productos = productos.filter(pureza=pureza)
+    
+    if precio_min:
+        try:
+            productos = productos.filter(precio_kg__gte=float(precio_min))
+        except ValueError:
+            pass
+    
+    if precio_max:
+        try:
+            productos = productos.filter(precio_kg__lte=float(precio_max))
+        except ValueError:
+            pass
+    
+    if estado:
+        productos = productos.filter(estado=estado)
+    
+    # Aplicar ordenamiento
+    if ordenar_por == 'precio_asc':
+        productos = productos.order_by('precio_kg')
+    elif ordenar_por == 'precio_desc':
+        productos = productos.order_by('-precio_kg')
+    elif ordenar_por == 'nombre':
+        productos = productos.order_by('nombre')
+    elif ordenar_por == 'peso':
+        productos = productos.order_by('-peso_disponible_kg')
+    else:  # recientes por defecto
+        productos = productos.order_by('-fecha_publicacion')
+    
+    # Paginación
+    page = request.GET.get('page', 1)
+    paginator = Paginator(productos, 12)  # 12 productos por página
+    
+    try:
+        productos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        productos_paginados = paginator.page(1)
+    except EmptyPage:
+        productos_paginados = paginator.page(paginator.num_pages)
+    
+    # Obtener todas las categorías para el filtro
+    categorias = Categoria.objects.all()
+    
+    context = {
+        'productos': productos_paginados,
+        'query': query,
+        'categorias': categorias,
+        'filtros': {
+            'categoria_id': categoria_id,
+            'pureza': pureza,
+            'precio_min': precio_min,
+            'precio_max': precio_max,
+            'estado': estado,
+            'ordenar_por': ordenar_por,
+        },
+        'PUREZA_CHOICES': Producto.PUREZA,
+        'ESTADO_CHOICES': Producto.ESTADO,
+    }
+    
+    return render(request, 'Marketplace/buscar_productos.html', context)
+
+def home(request):
+    """Vista principal con opción de mostrar todos los productos o filtrados"""
+    productos = Producto.objects.filter(estado='disponible').order_by('-fecha_publicacion')
+    
+    # Si hay parámetros de filtro, mostrar productos filtrados
+    if any([request.GET.get(key) for key in ['q', 'categoria', 'pureza', 'precio_min', 'precio_max']]):
+        return buscar_productos(request)
+    
+    # Paginación para la página principal
+    page = request.GET.get('page', 1)
+    paginator = Paginator(productos, 12)
+    
+    try:
+        productos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        productos_paginados = paginator.page(1)
+    except EmptyPage:
+        productos_paginados = paginator.page(paginator.num_pages)
+    
+    # Obtener categorías para sidebar
+    categorias = Categoria.objects.all()
+    
+    return render(request, "MarketPlace/home.html", {
+        'productos': productos_paginados,
+        'categorias': categorias,
+        'PUREZA_CHOICES': Producto.PUREZA,
+    })
