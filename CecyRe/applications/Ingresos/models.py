@@ -1,6 +1,29 @@
 from django.db import models
 from applications.MarketPlace.models import Usuario, Producto,DetalleOrden
 
+# -------------------------
+#         ORDEN VENTA
+# -------------------------
+class OrdenVenta(models.Model):
+    ESTADO_CHOICES = (
+        ('pagado', 'Pagado'),
+        ('pendiente', 'Pendiente'),
+    )
+
+    id_orden = models.AutoField(primary_key=True)
+    estado_orden = models.CharField(max_length=20, choices=ESTADO_CHOICES)
+    fecha = models.DateField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'orden_venta'
+
+
+
+
+
+
 
 # -------------------------
 #   CATEGORIA GASTO

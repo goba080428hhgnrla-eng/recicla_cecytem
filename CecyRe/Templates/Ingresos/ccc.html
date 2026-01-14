@@ -13,29 +13,27 @@
     <header  class="miheader">
             <div class="logotitulo1">
         <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
-    </div>
+    </div> 
 
      <center> <h1>REGISTAR VENTA INTERNA</h1></center>
 
        <div class="logotitulo2">
         <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
-        <link href="https://fonts.googleapis.com/css2?family=Tinos&display=swap" rel="stylesheet">
-
     </div>
     </header>
  <nav>
             {% include "Ingresos/menu_navegacion.html" %}
     </nav>
-
-    <section id="sectionjajaj">
-        <form method="POST">
+    
+    <section>
 
        <div class="datosventaexterna">
-
+<form method="POST">
     {% csrf_token %}
     <div id="exdatos1">
-      <h3 style="color:#1e8449;">Datos de la venta</h3>
-        
+      <h3>Información de la Venta</h3>
+        {{ form.descripcion.label }} <br>
+        {{ form.descripcion }} <br><br>
 
         {{ form.cliente_nombre.label }}
         {{ form.cliente_nombre }} <br><br>
@@ -51,19 +49,10 @@
 
         {{ form.id_usuario.label }}
         {{ form.id_usuario }} <br><br>
-
-        {{ form.descripcion.label }} <br>
-        {{ form.descripcion }} <br><br>
-
-          <button type="submit"class="btnguardar">
-        Guardar Venta
-    </button>
     </div>
 
-  <div class="columnaderechavexternas">
-
     <div id="exdatos2">
-        <h3 style="color:#1e8449">Detalle de Materia</h3>
+        <h3>Detalle de la Venta</h3>
         {{ form.materia.label }}
         {{ form.materia }} <br><br>
 
@@ -75,28 +64,15 @@
 
         {{ form.subtotal.label }}
         {{ form.subtotal }} <br><br>
-        <br>
-        
-        
-    </div>
-    <div id="infoventasex">
-           <h4 style="color:#1e8449">Ventas Externas Registradas</h4>
-           <br>
-           <table  style="width:100%; border-collapse: collapse; font-family: 'Tinos', serif;">
-        <tr>
-            <th>Cliente</th>
-            <th>Contacto</th>
-            <th>Materia</th>
-            <th>cantidad(kg)</th>
-            <th>Precio/kg</th>
-            <th>Total</th>
-            <th>Fecha</th>
-        </tr>
-      
-         </table>
-        </div>
-</div>
+        <br><br><br><br><br><br><br>
+        <div id="infoventasex">
 
+        </div>
+    </div>
+</div>
+  <button type="submit" style="padding:10px 20px; background:#1a73e8; color:white; border:none; border-radius:5px;">
+        Guardar Venta
+    </button>
     </form>
     </section>
 
@@ -104,8 +80,8 @@
 
 
 <footer>
-{% include "Ingresos/footter_ingresos.html" %}
-</footer></footer>
+      <!-- {% include "Ingresos/footter_ingresos.html" %} -->
+</footer>
 </body>
 </html>
 

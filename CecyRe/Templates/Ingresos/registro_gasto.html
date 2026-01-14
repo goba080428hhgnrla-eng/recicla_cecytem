@@ -24,6 +24,132 @@
  <nav>
             {% include "Ingresos/menu_navegacion.html" %}
     </nav>
+
+    <section>
+         <form method="POST">
+            {% csrf_token %}
+ <div class="contenedor-gastos">
+
+
+        
+        <div class="gastos1">
+        {{ form.concepto.label }}
+        {{ form.concepto }} <br><br>
+
+        {{ form.monto.label }}
+        {{ form.monto }} <br><br>
+
+         {{ form.fecha.label }}
+        {{ form.fecha }} <br><br>
+        
+        {{ form.descripcion.label }}
+        {{ form.descripcion }} <br><br>
+
+        {{ form.id_categoria_gasto.label }}
+        {{ form.id_categoria_gasto }} <br><br>
+
+        {{ form.factura_adjunto.label }}
+        {{ form.factura_adjunto }} <br><br>
+
+        {{ form.id_usuario.label }}
+        {{ form.id_usuario }} <br><br>
+
+
+
+
+
+
+          <button type="submit"class="btnguardar">
+        Registra Gasto
+    </button>
+
+        </div>
+        <div class="columna-derecha">
+       <div class="gastos2">
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const meses= {{ meses|safe }};
+    const montos= {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1e8449', // CORREGIDO: mayúscula
+                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff'   // Color de la leyenda en blanco
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#ffffff' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#ffffff' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+
+        <div class="gastos3">
+         <table>
+    <thead>
+        <tr>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Usuario</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+        {% for gasto in gastos %}
+        <tr>
+            <td>{{ gasto.concepto }}</td>
+            <td>{{ gasto.monto }}</td>
+            <td>{{ gasto.fecha }}</td>
+            <td>{{ gasto.id_categoria_gasto }}</td>
+            <td>{{ gasto.id_usuario }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No hay gastos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+
+       
+    </form>
+    </div>
+     </div>
+    </section>
     
 <footer>
       {% include "Ingresos/footter_ingresos.html" %}

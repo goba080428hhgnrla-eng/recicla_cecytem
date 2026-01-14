@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{% static 'estilos_ingresos.css' %}">
+<link rel="stylesheet" href="{% static 'IngresosCSS/estilos_ingresos.css' %}">
     <title>Document</title>
 </head>
 <body>
@@ -24,6 +24,177 @@
     <nav>
             {% include "Ingresos/menu_navegacion.html" %}
     </nav>
+<section class="contenedor">
+
+    <div class="dashderecha">
+        
+     <div id="divdash1">
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const meses = {{ meses|safe }};
+    const montos = {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1e8449', // CORREGIDO: mayúscula
+                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff'   // Color de la leyenda en blanco
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#ffffff' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#ffffff' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                    }
+                }
+            }
+        });
+    }
+</script>
+<!-- Script para grafico circular de gastos -->
+
+
+   <div id="divdash3">
+    <h2>Movimientos Recientes</h2>
+
+   <table class="tabla-movimientos">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for venta in ventas_recientes %}
+        <tr>
+            <td><span class="tipo venta">Venta Externa</span></td>
+            <td>{{ venta.descripcion }}</td>
+            <td class="positivo">$ {{ venta.total }}</td>
+            <td>{{ venta.fecha }}</td>
+        </tr>
+        {% endfor %}
+
+        {% for gasto in gastos_recientes %}
+        <tr>
+            <td><span class="tipo gasto">Gasto</span></td>
+            <td>{{ gasto.concepto }}</td>
+            <td class="negativo">- $ {{ gasto.monto }}</td>
+            <td>{{ gasto.fecha }}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+</div>
+
+   
+    </div>
+
+    <div class="dashisquierda">
+
+     <div id="divdash2">
+        <div class="divresumen">
+<h3 class="totalresumen">Total de ventas Internas</h3>
+    <br>
+    <br><br>
+        <p>${{ total_ventas_externas }}</p>
+
+        </div>
+
+        <div class="divresumen">
+<h3  class="totalresumen">Total de Gastos</h3>
+<br>
+<br>
+   <p>${{ total_gastos }}</p>
+
+        </div>
+        <div class="divresumen">
+<h3  class="totalresumen">Producto Disponible</h3>
+<br><br>
+    <p >{{ productos_disponibles }}</p>
+
+        </div>
+     </div>
+
+    <div id="divdash4">
+    <h2>Gastos por Categoría</h2>
+    <canvas id="graficoCategorias" style="width:100%; height:400px;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const categorias = {{ categorias|safe }};
+    const montos_categoria = {{ montos_categoria|safe }};
+
+    // Verificación rápida en consola
+    console.log(categorias, montos_categoria);
+
+    if (categorias.length && montos_categoria.length) {
+        new Chart(document.getElementById('graficoCategorias'), {
+            type: 'pie',
+            data: {
+                labels: categorias,
+                datasets: [{
+                    data: montos_categoria,
+                    backgroundColor: [
+                        '#1abc9c','#3498db','#e74c3c','#f1c40f','#9b59b6','#34495e','#e67e22'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#fff' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                return label + ': $' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+
+</section>
+
     
 <footer>
       {% include "Ingresos/footter_ingresos.html" %}
