@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import FormView
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
@@ -114,7 +114,7 @@ class DashAdminCLAS(CreateView):
 class VentaExternaCLAS(FormView):
     template_name = "Ingresos/ventas_externas.html"
     form_class = VentaExternaCLAS
-    success_url = reverse_lazy('ventainterna')
+    success_url = reverse_lazy('ventaexterna')
 
     def form_valid(self, form):
         
@@ -207,7 +207,64 @@ class GastosCLAS(FormView):
     
     
 
-class ReportesCLAS(ListView):
+class ReportesCLAS(CreateView):
     model = Gastos
     template_name = "Ingresos/generar_reportes.html"
-    fields=('__all__')
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Todas las ventas externas, ordenadas por fecha descendente
+        ventas = VentaExterna.objects.all().order_by('-fecha')
+
+        # Todos los gastos, ordenados por fecha descendente
+        gastos = Gastos.objects.all().order_by('-fecha')
+
+        context['ventas_recientes'] = ventas
+        context['gastos_recientes'] = gastos
+
+        return context
+
+# from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from .models import Gastos, VentaExterna
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+
+def generar_reporte_gasto(request, id):
+    gasto = get_object_or_404(Gastos, id_gastos=id)
+    template_path = 'Ingresos/reporte_gasto_pdf.html'
+    context = {'gasto': gasto}
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="gasto_{gasto.id_gastos}.pdf"'
+
+    template = get_template(template_path)
+    html = template.render(context)  # HTML crudo
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar PDF', status=500)
+    return response
+
+
+def generar_reporte_venta(request, id):
+    venta = get_object_or_404(VentaExterna, id_venta_externa=id)
+    template_path = 'Ingresos/reporte_venta_pdf.html'
+    context = {'venta': venta}
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="venta_{venta.id_venta_externa}.pdf"'
+
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar PDF', status=500)
+    return response
+

@@ -29,7 +29,7 @@ class Usuario(models.Model):
     rol = models.CharField(max_length=10, choices=ROLES, null=False)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=100, blank=True, null=True)
-    teléfono = models.CharField(max_length=15, blank=True, null=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
     password = models.CharField(max_length=200, null=False)
     correo = models.EmailField(max_length=80)
 

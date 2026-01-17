@@ -1,4 +1,4 @@
-/* Estilos del header  */
+Estilos del header 
 section{
     background-color: #a9a9a9;
     height: auto;
@@ -462,3 +462,55 @@ section{
 .gastos3 tbody tr:hover {
     background: #1e8449;
 }
+/* ESTILOS DE GENERAR REPORTES */
+/* #divdashrep {
+     
+    width: 703px;
+    height: 400px;
+     background: #122a56;  
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+     margin-top: 20px; 
+}
+ .tabla-movimientosrep {
+    width: 100%;
+    height: 90%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #122a56; 
+    color: #ffffff;           
+}
+
+.tabla-movimientosrep  {
+    width: 100%;
+    border-collapse: collapse;
+    background: #122a56;
+    color: #ffff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tabla-movimientosrep thead {
+    background: #0e2144;
+}
+
+.tabla-movimientosrep th {
+    padding: 10px;
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.tabla-movimientosrep td {
+    padding: 8px;
+    font-size: 13px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+.tabla-movimientosrep tbody tr:hover {
+    background: #1e8449;
+}  */

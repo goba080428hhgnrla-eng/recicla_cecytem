@@ -87,7 +87,6 @@ class DetalleVentaExterna(models.Model):
     materia = models.CharField(max_length=1, choices=MATERIA_CHOICES)
     cantidad_kg = models.DecimalField(max_digits=10, decimal_places=2)
     precio_kg = models.DecimalField(max_digits=10, decimal_places=2)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     id_venta_externa = models.ForeignKey(VentaExterna, on_delete=models.CASCADE)
 
     class Meta:
