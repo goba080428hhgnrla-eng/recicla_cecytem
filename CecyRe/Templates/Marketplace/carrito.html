@@ -101,7 +101,7 @@
                                 <span class="form-label">${{ total }}</span>
                             </div>
                             <div class="resumen-item">
-                                <span class="form-label">EnvÃ­o</span>
+                                <span class="form-label">Envi­o</span>
                                 <span class="caption">Por calcular</span>
                             </div>
                             <hr class="my-3" style="border-color: var(--color-input);">
@@ -125,7 +125,7 @@
                         <div class="resumen-info mt-3">
                             <small class="text-secondary caption">
                                 <i class="fas fa-info-circle me-1"></i>
-                                El pago se procesarÃ¡ al confirmar la orden
+                                El pago se procesara al confirmar la orden
                             </small>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
             <div class="carrito-vacio">
                 <div class="empty-state text-center">
                     <i class="fas fa-shopping-cart empty-icon"></i>
-                    <h3 class="empty-title desktop-title">Tu carrito estÃ¡ vacÃ­o</h3>
+                    <h3 class="empty-title desktop-title">Tu carrito esta¡ vaci­o</h3>
                     <p class="empty-subtitle caption">Agrega productos para continuar</p>
                     <a href="{% url 'home' %}" class="btn btn-primary login-btn">
                         <i class="fas fa-store me-1"></i>Ir a la tienda
@@ -585,7 +585,7 @@ function modificarCantidad(itemId, cambio) {
     const input = document.querySelector(`.cantidad-input[data-item-id="${itemId}"]`);
     let nuevaCantidad = parseFloat(input.value) + cambio;
     
-    // Validar lÃ­mites
+    // Validar limites
     const max = parseFloat(input.max);
     const min = parseFloat(input.min);
     

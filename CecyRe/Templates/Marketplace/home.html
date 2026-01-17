@@ -1,5 +1,94 @@
 {% extends './navegación.html' %}
 {% block pag %}
+<!-- Filtros rápidos en home -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5 class="mb-0">Encuentra materiales reciclables</h5>
+                        <p class="text-muted mb-0 small">Filtra por categoría o nivel de pureza</p>
+                    </div>
+                    <div class="col-md-4">
+                        <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
+                            <input type="text" 
+                                   name="q" 
+                                   class="form-control me-2" 
+                                   placeholder="Buscar productos..."
+                                   value="{{ request.GET.q|default:'' }}">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Filtros rápidos -->
+                <div class="row mt-3">
+                    <div class="col-auto">
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'buscar_productos' %}?ordenar_por=recientes" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-clock me-1"></i> Recientes
+                            </a>
+                            <a href="{% url 'buscar_productos' %}?ordenar_por=precio_asc" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-sort-amount-down me-1"></i> Menor precio
+                            </a>
+                            <a href="{% url 'buscar_productos' %}?ordenar_por=precio_desc" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-sort-amount-up me-1"></i> Mayor precio
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown">
+                                <i class="fas fa-filter me-1"></i> Categorías
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'home' %}">Todas</a></li>
+                                {% for categoria in categorias %}
+                                <li>
+                                    <a class="dropdown-item" 
+                                       href="{% url 'buscar_productos' %}?categoria={{ categoria.id_categoria }}">
+                                        {{ categoria.nombre }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown">
+                                <i class="fas fa-flask me-1"></i> Pureza
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'home' %}">Todos</a></li>
+                                {% for key, value in PUREZA_CHOICES %}
+                                <li>
+                                    <a class="dropdown-item" 
+                                       href="{% url 'buscar_productos' %}?pureza={{ key }}">
+                                        {{ value }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="productos-container">
     <h2 class="productos-title">Productos Disponibles</h2>
     

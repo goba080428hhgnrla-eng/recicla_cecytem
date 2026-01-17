@@ -6,8 +6,8 @@
 <div class="container py-4 desktop-container">
     <div class="d-flex justify-content-between align-items-center mb-4 profile-header">
         <h2 class="desktop-title">Detalle de Orden #{{ orden.id_orden }}</h2>
-        <a href="{% url 'ordenes_usuario' %}" class="btn btn-outline-primary marketplace-btn-outline">
-            <i class="fas fa-arrow-left me-2"></i>Volver a mis órdenes
+        <a href="{% url 'home' %}" class="btn btn-outline-primary marketplace-btn-outline">
+            <i class="fas fa-arrow-left me-2"></i>Volver 
         </a>
     </div>
     
@@ -21,7 +21,7 @@
                 <div class="card-body">
                     {% if detalles %}
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" style="color: white;">
                                 <thead>
                                     <tr>
                                         <th>Producto</th>

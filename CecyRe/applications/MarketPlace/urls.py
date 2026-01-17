@@ -40,5 +40,9 @@ urlpatterns = [
     # Tarjeta
     path('pago/tarjeta/<int:orden_id>/', procesar_tarjeta, name='procesar_tarjeta'),
     path('logout/', logout_view, name='logout'),
+    
+    path('buscar/', buscar_productos, name='buscar_productos'),
+    path('productos/filtrados/', buscar_productos, name='productos_filtrados'),  # alias
+    
 ]
 
