@@ -15,7 +15,7 @@
         <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
     </div> 
 
-     <center> <h1>DASHBOARD ADMINISTRADOR</h1></center>
+     <center> <h1>DASHBOARD Ingresos</h1></center>
 
        <div class="logotitulo2">
         <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
@@ -47,8 +47,8 @@
                 datasets: [{
                     label: 'Total de gastos ($)',
                     data: montos,
-                    backgroundColor: '#1e8449', // CORREGIDO: mayúscula
-                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    backgroundColor: '#1e8449', 
+                    borderColor: '#145a32',      
                     borderWidth: 1
                 }]
             },
@@ -58,19 +58,19 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#ffffff'   // Color de la leyenda en blanco
+                            color: '#ffffff'   
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#ffffff' }, // Color de etiquetas eje X
-                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                        ticks: { color: '#ffffff' }, 
+                        grid: { color: 'rgba(255,255,255,0.2)' }
                     },
                     y: {
                         beginAtZero: true,
-                        ticks: { color: '#ffffff' }, // Color de etiquetas eje Y
-                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                        ticks: { color: '#ffffff' }, 
+                        grid: { color: 'rgba(255,255,255,0.2)' } 
                     }
                 }
             }
@@ -124,7 +124,7 @@
 
      <div id="divdash2">
         <div class="divresumen">
-<h3 class="totalresumen">Total de ventas Internas</h3>
+<h3 class="totalresumen">Total de ventas Externas</h3>
     <br>
     <br><br>
         <p>${{ total_ventas_externas }}</p>
@@ -156,7 +156,7 @@
     const categorias = {{ categorias|safe }};
     const montos_categoria = {{ montos_categoria|safe }};
 
-    // Verificación rápida en consola
+   
     console.log(categorias, montos_categoria);
 
     if (categorias.length && montos_categoria.length) {

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Usuario, CategoriaGasto      
-
+# Formulario Venta Externa
 class VentaExternaCLAS(forms.Form):
     # --- Tabla VentaExterna ---
     descripcion = forms.CharField(widget=forms.Textarea)
@@ -13,8 +13,6 @@ class VentaExternaCLAS(forms.Form):
     queryset=Usuario.objects.all(),
     label="Usuario responsable"
 )
-
-
     # --- Tabla DetalleVentaExterna ---
     materia = forms.ChoiceField(choices=[
         ('1', 'Plástico'),

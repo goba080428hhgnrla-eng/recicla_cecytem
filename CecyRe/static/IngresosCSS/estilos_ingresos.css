@@ -1,6 +1,8 @@
 /* Estilos del header  */
 section{
     background-color: #a9a9a9;
+    height: auto;
+    width: auto;
 }
 .miheader {
     width: 100%;
@@ -250,8 +252,8 @@ section{
 
 /* Estilos venta externa */
 #sectionjajaj{
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
 }
 .datosventaexterna {
     display: flex;

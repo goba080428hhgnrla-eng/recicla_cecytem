@@ -110,19 +110,6 @@ class DashAdminCLAS(CreateView):
         context['montos_categoria'] = [float(g['total']) for g in gastos_por_categoria]
 
         return context
-    
-
-
-
-class VentaInternaCLAS(CreateView):
-    model = OrdenVenta
-    template_name = "Ingresos/ventas_internas.html"
-    fields=('__all__')
-    success_url = reverse_lazy('ventainterna')
-
-
-
-
 
 class VentaExternaCLAS(FormView):
     template_name = "Ingresos/ventas_externas.html"
@@ -159,8 +146,6 @@ class VentaExternaCLAS(FormView):
 
 
 # views de gastos
-
-
 class GastosCLAS(FormView):
     template_name = "Ingresos/registro_gasto.html"
     form_class = GastosClass

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Administrador</title>
-<link rel="stylesheet" href="{% static 'cssingresos/estilos_ingresos.css' %}">
+<link rel="stylesheet" href="{% static 'IngresosCSS/estilos_ingresos.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Tinos:wght@400;700&display=swap" rel="stylesheet">
 
 </head>
@@ -19,12 +19,7 @@
     </a>
 </li>
 
-<li class="opcionesmenu {% if request.resolver_match.url_name == 'ventainterna' %}active{% endif %}">
-    <a href="{% url 'ventainterna' %}">
-        <img src="{% static 'iconos_ingresos/carrito.png' %}" width="18">
-        Ventas Internas
-    </a>
-</li>
+
 
 <li class="opcionesmenu {% if request.resolver_match.url_name == 'ventaexterna' %}active{% endif %}">
     <a href="{% url 'ventaexterna' %}">
