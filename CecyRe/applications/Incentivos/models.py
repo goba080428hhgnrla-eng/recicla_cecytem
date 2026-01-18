@@ -101,10 +101,15 @@ class Recompensa(models.Model):
     categoria = models.ForeignKey(CategoriaRecompensa, on_delete=models.SET_NULL, null=True, blank=True)
     costo_puntos = models.IntegerField(default=0)
     stock = models.IntegerField(default=0)
-    imagen = models.TextField(blank=True, null=True)
+    imagen = models.ImageField(
+    upload_to='recompensas/', 
+    blank=True, 
+    null=True,
+    verbose_name='Imagen de la recompensa') 
     activo = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
+    
     
     class Meta:
         verbose_name = 'Recompensa'

@@ -19,18 +19,74 @@
     </div>
 </div>
 
+<!-- filtros -->
+<div class="eco-card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <form method="get" class="row g-2">
+                    <div class="col-md-6">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control" 
+                               placeholder="Buscar por nombre..." 
+                               value="{{ busqueda_actual|default:'' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="orden" class="form-select" onchange="this.form.submit()">
+                            <option value="">Ordenar por...</option>
+                            <option value="costo_puntos" {% if orden_actual == 'costo_puntos' %}selected{% endif %}>Más baratas</option>
+                            <option value="-costo_puntos" {% if orden_actual == '-costo_puntos' %}selected{% endif %}>Más caras</option>
+                            <option value="nombre" {% if orden_actual == 'nombre' %}selected{% endif %}>Nombre A-Z</option>
+                            <option value="-fecha_creacion" {% if orden_actual == '-fecha_creacion' %}selected{% endif %}>Más nuevas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="stock" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todo el stock</option>
+                            <option value="disponible" {% if stock_actual == 'disponible' %}selected{% endif %}>Solo disponibles</option>
+                            <option value="ultimas" {% if stock_actual == 'ultimas' %}selected{% endif %}>Últimas unidades</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 text-end">
+                {% if busqueda_actual or orden_actual or stock_actual %}
+                <a href="?" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Limpiar filtros
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if busqueda_actual %}
+        <div class="mt-2">
+            <small class="text-muted">
+                Buscando: <strong>"{{ busqueda_actual }}"</strong> 
+                {% if page_obj.paginator.count > 0 %}
+                - {{ page_obj.paginator.count }} resultado{% if page_obj.paginator.count != 1 %}s{% endif %}
+                {% endif %}
+            </small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 <!-- Recompensas disponibles -->
 <div class="row">
-    {% for recompensa in recompensas %}
+    {% for recompensa in page_obj %}
     <div class="col-md-4 mb-4">
         <div class="eco-card h-100 reward-card">
             <div class="card-body">
-                <!-- IMAGEN local según tipo de recompensa - CORREGIDO -->
+                <!-- imagen media-->
                 <div class="reward-image-container">
-                    {% if "cupón" in recompensa.nombre|lower or "descuento" in recompensa.nombre|lower %}
-                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="Cupón" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                    {% if recompensa.imagen and recompensa.imagen.url %}
+                        <img src="{{ recompensa.imagen.url }}" alt="{{ recompensa.nombre }}" class="reward-img">
                     {% else %}
-                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                        <div class="default-reward-icon">
+                            <i class="fas fa-gift fa-3x text-secondary"></i>
+                            <p class="small mt-2">{{ recompensa.nombre }}</p>
+                        </div>
                     {% endif %}
                 </div>
                 
@@ -41,8 +97,9 @@
                 {% endif %}
                 
                 <div class="text-center mb-3">
-                    <!-- CORRECCIÓN: Sin categoría, solo "General" -->
-                    <span class="badge bg-info">General</span>
+                    <span class="badge bg-info">
+                        {{ recompensa.categoria.nombre|default:"General" }}
+                    </span>
                 </div>
                 
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -52,12 +109,14 @@
                     </div>
                     <div>
                         <small class="text-muted">
-                            <i class="fas fa-box"></i> Stock: {{ recompensa.stock }}
+                            <i class="fas fa-box"></i> Stock: 
+                            <span class="{% if recompensa.stock <= 3 %}text-warning fw-bold{% endif %}">
+                                {{ recompensa.stock }}
+                            </span>
                         </small>
                     </div>
                 </div>
                 
-                <!-- Botón de canje - VERSIÓN CORREGIDA -->
                 {% if puntos_disponibles >= recompensa.costo_puntos and recompensa.stock > 0 %}
                     <button class="btn btn-eco w-100" 
                             data-bs-toggle="modal" 
@@ -69,13 +128,10 @@
                         <i class="fas fa-times-circle"></i> Agotado
                     </button>
                 {% else %}
-                    <!-- CORRECCIÓN: Cálculo correcto de puntos faltantes -->
-                    {% with puntos_faltantes=recompensa.costo_puntos|add:"-"|add:puntos_disponibles %}
                     <button class="btn btn-outline-secondary w-100" disabled>
                         <i class="fas fa-lock"></i> 
-                        Faltan {{ puntos_faltantes }} pts
+                        Faltan {{ recompensa.costo_puntos|add:"-"|add:puntos_disponibles }} pts
                     </button>
-                    {% endwith %}
                 {% endif %}
             </div>
             
@@ -88,7 +144,7 @@
             </div>
         </div>
         
-        <!-- Modal de confirmación - VERSIÓN CORREGIDA -->
+        <!-- Modal de confirmación -->
         <div class="modal fade" id="confirmModal{{ recompensa.id }}" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -98,12 +154,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="text-center mb-3">
-                            <!-- Imagen en el modal también -->
+                            <!-- Imagen en el modal  desde media -->
                             <div class="modal-image-container">
-                                {% if "cupón" in recompensa.nombre|lower or "descuento" in recompensa.nombre|lower %}
-                                    <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="Cupón" class="modal-reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/imgd1.jpg' %}'">
+                                {% if recompensa.imagen and recompensa.imagen.url %}
+                                    <img src="{{ recompensa.imagen.url }}" alt="{{ recompensa.nombre }}" class="modal-reward-img">
                                 {% else %}
-                                    <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="modal-reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/imgd1.jpg' %}'">
+                                    <div class="default-reward-icon">
+                                        <i class="fas fa-gift fa-3x text-secondary"></i>
+                                    </div>
                                 {% endif %}
                             </div>
                             <h4 class="mt-2">{{ recompensa.nombre }}</h4>
@@ -140,7 +198,18 @@
         <div class="eco-card text-center py-5">
             <i class="fas fa-gift fa-4x text-muted mb-3"></i>
             <h3>No hay recompensas disponibles</h3>
-            <p class="text-muted">Vuelve más tarde para ver nuevas recompensas</p>
+            <p class="text-muted">
+                {% if busqueda_actual %}
+                No se encontraron recompensas para "{{ busqueda_actual }}"
+                {% else %}
+                Vuelve más tarde para ver nuevas recompensas
+                {% endif %}
+            </p>
+            {% if busqueda_actual %}
+            <a href="?" class="btn btn-eco mt-3">
+                <i class="fas fa-times"></i> Limpiar búsqueda
+            </a>
+            {% endif %}
             {% if user.is_staff %}
             <a href="/admin/Incentivos/recompensa/add/" class="btn btn-eco mt-3">
                 <i class="fas fa-plus"></i> Crear Recompensa (Admin)
@@ -151,17 +220,83 @@
     {% endfor %}
 </div>
 
-<!-- Estilos para las imágenes -->
+<!-- paginacion: visisble-->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="eco-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">
+                            {% if page_obj.paginator.count > 0 %}
+                            Mostrando <strong>{{ page_obj.start_index }}-{{ page_obj.end_index }}</strong> de 
+                            <strong>{{ page_obj.paginator.count }}</strong> recompensa{% if page_obj.paginator.count != 1 %}s{% endif %}
+                            {% else %}
+                            No hay recompensas
+                            {% endif %}
+                        </small>
+                    </div>
+                    
+                    {% if page_obj.paginator.num_pages > 1 %}
+                    <nav aria-label="Paginación">
+                        <ul class="pagination mb-0">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if busqueda_actual %}&q={{ busqueda_actual }}{% endif %}{% if orden_actual %}&orden={{ orden_actual }}{% endif %}{% if stock_actual %}&stock={{ stock_actual }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                            {% endif %}
+                            
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if busqueda_actual %}&q={{ busqueda_actual }}{% endif %}{% if orden_actual %}&orden={{ orden_actual }}{% endif %}{% if stock_actual %}&stock={{ stock_actual }}{% endif %}">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if busqueda_actual %}&q={{ busqueda_actual }}{% endif %}{% if orden_actual %}&orden={{ orden_actual }}{% endif %}{% if stock_actual %}&stock={{ stock_actual }}{% endif %}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos-->
 <style>
 .reward-image-container {
-    height: 150px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 15px;
     overflow: hidden;
     border-radius: 8px;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
 }
 
 .reward-img {
@@ -169,15 +304,25 @@
     max-height: 100%;
     object-fit: contain;
     transition: transform 0.3s ease;
-    padding: 10px;
+    padding: 15px;
+}
+
+.default-reward-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
 }
 
 .reward-card:hover .reward-img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .modal-image-container {
-    height: 100px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,99 +331,32 @@
 
 .modal-reward-img {
     max-width: 100%;
-    max-height: 100px;
+    max-height: 120px;
     object-fit: contain;
 }
 
+/* Estilos para paginación */
+.pagination .page-link {
+    color: #2E7D32;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2E7D32;
+    border-color: #2E7D32;
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+}
+
 .points-display {
-    background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     text-align: center;
-    border: 2px dashed #FF9800;
-}
-
-.reward-card {
-    transition: all 0.3s ease;
-    border: 2px solid #E8F5E9;
-    display: flex;
-    flex-direction: column;
-}
-
-.reward-card .card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.reward-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    border-color: #4CAF50;
-}
-
-/* Animación de entrada */
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .reward-image-container {
-        height: 120px;
-    }
-    
-    .modal-image-container {
-        height: 80px;
-    }
-    
-    .modal-reward-img {
-        max-height: 80px;
-    }
+    border: 1px solid #dee2e6;
 }
 </style>
-
-<!-- JavaScript para manejar modales -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar todos los modales de Bootstrap
-    var modals = document.querySelectorAll('.modal');
-    modals.forEach(function(modal) {
-        var modalInstance = new bootstrap.Modal(modal);
-        
-        modal.addEventListener('show.bs.modal', function(event) {
-            console.log('Modal abierto para recompensa');
-        });
-    });
-    
-    // Mostrar mensaje si no hay recompensas
-    var recompensas = document.querySelectorAll('.reward-card');
-    if (recompensas.length === 0) {
-        console.log('No hay recompensas disponibles para mostrar');
-    }
-    
-    // Efecto hover en tarjetas
-    cards = document.querySelectorAll('.reward-card');
-    cards.forEach(function(card) {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-});
-</script>
 {% endblock %}

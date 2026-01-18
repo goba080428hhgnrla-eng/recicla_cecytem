@@ -5,12 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.core.paginator import Paginator
+from django.db.models import Q
 import uuid
-from datetime import datetime
 
-from .models import Recolector, Entrega, Recompensa, Canje, DetalleEntrega, MaterialValor, Rango
+from .models import Recolector, Entrega, Recompensa, Canje, DetalleEntrega, MaterialValor, Rango, CategoriaRecompensa
 
-# ========== AUTHENTICATION VIEWS ==========
+# vistas de autentificacion
 
 def login_personalizado(request):
     """Vista personalizada para login"""
@@ -35,7 +36,7 @@ def login_personalizado(request):
                 Recolector.objects.get(usuario=user)
                 return redirect('Incentivos:dashboard')
             except Recolector.DoesNotExist:
-                messages.info(request, 'Tu cuenta no está asociada a un recolector. Contacta al administrador.')
+                messages.info(request, 'Tu cuenta no está asociada a un recolector.')
                 return redirect('/admin/')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
@@ -101,8 +102,6 @@ def registro(request):
                     login(request, user)
                     messages.success(request, f'¡Cuenta creada exitosamente! Tu código QR es: {codigo_qr}')
                     return redirect('Incentivos:dashboard')
-                else:
-                    messages.error(request, 'Error al autenticar el usuario.')
                     
             except Exception as e:
                 messages.error(request, f'Error al crear la cuenta: {str(e)}')
@@ -116,26 +115,7 @@ def registro(request):
     
     return render(request, 'Incentivos/registro.html')
 
-# ========== HELPER FUNCTIONS ==========
-
-def actualizar_rango_recolector(recolector):
-    """Actualiza el rango del recolector basado en puntos"""
-    try:
-        nuevo_rango = Rango.objects.filter(
-            puntos_minimos__lte=recolector.puntos_acumulados,
-            puntos_maximos__gte=recolector.puntos_acumulados
-        ).first()
-        
-        if nuevo_rango and recolector.rango_actual != nuevo_rango:
-            recolector.rango_actual = nuevo_rango
-            recolector.save()
-            return True
-    except Exception as e:
-        print(f"Error actualizando rango: {e}")
-    
-    return False
-
-# ========== MAIN PAGES VIEWS ==========
+# vustas de inicio
 
 def index(request):
     """Página de prueba/inicio"""
@@ -168,45 +148,60 @@ def dashboard(request):
             'canjes_pendientes': canjes_pendientes,
         }
     except Recolector.DoesNotExist:
-        context = {
-            'error': 'No tienes un perfil de recolector asociado. Contacta al administrador.'
-        }
+        context = {'error': 'No tienes un perfil de recolector asociado.'}
     
     return render(request, 'Incentivos/dashboard.html', context)
 
 @login_required
 def recompensas(request):
-    """Página de recompensas disponibles - VERSIÓN CORREGIDA"""
-    print(f"DEBUG: Usuario accediendo a recompensas: {request.user.username}")
-    
-    # OBTENER O CREAR RECOLECTOR (igual que en dashboard)
+    """Página de recompensas disponibles CON PAGINACIÓN Y FILTROS"""
     try:
         recolector = Recolector.objects.get(usuario=request.user)
     except Recolector.DoesNotExist:
-        # Si no existe, crea uno
-        import uuid
         codigo_qr = f"REC-{request.user.username.upper()}-{str(uuid.uuid4())[:8]}"
         recolector = Recolector.objects.create(
             usuario=request.user,
             codigo_qr=codigo_qr,
             puntos_acumulados=0
         )
-        print(f"DEBUG: Recolector creado: {codigo_qr}")
     
-    print(f"DEBUG: Puntos del recolector: {recolector.puntos_acumulados}")
+    # FILTROS
+    recompensas_lista = Recompensa.objects.filter(activo=True, stock__gt=0)
     
-    # OBTENER RECOMPENSAS ACTIVAS
-    recompensas_lista = Recompensa.objects.filter(activo=True, stock__gt=0).order_by('costo_puntos')
-    print(f"DEBUG: Recompensas encontradas: {recompensas_lista.count()}")
+    # Búsqueda
+    busqueda = request.GET.get('q')
+    if busqueda:
+        recompensas_lista = recompensas_lista.filter(
+            Q(nombre__icontains=busqueda) | 
+            Q(descripcion__icontains=busqueda)
+        )
     
-    # DEBUG: Mostrar cada recompensa
-    for r in recompensas_lista:
-        print(f"  - {r.id}: {r.nombre} - {r.costo_puntos} pts (Stock: {r.stock})")
+    # Orden
+    orden = request.GET.get('orden')
+    if orden in ['nombre', 'costo_puntos', '-costo_puntos', 'fecha_creacion', '-fecha_creacion']:
+        recompensas_lista = recompensas_lista.order_by(orden)
+    else:
+        recompensas_lista = recompensas_lista.order_by('costo_puntos')
+    
+    # Filtro por stock
+    stock = request.GET.get('stock')
+    if stock == 'ultimas':
+        recompensas_lista = recompensas_lista.filter(stock__lte=3)
+    elif stock == 'disponible':
+        recompensas_lista = recompensas_lista.filter(stock__gt=0)
+    
+    # PAGINACIÓN
+    paginator = Paginator(recompensas_lista, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     context = {
-        'recompensas': recompensas_lista,
+        'page_obj': page_obj,
         'puntos_disponibles': recolector.puntos_acumulados,
-        'recolector': recolector  # Por si el template lo necesita
+        'recolector': recolector,
+        'busqueda_actual': busqueda or '',
+        'orden_actual': orden or '',
+        'stock_actual': stock or '',
     }
     
     return render(request, 'Incentivos/recompensas.html', context)
@@ -217,12 +212,10 @@ def perfil(request):
     try:
         recolector = Recolector.objects.get(usuario=request.user)
         canjes = Canje.objects.filter(recolector=recolector).order_by('-fecha_canje')[:10]
-        entregas_recientes = Entrega.objects.filter(recolector=recolector).order_by('-fecha_hora_entrega')[:5]
         
         return render(request, 'Incentivos/perfil.html', {
             'recolector': recolector,
             'canjes': canjes,
-            'entregas_recientes': entregas_recientes,
             'user': request.user
         })
     except Recolector.DoesNotExist:
@@ -230,7 +223,7 @@ def perfil(request):
             'error': 'No tienes un perfil de recolector.'
         })
 
-# ========== ACTION VIEWS ==========
+# vistas de las acciones
 
 @login_required
 def canjear_recompensa(request, recompensa_id):
@@ -300,8 +293,6 @@ def nueva_entrega(request):
                 recolector.puntos_acumulados += puntos
                 recolector.save()
                 
-                actualizar_rango_recolector(recolector)
-                
                 messages.success(request, f'¡Entrega registrada! Ganaste {puntos} puntos.')
                 return redirect('Incentivos:dashboard')
                 
@@ -322,6 +313,7 @@ def historial(request):
     """Vista para ver historial completo"""
     try:
         recolector = Recolector.objects.get(usuario=request.user)
+        
         entregas = Entrega.objects.filter(recolector=recolector).order_by('-fecha_hora_entrega')
         canjes = Canje.objects.filter(recolector=recolector).order_by('-fecha_canje')
         
@@ -338,5 +330,3 @@ def historial(request):
     except Recolector.DoesNotExist:
         messages.error(request, 'No tienes un perfil de recolector.')
         return redirect('Incentivos:dashboard')
-
-    
