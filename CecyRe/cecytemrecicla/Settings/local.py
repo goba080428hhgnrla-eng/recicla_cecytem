@@ -3,19 +3,24 @@ from pathlib import Path
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'https://recicla-cecytem.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+ROOT_URLCONF = 'cecytemrecicla.urls'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT=os.path.join(BASE_DIR, 'staticfiles')
+ 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  
 ]
