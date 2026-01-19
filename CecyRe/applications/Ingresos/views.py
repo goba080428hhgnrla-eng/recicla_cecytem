@@ -26,14 +26,13 @@ MESES_ES = {
 # Create your views here.
 
 from .models import (
-    OrdenVenta,
     VentaExterna,
     DetalleVentaExterna,
     Gastos,
 )
 
 class DashAdminCLAS(CreateView):
-    model = OrdenVenta
+    model = Gastos
     template_name = "Ingresos/admininicio.html"
     fields=('__all__')
 
@@ -111,35 +110,45 @@ class DashAdminCLAS(CreateView):
 
         return context
 
-class VentaExternaCLAS(FormView):
+class VentaExternaView(FormView):
     template_name = "Ingresos/ventas_externas.html"
     form_class = VentaExternaCLAS
-    success_url = reverse_lazy('ventaexterna')
+    success_url = reverse_lazy('Ingresos:ventaexterna')
 
     def form_valid(self, form):
-        
-        usuario = form.cleaned_data['id_usuario']   
+        usuario = form.cleaned_data['id_usuario']
 
-        # ====== Guardar Venta Externa ======
         venta = VentaExterna.objects.create(
             descripcion=form.cleaned_data['descripcion'],
             cliente_nombre=form.cleaned_data['cliente_nombre'],
             cliente_contacto=form.cleaned_data['cliente_contacto'],
             total=form.cleaned_data['total'],
             fecha=form.cleaned_data['fecha'],
-            id_usuario=usuario 
+            id_usuario=usuario
         )
 
-        # ====== Guardar Detalle relacionado ======
         DetalleVentaExterna.objects.create(
             materia=form.cleaned_data['materia'],
             cantidad_kg=form.cleaned_data['cantidad_kg'],
             precio_kg=form.cleaned_data['precio_kg'],
-            subtotal=form.cleaned_data['subtotal'],
             id_venta_externa=venta
         )
 
-        return super().form_valid(form)  # redirección con success_url
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['ventas'] = (
+            DetalleVentaExterna.objects
+            .select_related('id_venta_externa')
+            .order_by('-id_detalle_venta_ex')[:5]
+        )
+
+        return context
+
+
+        
 
 
 
@@ -149,7 +158,8 @@ class VentaExternaCLAS(FormView):
 class GastosCLAS(FormView):
     template_name = "Ingresos/registro_gasto.html"
     form_class = GastosClass
-    success_url = reverse_lazy('registrogasto')
+    success_url = reverse_lazy('Ingresos:registrogasto')
+
 
     def form_valid(self, form):
         data = form.cleaned_data
@@ -159,7 +169,6 @@ class GastosCLAS(FormView):
             fecha=data['fecha'],
             descripcion=data['descripcion'],
             id_categoria_gasto=data['id_categoria_gasto'],
-            factura_adjunto=data['factura_adjunto'],
             id_usuario=data['id_usuario'],
         )
         return super().form_valid(form)

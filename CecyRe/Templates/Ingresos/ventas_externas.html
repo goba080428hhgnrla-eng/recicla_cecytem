@@ -1,112 +1,154 @@
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{% static 'IngresosCSS/estilos_ingresos.css' %}">
+{% extends 'Ingresos/navegacionmodulos.html' %}
 
-    <title>Document</title>
-</head>
+
+
+{% block content %}
+
+
+
 <body>
-    <header  class="miheader">
-            <div class="logotitulo1">
-        <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
-    </div>
-
-     <center> <h1>REGISTAR VENTA INTERNA</h1></center>
-
-       <div class="logotitulo2">
-        <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
-        <link href="https://fonts.googleapis.com/css2?family=Tinos&display=swap" rel="stylesheet">
-
-    </div>
+<header  class="">
+     <div class="col-md-8">
+            <h1><i class="fas fa"></i>Registrar Ventas Externas</h1>
+            <p class="lead mb-0">Registro de ventas fuera del sistema</p>
     </header>
+    <br><br>
  <nav>
             {% include "Ingresos/menu_navegacion.html" %}
+</div><br><br>
     </nav>
 
-    <section id="sectionjajaj">
+<section>
         <form method="POST">
 
-       <div class="datosventaexterna">
+<div class="datosventaexterna">
 
     {% csrf_token %}
-    <div id="exdatos1">
-      <h3 style="color:#1e8449;">Datos de la venta</h3>
+
+ <div id="exdatos1">
+ <h3 class="text-center mb-0"><i class="fa-solid fa-plus"></i>Nuevo</h3>
+
+    <h3 class="text-success mb-3">Datos de la venta</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        <!-- Fila 1: Cliente y Contacto -->
+          <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombres del Cliente</label>
+                            {{ form.cliente_nombre }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Contacto del Cliente</label> 
+                        {{ form.cliente_contacto }}                       
+                        </div>
+                    </div>
         
+       
 
-        {{ form.cliente_nombre.label }}
-        {{ form.cliente_nombre }} <br><br>
+        <!-- Fila 2: Total y Fecha -->´
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fecha</label>
+                            {{ form.fecha }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Total</label> 
+                       {{ form.total }}                       
+                        </div>
+                        </div>
 
-        {{ form.cliente_contacto.label }}
-        {{ form.cliente_contacto }} <br><br>
+        <!-- Usuario -->
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Usuario Responsable</label>
+                            {{ form.id_usuario }}                      
+                        </div>
+                        </div>
 
-        {{ form.total.label }}
-        {{ form.total }} <br><br>
+        <!-- Descripción -->
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripcion</label>
+                           {{ form.descripcion }}                     
+                        </div>
+                        </div>
 
-        {{ form.fecha.label }}
-        {{ form.fecha }} <br><br>
 
-        {{ form.id_usuario.label }}
-        {{ form.id_usuario }} <br><br>
-
-        {{ form.descripcion.label }} <br>
-        {{ form.descripcion }}
-
-          <button type="submit"class="btnguardar">
-        Guardar Venta
-    </button>
-    </div>
-
-  <div class="columnaderechavexternas">
-
-    <div id="exdatos2">
+        <div id="exdatos2">
         <h3 style="color:#1e8449">Detalle de Materia</h3>
-        {{ form.materia.label }}
-        {{ form.materia }} <br><br>
-
-        {{ form.cantidad_kg.label }}
-        {{ form.cantidad_kg }} <br><br>
-
-        {{ form.precio_kg.label }}
-        {{ form.precio_kg }} <br><br>
-
-        {{ form.subtotal.label }}
-        {{ form.subtotal }} <br><br>
-        <br>
-        
-        
+        <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipo de materia</label>
+                            {{ form.materia }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Cantidad en Kilogramos</label> 
+                       {{ form.cantidad_kg }}                       
+                        </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio por Kilogramo</label>
+                            {{ form.precio_kg }}
+                        </div>
+                    
     </div>
-    <div id="infoventasex">
-           <h4 style="color:#1e8449">Ventas Externas Registradas</h4>
-           <br>
-           <table  style="width:100%; border-collapse: collapse; font-family: 'Tinos', serif;">
+
+        <!-- Botón -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Venta
+            </button>
+        </div>
+
+    </form>
+</div>
+
+    <div id="divdash3" style="width:100%; height: 100%;">
+        <div class="eco-card mb-4">
+            <div class="card-header-eco">
+        <h2><i class="fa-solid fa-table"></i>Ventas Externas Registradas</h2>
+            </div>
+            
+    <table class="table table-hover" style="height:95%;">
+    <thead class="table-success">
         <tr>
             <th>Cliente</th>
             <th>Contacto</th>
             <th>Materia</th>
-            <th>cantidad(kg)</th>
+            <th>Cantidad (kg)</th>
             <th>Precio/kg</th>
             <th>Total</th>
             <th>Fecha</th>
         </tr>
-      
-         </table>
-        </div>
+    </thead>
+    <tbody>
+        {% for d in ventas %}
+        <tr>
+            <td>{{ d.id_venta_externa.cliente_nombre }}</td>
+            <td>{{ d.id_venta_externa.cliente_contacto }}</td>
+            <td>{{ d.get_materia_display }}</td>
+            <td>{{ d.cantidad_kg }}</td>
+            <td>{{ d.precio_kg }}</td>
+            <td>{{ d.id_venta_externa.total }}</td>
+            <td>{{ d.id_venta_externa.fecha }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No hay ventas registradas</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
 </div>
 
-    </form>
-    </section>
-
-
-
-
-<footer>
-{% include "Ingresos/footter_ingresos.html" %}
-</footer></footer>
+</form>
+ </section>
 </body>
-</html>
+{% endblock %}
+
 
 

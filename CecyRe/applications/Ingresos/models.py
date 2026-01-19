@@ -1,28 +1,5 @@
 from django.db import models
-from applications.MarketPlace.models import Usuario, Producto,DetalleOrden
-
-# -------------------------
-#         ORDEN VENTA
-# -------------------------
-class OrdenVenta(models.Model):
-    ESTADO_CHOICES = (
-        ('pagado', 'Pagado'),
-        ('pendiente', 'Pendiente'),
-    )
-
-    id_orden = models.AutoField(primary_key=True)
-    estado_orden = models.CharField(max_length=20, choices=ESTADO_CHOICES)
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'orden_venta'
-
-
-
-
-
+from applications.MarketPlace.models import Usuario, Producto
 
 
 # -------------------------
@@ -48,7 +25,6 @@ class Gastos(models.Model):
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateField()
     descripcion = models.TextField()
-    factura_adjunto = models.CharField(max_length=150)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_categoria_gasto = models.ForeignKey(CategoriaGasto, on_delete=models.CASCADE)
 
@@ -93,48 +69,3 @@ class DetalleVentaExterna(models.Model):
         db_table = 'detalle_venta_externa'
 
 
-# -------------------------
-#         ORDEN VENTA
-# -------------------------
-class OrdenVenta(models.Model):
-    ESTADO_CHOICES = (
-        ('pagado', 'Pagado'),
-        ('pendiente', 'Pendiente'),
-    )
-
-    id_orden = models.AutoField(primary_key=True)
-    estado_orden = models.CharField(max_length=20, choices=ESTADO_CHOICES)
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'orden_venta'
-
-
-
-
-
-# -------------------------
-#            PAGO
-# -------------------------
-class Pago(models.Model):
-    TIPO_CHOICES = (
-        ('efectivo', 'Efectivo'),
-        ('transferencia', 'Transferencia'),
-    )
-
-    ESTADO_CHOICES = (
-        ('pendiente', 'Pendiente'),
-        ('completado', 'Completado'),
-    )
-
-    id_pago = models.AutoField(primary_key=True)
-    metodo_pago = models.CharField(max_length=50, choices=TIPO_CHOICES)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha = models.DateField()
-    estado_pago = models.CharField(max_length=20, choices=ESTADO_CHOICES)
-    id_orden = models.ForeignKey(OrdenVenta, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'pago'

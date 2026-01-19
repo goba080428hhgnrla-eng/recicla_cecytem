@@ -1,39 +1,5 @@
-Estilos del header 
-section{
-    background-color: #a9a9a9;
-    height: auto;
-    width: auto;
-}
-.miheader {
-    width: 100%;
-    height: 100px;
-    background: #122a56;
-    color: white;
-    padding: 15px 0;
-    text-align: center; 
-    font-size: 22px;
-    font-family: "Tinos", serif;
-}
-.logotitulo1{
-    position:absolute;
-    top: 0px;    
-}
 
-.logo1{
-    width:150px;
-    height:auto;
 
-}
-.logotitulo2{
-    position:absolute;
-    top:10px;      
-    right:15px;    
-}
-
-.logo2{
-    width:100px;
-    height:auto;
-}
 /* Estilos del nav  */
 .mimenu{
     margin: 0%;
@@ -49,17 +15,17 @@ section{
     text-decoration: none;
     font-size: 10px;
     font-weight: bold;
-    color: #ffff;
+    color: #070707;
     
 }
 .opcionesmenu {
-    background: #122a56;    
+    background: #0dcaf0;    
     padding: 7px 14px;       
     border-radius: 6px;    
     transition: .3s;          
 }
 .opcionesmenu.active {
-    background: #1e8449 !important;     
+    background: #fff1ff !important;     
     transform: scale(1.08);
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
 }
@@ -115,8 +81,8 @@ section{
     width: 100%;
     max-width: 700px;
     height: 200px;                 
-    background: #122a56;  
-    color: #ffffff;              
+    background: #ffff;  
+    color: #000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -131,7 +97,6 @@ section{
     align-items: center;        /* centra verticalmente los hijos */
     gap: 20px;                  /* espacio entre los divs */
     height: 200px;              /* mantén el tamaño que quieras */
-    background-color: #a9a9a9;
     padding: 20px;
     border-radius: 8px;
     margin-top:20px;
@@ -155,10 +120,9 @@ section{
 
 #divdash3 {
      
-    width: 703px;
-    height: 400px;
-     background: #122a56;  
-    color: #ffffff;
+    width: 600px;
+    height: 300px;
+    color: #000000;
     padding: 20px;
     text-align: center;
      padding: 20px;
@@ -166,46 +130,10 @@ section{
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
      margin-top: 20px; 
 }
-.tabla-movimientos {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    background-color: #122a56; /* fondo visible */
-    color: #ffffff;           /* texto blanco */
-}
 
-.tabla-movimientos  {
-    width: 100%;
-    border-collapse: collapse;
-    background: #122a56;
-    color: #ffff;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.tabla-movimientos thead {
-    background: #0e2144;
-}
-
-.tabla-movimientos th {
-    padding: 10px;
-    color: #ffffff;
-    font-size: 13px;
-}
-
-.tabla-movimientos td {
-    padding: 8px;
-    font-size: 13px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: center;
-}
-
-.tabla-movimientos tbody tr:hover {
-    background: #1e8449;
-}
 
 .tipo {
-    display: inline-block;  /* 🔥 importante */
+    display: inline-block;  
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 12px;
@@ -214,25 +142,24 @@ section{
 }
 
 /* Rojo para gastos */
-.tipo.gasto {
+/* .tipo.gasto {
     background-color:  #c0392b;
     color: #ffff;
    
-}
+} */
 
 /* Azul para ventas externas */
-.tipo.venta {
+/* .tipo.venta {
     background-color:  #2980b9;
     color: #ffff;
    
-}
+} */
 
 
 #divdash4 {
-     width: 703px;
+    width: 600px;
     height: 400px;
-     background: #122a56;  
-    color: #ffffff;
+    color: #000000;
     padding: 20px;
     text-align: center;
      padding: 20px;
@@ -251,10 +178,7 @@ section{
 
 
 /* Estilos venta externa */
-#sectionjajaj{
-    width: 100%;
-    height: 100%;
-}
+
 .datosventaexterna {
     display: flex;
     justify-content: space-between;
@@ -264,57 +188,37 @@ section{
 }
 
 /* Divs internos */
-#exdatos1, #exdatos2 {
-    width: 48%; 
-    background: #122a56;
-    height: 500px;
-    color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-
 #exdatos1 {
-    width: 600px;
-    height: 400px;;                  
-    background: #122a56;  
-    color:#ffff;              
+    width: 100%;
+    height: 100%;;                  
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
      margin-top: 20px; 
 }
  #exdatos2 {
-    width: 600px;   
-    height: 200px;                
-    background: #122a56; 
-    color:#ffff;              
+    width: 100%;   
+    height: 100%;                
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
      margin-top: 20px; 
 }
 #infoventasex {
-    width: 600px;
-    height: 100px;
+    width: auto;
+    height: auto;
     background: #122a56;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     color:#ffff;              
-
-
-    
     margin-left: auto;   
     margin-right: 20px;  
     margin-top: 20px;    
 }
 
-#exdatos1 form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
 
 .btnguardar {
     background-color: #1e8449;
@@ -387,34 +291,28 @@ section{
 
 
 /* estilos de gastos */
-.contenedor-gastos {
-    display: flex;
-    gap: 150px;
-    align-items: flex-start;
-}
 
-/* columna derecha */
-.columna-derecha {
+.gasizquierda,
+.gasderecha {
+    width: 50%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 
 .gastos1{
-      width: 600px;
-    height: 600px;;                  
-    background: #122a56;  
-    color:#ffff;              
+    width: 100%;
+    height:100%;                  
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-     margin-top: 20px;
+    margin-top: 20px;
 }
 .gastos2 {
     width: 100%;
     max-width: 600px;
     height: 400px;                 
-    background: #122a56;  
     color: #ffffff;              
     padding: 20px;
     border-radius: 8px;
@@ -424,93 +322,14 @@ section{
 
 
 .gastos3{
-      width: 600px;
+    width: 600px;
     height: 200px;;                  
-    background: #122a56;  
-    color:#ffff;              
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
      margin-top: 20px;
 }
-.gastos3 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #122a56;
-    color: #ffff;
-    border-radius: 6px;
-    overflow: hidden;
-}
 
-.gastos3 thead {
-    background: #0e2144;
-}
 
-.gastos3 th {
-    padding: 10px;
-    color: #ffffff;
-    font-size: 13px;
-}
 
-.gastos3 td {
-    padding: 8px;
-    font-size: 13px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: center;
-}
-
-.gastos3 tbody tr:hover {
-    background: #1e8449;
-}
-/* ESTILOS DE GENERAR REPORTES */
-/* #divdashrep {
-     
-    width: 703px;
-    height: 400px;
-     background: #122a56;  
-    color: #ffffff;
-    padding: 20px;
-    text-align: center;
-     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-     margin-top: 20px; 
-}
- .tabla-movimientosrep {
-    width: 100%;
-    height: 90%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    background-color: #122a56; 
-    color: #ffffff;           
-}
-
-.tabla-movimientosrep  {
-    width: 100%;
-    border-collapse: collapse;
-    background: #122a56;
-    color: #ffff;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.tabla-movimientosrep thead {
-    background: #0e2144;
-}
-
-.tabla-movimientosrep th {
-    padding: 10px;
-    color: #ffffff;
-    font-size: 13px;
-}
-
-.tabla-movimientosrep td {
-    padding: 8px;
-    font-size: 13px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: center;
-}
-
-.tabla-movimientosrep tbody tr:hover {
-    background: #1e8449;
-}  */
