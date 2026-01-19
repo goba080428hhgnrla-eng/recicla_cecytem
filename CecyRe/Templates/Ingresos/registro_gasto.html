@@ -1,70 +1,95 @@
-{% load static %}
+{% extends 'Ingresos/navegacionmodulos.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{% static 'IngresosCSS/estilos_ingresos.css' %}">
 
-    <title>Document</title>
-</head>
+
+{% block content %}
+
+
+
 <body>
-    <header  class="miheader">
-            <div class="logotitulo1">
-        <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
-    </div> 
-
-     <center> <h1>REGISTRAR GASTO</h1></center>
-
-       <div class="logotitulo2">
-        <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
-    </div>
+    <header  class="">
+     <div class="col-md-8">
+            <h1><i class="fas fa"></i>Registrar Gastos</h1>
+            <p class="lead mb-0">Registro de gastos realizados</p>
     </header>
+    <br><br>
  <nav>
             {% include "Ingresos/menu_navegacion.html" %}
     </nav>
 
-    <section>
-         <form method="POST">
+
+
+
+<section class="contenedor">
+
+<div class="gasizquierda">
+    <form method="POST">
             {% csrf_token %}
- <div class="contenedor-gastos">
 
+     <div class="gastos1">
+            <div class="">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Concepto</label>
+                            {{ form.concepto }}
+                        </div>
+                        </div>
 
-        
-        <div class="gastos1">
-        {{ form.concepto.label }}
-        {{ form.concepto }} <br><br>
+                         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Monto</label>
+                            {{ form.monto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha</label> 
+                        {{ form.fecha }}                       
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripcion</label>
+                            {{ form.descripcion }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Categoria del gasto</label>
+                            {{ form.id_categoria_gasto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Usuario Responsable</label> 
+                        {{ form.id_usuario }}                      
+                        </div>
+                    </div>
+       <!-- {{ form.concepto.label }}
+        {{ form.concepto }}
 
         {{ form.monto.label }}
-        {{ form.monto }} <br><br>
+        {{ form.monto }}
 
          {{ form.fecha.label }}
-        {{ form.fecha }} <br><br>
+        {{ form.fecha }} 
         
-        {{ form.descripcion.label }}
-        {{ form.descripcion }} <br><br>
+         {{ form.descripcion.label }}
+        {{ form.descripcion }}
 
         {{ form.id_categoria_gasto.label }}
-        {{ form.id_categoria_gasto }} <br><br>
-
-        {{ form.factura_adjunto.label }}
-        {{ form.factura_adjunto }} <br><br>
+        {{ form.id_categoria_gasto }}
 
         {{ form.id_usuario.label }}
-        {{ form.id_usuario }} <br><br>
+        {{ form.id_usuario }}  -->
 
-
-
-
-
-
-          <button type="submit"class="btnguardar">
+  <button type="submit"class="btnguardar">
         Registra Gasto
     </button>
+    </form>
+</div>
+</form>
+</div>
 
-        </div>
-        <div class="columna-derecha">
+<div class="gasderecha">
+<h3 ><i class="fa-solid fa-dollar-sign"></i> Grafico de gastos mensuales</h3>
+
        <div class="gastos2">
     <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
 </div>
@@ -82,7 +107,7 @@
                 datasets: [{
                     label: 'Total de gastos ($)',
                     data: montos,
-                    backgroundColor: '#1e8449', // CORREGIDO: mayúscula
+                    backgroundColor: '#1abc9c', // CORREGIDO: mayúscula
                     borderColor: '#145a32',      // opcional: borde más oscuro
                     borderWidth: 1
                 }]
@@ -93,19 +118,19 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#ffffff'   // Color de la leyenda en blanco
+                            color: '#00000'   // Color de la leyenda en blanco
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#ffffff' }, // Color de etiquetas eje X
-                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                        ticks: { color: '#00000' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
                     },
                     y: {
                         beginAtZero: true,
-                        ticks: { color: '#ffffff' }, // Color de etiquetas eje Y
-                        grid: { color: 'rgba(255,255,255,0.2)' } // Líneas de grilla
+                        ticks: { color: '#00000' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
                     }
                 }
             }
@@ -113,10 +138,11 @@
     }
 </script>
 
+<div class="gastos3" style=" height: 100%;">
+<h2><i class="fa-solid fa-table"></i>Registro de Gastos</h2>
 
-        <div class="gastos3">
-         <table>
-    <thead>
+    <table class="table table-hover">
+    <thead class="table-success">
         <tr>
             <th>Concepto</th>
             <th>Monto</th>
@@ -143,16 +169,10 @@
     </tbody>
 </table>
 
-        </div>
-
-       
-    </form>
-    </div>
-     </div>
-    </section>
+</div>
+</div> 
+</section>
     
-<footer>
-      {% include "Ingresos/footter_ingresos.html" %}
-</footer>
+
 </body>
-</html>
+{% endblock %}

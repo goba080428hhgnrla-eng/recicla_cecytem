@@ -1,34 +1,31 @@
 
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{% static 'IngresosCSS/estilos_ingresos.css' %}">
-    <title>Document</title>
-</head>
+{% extends 'Ingresos/navegacionmodulos.html' %}
+
+
+
+{% block content %}
+
 <body>
-    <header  class="miheader">
-
-         <div class="logotitulo1">
-        <img src="{% static 'iconos_ingresos/usuarioicono.png' %}"  class="logo1">
-    </div> 
-
-     <center> <h1>DASHBOARD INGRESOS</h1></center>
-
-       <div class="logotitulo2">
-        <img src="{% static 'iconos_ingresos/logocecy.png' %}"  class="logo2">
-    </div> 
-    </header>
+<div class="dashboard-welcome">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1><i class="fas fa"></i> ¡Hola!</h1>
+            <p class="lead mb-0">Bienvenido al Dashboard de Gestion de Ingresos</p>
+        </div>
+    </div>
+</div><br><br>
     <nav>
             {% include "Ingresos/menu_navegacion.html" %}
     </nav>
+    <br><br>
+    <h3><i class="fa-solid fa-chart-line"></i> Panel de Resumen</h3>
+    
 <section class="contenedor">
 
+
     <div class="dashderecha">
-        
-     <div id="divdash1">
+    <div id="divdash1" style="width: 100%;">
+        <h3 ><i class="fa-solid fa-dollar-sign"></i> Grafico de gastos mensuales</h3>
     <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
 </div>
 
@@ -47,7 +44,7 @@
                 datasets: [{
                     label: 'Total de gastos ($)',
                     data: montos,
-                    backgroundColor: '#1e8449', 
+                    backgroundColor: '#1abc9c', 
                     borderColor: '#145a32',      
                     borderWidth: 1
                 }]
@@ -58,34 +55,38 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#ffffff'   
+                            color: '#000000'   
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#ffffff' }, 
-                        grid: { color: 'rgba(255,255,255,0.2)' }
+                        ticks: { color: '#000000' }, 
+                        grid: { color: 'rgba(0, 0, 0, 1)' }
                     },
                     y: {
                         beginAtZero: true,
-                        ticks: { color: '#ffffff' }, 
-                        grid: { color: 'rgba(255,255,255,0.2)' } 
+                        ticks: { color: '#000000' }, 
+                        grid: { color: 'rgba(0, 0, 0, 1)' } 
                     }
                 }
             }
         });
     }
 </script>
-<!-- Script para grafico circular de gastos -->
 
 
-   <div id="divdash3">
-    <h2>Movimientos Recientes</h2>
+<div id="divdash3" style="width: 100%; height: 100%;">
+    <div class="eco-card mb-4">
+     <div class="card-header-eco">
+        <h2><i class="fa-solid fa-table"></i>Movimientos Recientes</h2>
+            </div>
 
-   <table class="tabla-movimientos">
-    <thead>
-        <tr>
+
+    <div class="table-responsive">
+   <table class="table table-hover">
+    <thead class="table-success">
+    <tr>
             <th>Tipo</th>
             <th>Concepto</th>
             <th>Monto</th>
@@ -114,43 +115,52 @@
 
     </tbody>
 </table>
-
 </div>
-
-   
-    </div>
+</div>
+</div>
+</div>
 
     <div class="dashisquierda">
-
-     <div id="divdash2">
-        <div class="divresumen">
-<h3 class="totalresumen">Total de ventas Externas</h3>
-    <br>
-    <br><br>
-        <p>${{ total_ventas_externas }}</p>
-
+<div id="divdash2" style="width: 100%; height: 100%;">
+    <h3><i class="fa-solid fa-file"></i> Panel de Resumen</h3><br>
+<div class="row mb-4">
+          <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">${{ total_ventas_externas }}</div>
+                <div class="stat-label">Total de ventas Externas</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
         </div>
+    </div>
 
-        <div class="divresumen">
-<h3  class="totalresumen">Total de Gastos</h3>
-<br>
-<br>
-   <p>${{ total_gastos }}</p>
-
+        <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">${{ total_gastos }}</div>
+                <div class="stat-label">Total de Gastos</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
         </div>
-        <div class="divresumen">
-<h3  class="totalresumen">Producto Disponible</h3>
-<br><br>
-    <p >{{ productos_disponibles }}</p>
-
-        </div>
+    </div>
      </div>
 
-    <div id="divdash4">
-    <h2>Gastos por Categoría</h2>
-    <canvas id="graficoCategorias" style="width:100%; height:400px;"></canvas>
+       <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ productos_disponibles }}</div>
+                <div class="stat-label">Producto Disponible</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
 </div>
+        
 
+
+    <div id="divdash4" style="width: 100%; height: 100%;">
+    <h2><i class="fa-solid fa-dollar-sign"></i> Gastos por Categoría</h2>
+    <canvas id="graficoCategorias" style="width:100%; height:400px;"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const categorias = {{ categorias|safe }};
@@ -176,7 +186,7 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'right', labels: { color: '#fff' } },
+                    legend: { position: 'right', labels: { color: '#00000' } },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
@@ -192,12 +202,8 @@
     }
 </script>
 
-
+</div>
+</div>     
 </section>
-
-    
-<footer>
-      {% include "Ingresos/footter_ingresos.html" %}
-</footer>
 </body>
-</html>
+{% endblock %}

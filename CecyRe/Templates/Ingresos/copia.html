@@ -1,0 +1,351 @@
+<div class="columna-derecha">
+<h3 ><i class="fa-solid fa-dollar-sign"></i> Grafico de gastos mensuales</h3>
+
+       <div class="gastos2">
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const meses= {{ meses|safe }};
+    const montos= {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1abc9c', // CORREGIDO: mayúscula
+                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00000'   // Color de la leyenda en blanco
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#00000' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#00000' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<div class="gastos3">
+<h2><i class="fa-solid fa-table"></i>Registro de Gastos</h2>
+
+    <table class="table table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Usuario</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+        {% for gasto in gastos %}
+        <tr>
+            <td>{{ gasto.concepto }}</td>
+            <td>{{ gasto.monto }}</td>
+            <td>{{ gasto.fecha }}</td>
+            <td>{{ gasto.id_categoria_gasto }}</td>
+            <td>{{ gasto.id_usuario }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No hay gastos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+
+    </div> 
+        
+       
+    </form>
+    </div>
+     </div>
+    </section>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <form method="POST">
+            {% csrf_token %}
+     <div class="gastos1">
+            <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Concepto</label>
+                            {{ form.concepto }}
+                        </div>
+                        </div>
+
+                         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Monto</label>
+                            {{ form.monto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha</label> 
+                        {{ form.fecha }}                       
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripcion</label>
+                            {{ form.descripcion }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Categoria del gasto</label>
+                            {{ form.id_categoria_gasto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Usuario Responsable</label> 
+                        {{ form.id_usuario }}                      
+                        </div>
+                    </div>
+        <!-- {{ form.concepto.label }}
+        {{ form.concepto }}
+
+        {{ form.monto.label }}
+        {{ form.monto }}
+
+         {{ form.fecha.label }}
+        {{ form.fecha }} -->
+        
+        <!-- {{ form.descripcion.label }}
+        {{ form.descripcion }} -->
+
+        <!-- {{ form.id_categoria_gasto.label }}
+        {{ form.id_categoria_gasto }}
+
+        {{ form.factura_adjunto.label }}
+        {{ form.factura_adjunto }}
+
+        {{ form.id_usuario.label }}
+        {{ form.id_usuario }}  -->
+
+  <button type="submit"class="btnguardar">
+        Registra Gasto
+    </button>
+</div>
+</form>
+</div>
+ </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Venta externaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+
+
+ <div id="exdatos1">
+    <h3 class="text-success mb-3">Datos de la venta</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Fila 1: Cliente y Contacto -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.cliente_nombre.label_tag }}
+                {{ form.cliente_nombre }}
+            </div>
+            <div class="col-md-6">
+                {{ form.cliente_contacto.label_tag }}
+                {{ form.cliente_contacto }}
+            </div>
+        </div>
+
+        <!-- Fila 2: Total y Fecha -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form.total.label_tag }}
+                {{ form.total }}
+            </div>
+            <div class="col-md-6">
+                {{ form.fecha.label_tag }}
+                {{ form.fecha }}
+            </div>
+        </div>
+
+        <!-- Usuario -->
+        <div class="mb-3">
+            {{ form.id_usuario.label_tag }}
+            {{ form.id_usuario }}
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-3">
+            {{ form.descripcion.label_tag }}
+            {{ form.descripcion }}
+        </div>
+        <div id="exdatos2">
+        <h3 style="color:#1e8449">Detalle de Materia</h3>
+        {{ form.materia.label }}
+        {{ form.materia }} <br><br>
+
+        {{ form.cantidad_kg.label }}
+        {{ form.cantidad_kg }} <br><br>
+
+        {{ form.precio_kg.label }}
+        {{ form.precio_kg }} <br><br>
+
+        {{ form.subtotal.label }}
+        {{ form.subtotal }} <br><br>
+        <br>
+        
+        
+    </div>
+
+        <!-- Botón -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Venta
+            </button>
+        </div>
+
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3 ><i class="fa-solid fa-dollar-sign"></i> Grafico de gastos mensuales</h3>
+
+       <div class="gastos2">
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const meses= {{ meses|safe }};
+    const montos= {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1abc9c', // CORREGIDO: mayúscula
+                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00000'   // Color de la leyenda en blanco
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#00000' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#00000' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    }
+                }
+            }
+        });
+    }
+</script>
+</div>
+
+
+
+
+
+
+<!-- {{ form.concepto.label }}
+        {{ form.concepto }}
+
+        {{ form.monto.label }}
+        {{ form.monto }}
+
+         {{ form.fecha.label }}
+        {{ form.fecha }} -->
+        
+        <!-- {{ form.descripcion.label }}
+        {{ form.descripcion }} -->
+
+        <!-- {{ form.id_categoria_gasto.label }}
+        {{ form.id_categoria_gasto }}
+
+        {{ form.factura_adjunto.label }}
+        {{ form.factura_adjunto }}
+
+        {{ form.id_usuario.label }}
+        {{ form.id_usuario }}  -->

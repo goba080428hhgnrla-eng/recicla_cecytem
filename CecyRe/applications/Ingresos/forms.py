@@ -35,7 +35,6 @@ class GastosClass(forms.Form):
     queryset=CategoriaGasto.objects.all(),
     label="Categoria del gasto"
     )
-    factura_adjunto = forms.CharField(max_length=50)
 
 
     id_usuario = forms.ModelChoiceField(
