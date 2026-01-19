@@ -22,8 +22,6 @@ class VentaExternaCLAS(forms.Form):
     ])
     cantidad_kg = forms.DecimalField(max_digits=10, decimal_places=2)
     precio_kg = forms.DecimalField(max_digits=10, decimal_places=2)
-    subtotal = forms.DecimalField(max_digits=10, decimal_places=2)
-
 # formularios de gastos
 class GastosClass(forms.Form):
     concepto = forms.CharField(widget=forms.Textarea)

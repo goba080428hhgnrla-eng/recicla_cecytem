@@ -26,7 +26,84 @@
 
     {% csrf_token %}
 
+ <div id="exdatos1">
+ <h3 class="text-center mb-0"><i class="fa-solid fa-plus"></i>Nuevo</h3>
 
+    <h3 class="text-success mb-3">Datos de la venta</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        <!-- Fila 1: Cliente y Contacto -->
+          <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombres del Cliente</label>
+                            {{ form.cliente_nombre }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Contacto del Cliente</label> 
+                        {{ form.cliente_contacto }}                       
+                        </div>
+                    </div>
+        
+       
+
+        <!-- Fila 2: Total y Fecha -->´
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fecha</label>
+                            {{ form.fecha }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Total</label> 
+                       {{ form.total }}                       
+                        </div>
+                        </div>
+
+        <!-- Usuario -->
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Usuario Responsable</label>
+                            {{ form.id_usuario }}                      
+                        </div>
+                        </div>
+
+        <!-- Descripción -->
+         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripcion</label>
+                           {{ form.descripcion }}                     
+                        </div>
+                        </div>
+
+
+        <div id="exdatos2">
+        <h3 style="color:#1e8449">Detalle de Materia</h3>
+        <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipo de materia</label>
+                            {{ form.materia }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Cantidad en Kilogramos</label> 
+                       {{ form.cantidad_kg }}                       
+                        </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio por Kilogramo</label>
+                            {{ form.precio_kg }}
+                        </div>
+                    
+    </div>
+
+        <!-- Botón -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Guardar Venta
+            </button>
+        </div>
+
+    </form>
+</div>
 
     <div id="divdash3" style="width:100%; height: 100%;">
         <div class="eco-card mb-4">

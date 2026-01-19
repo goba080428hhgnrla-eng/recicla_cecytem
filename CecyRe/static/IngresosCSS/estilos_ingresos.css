@@ -191,18 +191,16 @@
 #exdatos1 {
     width: 100%;
     height: 100%;;                  
-    background: #122a56;  
-    color:#ffff;              
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
      margin-top: 20px; 
 }
  #exdatos2 {
-    width: 95%;   
-    height: 200px;                
-    background: #122a56; 
-    color:#ffff;              
+    width: 100%;   
+    height: 100%;                
+    color:#000000;              
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);

@@ -113,7 +113,7 @@ class DashAdminCLAS(CreateView):
 class VentaExternaView(FormView):
     template_name = "Ingresos/ventas_externas.html"
     form_class = VentaExternaCLAS
-    success_url = reverse_lazy('ventaexterna')
+    success_url = reverse_lazy('Ingresos:ventaexterna')
 
     def form_valid(self, form):
         usuario = form.cleaned_data['id_usuario']
@@ -158,7 +158,8 @@ class VentaExternaView(FormView):
 class GastosCLAS(FormView):
     template_name = "Ingresos/registro_gasto.html"
     form_class = GastosClass
-    success_url = reverse_lazy('registrogasto')
+    success_url = reverse_lazy('Ingresos:registrogasto')
+
 
     def form_valid(self, form):
         data = form.cleaned_data
@@ -168,7 +169,6 @@ class GastosCLAS(FormView):
             fecha=data['fecha'],
             descripcion=data['descripcion'],
             id_categoria_gasto=data['id_categoria_gasto'],
-            factura_adjunto=data['factura_adjunto'],
             id_usuario=data['id_usuario'],
         )
         return super().form_valid(form)
