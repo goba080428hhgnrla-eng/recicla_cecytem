@@ -4,7 +4,7 @@ from pathlib import Path
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'https://recicla-cecytem.onrender.com',
+    'recicla-cecytem.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
