@@ -38,7 +38,7 @@ ROOT_URLCONF = 'cecytemrecicla.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent / 'templates'],
+        'DIRS': [BASE_DIR.parent / 'Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
