@@ -6,7 +6,7 @@ import dj_database_url
 # BASE_DIR apunta a la carpeta raíz del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure-47n(!bfk(06+&ol&gu+o%24#^1x&%6tw1l)^heqbvo@ei4h0tk'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-secreta')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
