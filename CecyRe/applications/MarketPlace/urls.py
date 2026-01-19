@@ -5,6 +5,7 @@ from .views import ProductoDetailView
 from .views import login_view, home, PerfilUpdateView
 from .views import *
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('registro/', views.CrearUsuario.as_view(), name='registro'),

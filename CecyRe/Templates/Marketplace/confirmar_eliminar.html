@@ -1,171 +1,406 @@
 {% extends './navegación.html' %}
 
 {% block pag %}
-<div class="delete-container">
-    <div class="card delete-card">
-        <div class="delete-header">
-            <h2 class="delete-title">
-                <i class="fas fa-trash-alt delete-title-icon"></i>
-                Confirmar Eliminación
-            </h2>
-            <p class="delete-subtitle">Eliminar producto permanentemente</p>
-        </div>
-        
-        <div class="delete-body">
-            <div class="alert alert-warning delete-warning">
-                <div class="warning-content">
-                    <i class="fas fa-exclamation-triangle warning-icon"></i>
-                    <div class="warning-text">
-                        <h4 class="warning-title">¡Atención!</h4>
-                        <p class="warning-message">Esta acción eliminará el producto permanentemente y no se puede deshacer.</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card eco-card shadow-lg">
+                <div class="card-header card-header-eco text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="warning-icon-circle me-3">
+                            <i class="fas fa-exclamation-triangle fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1">Confirmar Eliminación</h2>
+                            <p class="mb-0 opacity-90">Eliminar producto permanentemente</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="producto-preview">
-                <div class="preview-header">
-                    <h3 class="preview-title">Producto a eliminar</h3>
                 </div>
                 
-                <div class="preview-content">
-                    {% if object.imagen %}
-                        <div class="preview-image-container">
-                            <img src="{{ object.imagen.url }}" 
-                                 alt="{{ object.nombre }}"
-                                 class="preview-image">
+                <div class="card-body">
+                    <div class="alert alert-warning border-warning bg-warning bg-opacity-10">
+                        <div class="d-flex">
+                            <i class="fas fa-exclamation-circle fa-2x text-warning me-3"></i>
+                            <div>
+                                <h4 class="alert-heading">¡Atención!</h4>
+                                <p class="mb-0">Esta acción eliminará el producto permanentemente y <strong>no se puede deshacer</strong>.</p>
+                            </div>
                         </div>
-                    {% endif %}
-                    
-                    <div class="preview-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Nombre:</span>
-                            <span class="detail-value">{{ object.nombre }}</span>
-                        </div>
-                        
-                        {% if object.precio %}
-                        <div class="detail-row">
-                            <span class="detail-label">Precio:</span>
-                            <span class="detail-value price-value">${{ object.precio }}</span>
-                        </div>
-                        {% endif %}
-                        
-                        {% if object.precio_kg %}
-                        <div class="detail-row">
-                            <span class="detail-label">Precio por kg:</span>
-                            <span class="detail-value price-value">${{ object.precio_kg }} / kg</span>
-                        </div>
-                        {% endif %}
-                        
-                        {% if object.peso_disponible_kg %}
-                        <div class="detail-row">
-                            <span class="detail-label">Peso disponible:</span>
-                            <span class="detail-value">{{ object.peso_disponible_kg }} kg</span>
-                        </div>
-                        {% endif %}
-                        
-                        {% if object.descripcion %}
-                        <div class="detail-row">
-                            <span class="detail-label">Descripción:</span>
-                            <p class="detail-description">{{ object.descripcion|truncatechars:100 }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        {% if object.fecha_publicacion %}
-                        <div class="detail-row">
-                            <span class="detail-label">Publicado:</span>
-                            <span class="detail-value">{{ object.fecha_publicacion|date:"d/m/Y" }}</span>
-                        </div>
-                        {% endif %}
                     </div>
-                </div>
-            </div>
+                    
+                    <!-- Vista previa del producto -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary bg-opacity-10 text-primary border-primary">
+                            <h5 class="mb-0">
+                                <i class="fas fa-box me-2"></i>Producto a eliminar
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% if object.imagen %}
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <div class="image-preview-container text-center">
+                                        <img src="{{ object.imagen.url }}" 
+                                             alt="{{ object.nombre }}"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="max-height: 200px;">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="{% if object.imagen %}col-md-8{% else %}col-12{% endif %}">
+                                    <div class="product-details">
+                                        <h4 class="text-primary mb-3">{{ object.nombre }}</h4>
+                                        
+                                        <div class="row">
+                                            {% if object.precio %}
+                                            <div class="col-sm-6 mb-2">
+                                                <small class="text-muted">Precio:</small>
+                                                <p class="fw-bold text-success mb-0">${{ object.precio }}</p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if object.precio_kg %}
+                                            <div class="col-sm-6 mb-2">
+                                                <small class="text-muted">Precio por kg:</small>
+                                                <p class="fw-bold text-success mb-0">${{ object.precio_kg }} / kg</p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if object.peso_disponible_kg %}
+                                            <div class="col-sm-6 mb-2">
+                                                <small class="text-muted">Peso disponible:</small>
+                                                <p class="fw-bold mb-0">{{ object.peso_disponible_kg }} kg</p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if object.fecha_publicacion %}
+                                            <div class="col-sm-6 mb-2">
+                                                <small class="text-muted">Publicado:</small>
+                                                <p class="fw-bold mb-0">{{ object.fecha_publicacion|date:"d/m/Y" }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {% if object.descripcion %}
+                                        <div class="mt-3">
+                                            <small class="text-muted">Descripción:</small>
+                                            <p class="mb-0">{{ object.descripcion|truncatechars:150 }}</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="delete-consequences">
-                <h4 class="consequences-title">
-                    <i class="fas fa-exclamation-circle"></i>
-                    Consecuencias de eliminar este producto:
-                </h4>
-                <ul class="consequences-list">
-                    <li class="consequence-item">
-                        <i class="fas fa-times-circle consequence-icon"></i>
-                        <span>El producto desaparecerá de tu catálogo</span>
-                    </li>
-                    <li class="consequence-item">
-                        <i class="fas fa-shopping-cart consequence-icon"></i>
-                        <span>Se eliminará de los carritos de compra</span>
-                    </li>
-                    <li class="consequence-item">
-                        <i class="fas fa-history consequence-icon"></i>
-                        <span>Se perderá el historial de este producto</span>
-                    </li>
-                    <li class="consequence-item">
-                        <i class="fas fa-undo consequence-icon"></i>
-                        <span>Esta acción NO se puede deshacer</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="delete-footer">
-            <form method="post" class="delete-form">
-                {% csrf_token %}
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-danger delete-confirm-btn">
-                        <i class="fas fa-trash-alt me-2"></i>
-                        Sí, eliminar permanentemente
-                    </button>
-                    
-                    <a href="{% url 'escritorio' %}" class="btn btn-secondary delete-cancel-btn">
-                        <i class="fas fa-times me-2"></i>
-                        Cancelar y volver
-                    </a>
+                    <!-- Consecuencias de eliminar -->
+                    <div class="card border-danger mb-4">
+                        <div class="card-header bg-danger bg-opacity-10 text-danger border-danger">
+                            <h5 class="mb-0">
+                                <i class="fas fa-exclamation-circle me-2"></i>Consecuencias de eliminar este producto:
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="consequence-icon me-3">
+                                            <i class="fas fa-times-circle text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Desaparecerá del catálogo</h6>
+                                            <p class="small text-muted mb-0">El producto desaparecerá de tu catálogo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="consequence-icon me-3">
+                                            <i class="fas fa-shopping-cart text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Eliminado de carritos</h6>
+                                            <p class="small text-muted mb-0">Se eliminará de los carritos de compra</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="consequence-icon me-3">
+                                            <i class="fas fa-history text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Pérdida de historial</h6>
+                                            <p class="small text-muted mb-0">Se perderá el historial de este producto</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="consequence-icon me-3">
+                                            <i class="fas fa-undo text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Acción irreversible</h6>
+                                            <p class="small text-muted mb-0">Esta acción NO se puede deshacer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="delete-confirmation">
-                    <label class="confirm-checkbox">
-                        <input type="checkbox" name="confirm_delete" required>
-                        <span class="checkbox-text">
-                            Entiendo que esta acción es permanente y no se puede deshacer
-                        </span>
-                    </label>
+                <div class="card-footer bg-light">
+                    <form method="post" class="delete-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="confirm_delete" id="confirmDelete" required>
+                                <label class="form-check-label fw-bold" for="confirmDelete">
+                                    Entiendo que esta acción es permanente y no se puede deshacer
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger btn-lg px-4" id="confirmDeleteBtn" disabled>
+                                <i class="fas fa-trash-alt me-2"></i>
+                                Sí, eliminar permanentemente
+                            </button>
+                            
+                            <a href="{% url 'escritorio' %}" class="btn btn-secondary btn-lg px-4">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar y volver
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* Estilos base para las tarjetas ecológicas */
+    .eco-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header-eco {
+        background: linear-gradient(135deg, #2E7D32, #1B5E20);
+        color: white;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .card-header-eco h2 {
+        color: white;
+        font-weight: 700;
+    }
+    
+    .card-header-eco .opacity-90 {
+        opacity: 0.9;
+    }
+    
+    .warning-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #FF9800, #F57C00);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+    }
+    
+    .consequence-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(220, 38, 38, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .image-preview-container {
+        padding: 10px;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        background: #f8f9fa;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+    
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #5a6268, #545b62);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .form-check-input:checked {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    .form-check-input:checked:focus {
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
+    
+    /* Animaciones */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .shake-animation {
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .pulse-animation {
+        animation: pulse 1s ease-in-out;
+    }
+    
+    @media (max-width: 768px) {
+        .warning-icon-circle {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .warning-icon-circle i {
+            font-size: 1.5rem;
+        }
+        
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .btn-danger, .btn-secondary {
+            width: 100%;
+        }
+        
+        .eco-card {
+            margin: 0 -15px;
+            border-radius: 0;
+        }
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const confirmBtn = document.querySelector('.delete-confirm-btn');
-        const confirmCheckbox = document.querySelector('input[name="confirm_delete"]');
-        confirmBtn.disabled = true;
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        const confirmCheckbox = document.getElementById('confirmDelete');
+        const deleteForm = document.querySelector('.delete-form');
         
+        // Habilitar/deshabilitar botón basado en checkbox
         confirmCheckbox.addEventListener('change', function() {
             confirmBtn.disabled = !this.checked;
         });
 
-        confirmBtn.addEventListener('click', function(e) {
+        // Manejar el envío del formulario
+        deleteForm.addEventListener('submit', function(e) {
             if (!confirmCheckbox.checked) {
                 e.preventDefault();
+                
+                // Animación de advertencia
+                const formCheck = confirmCheckbox.closest('.form-check');
+                formCheck.classList.add('shake-animation');
+                setTimeout(() => {
+                    formCheck.classList.remove('shake-animation');
+                }, 1000);
+                
                 alert('Debes confirmar que entiendes que esta acción es permanente.');
                 return;
             }
             
-            if (!confirm('¿Estás completamente seguro de eliminar este producto permanentemente?')) {
+            // Confirmación final
+            if (!confirm('¿Estás completamente seguro de eliminar este producto permanentemente?\n\nEsta acción NO se puede deshacer.')) {
                 e.preventDefault();
+            } else {
+                // Mostrar loading
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Eliminando...';
+                confirmBtn.disabled = true;
             }
         });
         
+        // Efecto hover en botón de eliminar
         confirmBtn.addEventListener('mouseenter', function() {
             if (!this.disabled) {
                 this.style.transform = 'scale(1.05)';
-                this.style.boxShadow = '0 4px 15px rgba(220, 38, 38, 0.3)';
+                this.style.boxShadow = '0 5px 20px rgba(220, 38, 38, 0.4)';
             }
         });
         
         confirmBtn.addEventListener('mouseleave', function() {
             this.style.transform = 'scale(1)';
             this.style.boxShadow = 'none';
+        });
+        
+        // Animación de entrada para las tarjetas
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 200 + (index * 200));
+        });
+        
+        // Resaltar el checkbox al cargar
+        setTimeout(() => {
+            confirmCheckbox.closest('.form-check').classList.add('pulse-animation');
+            setTimeout(() => {
+                confirmCheckbox.closest('.form-check').classList.remove('pulse-animation');
+            }, 1000);
+        }, 500);
+        
+        // Prevenir envío accidental con Enter
+        deleteForm.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !confirmCheckbox.checked) {
+                e.preventDefault();
+                confirmCheckbox.focus();
+            }
         });
     });
 </script>

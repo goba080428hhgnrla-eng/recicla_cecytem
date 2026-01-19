@@ -9,48 +9,32 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{% static 'Marketplace/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'Incentivos/css/style.css' %}">
     
     <title>CECyTEM Recicla - Marketplace</title>
 </head>
 <body class="marketplace-body">
-    <nav class="navbar navbar-expand-lg navbar-dark marketplace-navbar">
+    <!-- NAVBAR ACTUALIZADO CON LOS MISMOS ESTILOS DE base.html -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                <img src="/media/iconos/Logo.png" alt="Logo" height="40" class="me-2 navbar-logo">
-                <h1 class="h4 mb-0 navbar-title">CECyTEM Recicla</h1>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-store"></i> CecyRecicla - Marketplace
             </a>
-            
-            <!-- BARRA DE BÚSQUEDA SIMPLIFICADA -->
-            <div class="mx-3 flex-grow-1 d-none d-lg-block">
-                <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
-                    <div class="input-group">
-                        <input type="text" 
-                               name="q" 
-                               class="form-control" 
-                               placeholder="Buscar productos..." 
-                               aria-label="Buscar productos"
-                               value="{{ request.GET.q|default:'' }}">
-                        <button class="btn btn-outline-light" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMarketplace">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarMarketplace">
-                <!-- Barra de búsqueda móvil -->
-                <div class="d-lg-none mb-3">
+                <!-- BARRA DE BÚSQUEDA (manteniendo la funcionalidad) -->
+                <div class="mx-3 flex-grow-1 d-none d-lg-block">
                     <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
                         <div class="input-group">
                             <input type="text" 
                                    name="q" 
                                    class="form-control" 
                                    placeholder="Buscar productos..." 
+                                   aria-label="Buscar productos"
                                    value="{{ request.GET.q|default:'' }}">
                             <button class="btn btn-outline-light" type="submit">
                                 <i class="fas fa-search"></i>
@@ -62,32 +46,33 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">
-                            <i class="fas fa-home me-1"></i> Inicio
+                            <i class="fas fa-home"></i> Inicio
                         </a>
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Incentivos:dashboard' %}">
-                            <i class="fas fa-gift me-1"></i> Incentivos
+                        <a class="nav-link" href="{% url 'Incentivos:login' %}">
+                            <i class="fas fa-gift"></i> Incentivos
                         </a>
                     </li>
                     
                     {% if request.session.usuario_id %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> Mi Cuenta
+                                <i class="fas fa-user-circle me-1"></i> 
+                                <span class="d-none d-md-inline">{{ request.session.usuario_nombre|default:"Cuenta" }}</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end marketplace-dropdown">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item" href="{% url 'perfil' %}">
                                         <i class="fas fa-user me-2"></i> Perfil
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link position-relative" href="{% url 'carrito' %}">
-                                        <i class="fas fa-shopping-cart"></i> Carrito
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'carrito' %}">
+                                        <i class="fas fa-shopping-cart me-2"></i> Carrito
                                         {% if request.session.carrito_count and request.session.carrito_count > 0 %}
-                                        <span class="badge bg-primary rounded-pill position-absolute top-0 start-100 translate-middle">
+                                        <span class="badge bg-primary rounded-pill ms-1">
                                             {{ request.session.carrito_count }}
                                         </span>
                                         {% endif %}
@@ -98,134 +83,90 @@
                                         <i class="fas fa-check-circle me-2"></i> Finalizar Compra
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'escritorio' %}">
-                                        <i class="fas fa-desktop me-2"></i> Escritorio
-                                    </a>
-                                </li>
+                                
+                                <!-- ESCRITORIO SOLO PARA VENDEDORES/ADMIN -->
+                                {% with rol=request.session.usuario_rol|lower %}
+                                    {% if rol == 'vendedor' or rol == 'admin' or rol == 'administrador' %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'escritorio' %}">
+                                            <i class="fas fa-desktop me-2"></i> Escritorio
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                {% endwith %}
                             </ul>
+                        </li>                        
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn nav-link text-warning bg-transparent border-0 px-3 py-2">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar
+                                </button>
+                            </form>
                         </li>
-                        
-                        <li class="nav-item d-lg-none">
-                            <a class="nav-link" href="{% url 'carrito' %}">
-                                <i class="fas fa-shopping-cart me-1"></i> Carrito
-                                <span class="badge marketplace-badge ms-1">0</span>
-                            </a>
-                        </li>
-                        
                     {% else %}
+                        <!-- Login y Registro (estilo idéntico a base.html) -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">
-                                <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'registro' %}">
-                                <i class="fas fa-user-plus me-1"></i> Registrarse
-                            </a>
-                        </li>
-                        <li class="nav-item d-lg-none">
-                            <a class="nav-link" href="{% url 'login' %}">
-                                <i class="fas fa-shopping-cart me-1"></i> Carrito
+                                <i class="fas fa-user-plus"></i> Registrarse
                             </a>
                         </li>
                     {% endif %}
                 </ul>
-                
-                <div class="d-none d-lg-flex ms-3 align-items-center">
-                    {% if request.session.usuario_id %}
-                        <a href="{% url 'carrito' %}" class="btn marketplace-btn-outline me-2 position-relative">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill marketplace-badge">
-                                0
-                            </span>
-                        </a>
-                        <a href="{% url 'registro' %}" class="btn marketplace-btn-outline">
-                            <i class="fas fa-user"></i>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn marketplace-btn-outline me-2">
-                            <i class="fas fa-shopping-cart"></i>
-                        </a>
-                        <a href="{% url 'login' %}" class="btn marketplace-btn-outline">
-                            <i class="fas fa-user"></i>
-                        </a>
-                    {% endif %}
-                </div>
             </div>
         </div>
     </nav>
 
-    <main class="main-content">
-    <div class="container mt-4">
+    <!-- Barra de búsqueda móvil -->
+    <div class="container d-lg-none my-3">
+        <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
+            <div class="input-group">
+                <input type="text" 
+                       name="q" 
+                       class="form-control" 
+                       placeholder="Buscar productos..." 
+                       value="{{ request.GET.q|default:'' }}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <main class="container mt-4">
+        <!-- Mensajes (estilo similar a base.html pero con tus mejoras) -->
         {% if messages %}
-        <div class="messages-container mb-4">
             {% for message in messages %}
-                <div class="alert marketplace-alert alert-{{ message.tags }} alert-dismissible fade show shadow-lg" role="alert">
-                    <div class="d-flex align-items-start">
-                        <!-- Ícono más grande y prominente -->
-                        <div class="alert-icon-container me-3">
-                            {% if message.tags == 'success' %}
-                                <i class="fas fa-check-circle fa-2x"></i>
-                            {% elif message.tags == 'error' %}
-                                <i class="fas fa-times-circle fa-2x"></i>
-                            {% elif message.tags == 'warning' %}
-                                <i class="fas fa-exclamation-triangle fa-2x"></i>
-                            {% elif message.tags == 'info' %}
-                                <i class="fas fa-info-circle fa-2x"></i>
-                            {% else %}
-                                <i class="fas fa-bell fa-2x"></i>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Contenido del mensaje -->
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <!-- Título según tipo de mensaje -->
-                                    <h5 class="alert-title mb-1">
-                                        {% if message.tags == 'success' %}
-                                            ¡Éxito!
-                                        {% elif message.tags == 'error' %}
-                                            ¡Error!
-                                        {% elif message.tags == 'warning' %}
-                                            Advertencia
-                                        {% elif message.tags == 'info' %}
-                                            Información
-                                        {% else %}
-                                            Mensaje
-                                        {% endif %}
-                                    </h5>
-                                    <!-- Mensaje principal -->
-                                    <p class="alert-message mb-0">{{ message }}</p>
-                                </div>
-                                <!-- Botón de cerrar -->
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                            </div>
-                            
-                            <!-- Tiempo transcurrido (opcional) -->
-                            <div class="alert-time small mt-2 opacity-75">
-                                <i class="fas fa-clock me-1"></i>
-                                <span class="time-text">Justo ahora</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle me-2"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                    {% elif message.tags == 'info' %}
+                        <i class="fas fa-info-circle me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
-        </div>
         {% endif %}
         
         {% block pag %}
         {% endblock %}
-    </div>
-</main>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer marketplace-footer py-4 mt-5">
+    <!-- Footer (manteniendo tu estilo pero simplificado) -->
+    <footer class="footer mt-5 py-3 bg-light">
         <div class="container text-center">
-            <span class="footer-text">CECyTEM Recicla  &copy; {% now "Y" %}</span>
-            <p class="footer-subtext small mt-2">Todos los derechos reservados</p>
+            <span class="text-muted">CECyTEM Recicla - Marketplace &copy; {% now "Y" %}</span>
         </div>
     </footer>
 
@@ -237,22 +178,29 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Tooltips de Bootstrap
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
             
-            document.querySelectorAll('.alert .btn-close').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    this.closest('.alert').remove();
-                });
-            });
-            
+            // Auto-ocultar mensajes después de 5 segundos
             setTimeout(function() {
-                document.querySelectorAll('.alert:not(.alert-permanent)').forEach(function(alert) {
+                document.querySelectorAll('.alert').forEach(function(alert) {
                     alert.remove();
                 });
             }, 5000);
+            
+            // Mejorar botón de cerrar sesión
+            document.querySelectorAll('form[action*="logout"] button').forEach(function(btn) {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.transition = 'transform 0.2s';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
         });
     </script>
 </body>

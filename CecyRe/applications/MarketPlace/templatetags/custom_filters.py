@@ -35,3 +35,18 @@ def remove_param(url, param):
 def get_item(dictionary, key):
     """Obtener un item de un diccionario en template"""
     return dictionary.get(key)
+
+@register.filter
+def split(value, separator):
+    """Divide una cadena por un separador"""
+    if value:
+        return value.split(separator)
+    return []
+
+@register.filter
+def first(value):
+    """Devuelve el primer elemento de una lista"""
+    try:
+        return value[0]
+    except (IndexError, TypeError):
+        return ''

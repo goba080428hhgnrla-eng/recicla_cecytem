@@ -3,25 +3,34 @@
 {% load static %}
 
 {% block pag %}
-<div class="container py-4 desktop-container">
-    <h2 class="mb-4 desktop-title">Finalizar Compra</h2>
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h2 text-primary">
+                <i class="fas fa-lock me-2"></i>Finalizar Compra
+            </h2>
+            <p class="text-muted">Confirma tu pedido y selecciona método de pago</p>
+        </div>
+    </div>
     
     <div class="row">
         <!-- Resumen del pedido -->
         <div class="col-lg-8">
-            <div class="card card-eco mb-4 publish-card">
-                <div class="card-header bg-primary text-white publish-header">
-                    <h4 class="mb-0 form-title"><i class="fas fa-shopping-cart me-2"></i>Resumen del Pedido</h4>
+            <div class="eco-card mb-4">
+                <div class="card-header-eco">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>Resumen del Pedido
+                    </h4>
                 </div>
                 <div class="card-body">
                     {% if items %}
                         <div class="table-responsive">
-                            <table class="table" style="color: #f8f9fa;">
+                            <table class="table table-eco">
                                 <thead>
                                     <tr>
                                         <th>Producto</th>
                                         <th class="text-center">Cantidad</th>
-                                        <th class="text-end">Precio</th>
+                                        <th class="text-end">Precio Unitario</th>
                                         <th class="text-end">Subtotal</th>
                                     </tr>
                                 </thead>
@@ -29,25 +38,63 @@
                                     {% for item in items %}
                                     <tr>
                                         <td>
-                                            <strong>{{ item.id_producto.nombre }}</strong><br>
-                                            <small class="text-muted caption">{{ item.id_producto.id_categoria.nombre }}</small>
+                                            <div class="d-flex align-items-center">
+                                                {% if item.id_producto.imagenes.all %}
+                                                <div class="me-3" style="width: 50px; height: 50px;">
+                                                    <img src="{{ item.id_producto.imagenes.first.imagen.url }}" 
+                                                         alt="{{ item.id_producto.nombre }}"
+                                                         class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                                {% endif %}
+                                                <div>
+                                                    <strong>{{ item.id_producto.nombre }}</strong><br>
+                                                    <small class="text-muted">{{ item.id_producto.id_categoria.nombre }}</small>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td class="text-center">{{ item.cantidad_kg }} kg</td>
-                                        <td class="text-end">${{ item.precio_unitario }}</td>
-                                        <td class="text-end">${{ item.subtotal }}</td>
+                                        <td class="text-center align-middle">
+                                            <span class="badge-eco">{{ item.cantidad_kg }} kg</span>
+                                        </td>
+                                        <td class="text-end align-middle">${{ item.precio_unitario }}</td>
+                                        <td class="text-end align-middle">
+                                            <span class="fw-bold text-success">${{ item.subtotal }}</span>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
-                                <tfoot class="table-light" style="color: black;">
+                                <tfoot class="table-light">
                                     <tr>
                                         <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                        <td class="text-end"><strong>${{ total }}</strong></td>
+                                        <td class="text-end"><h4 class="text-success mb-0">${{ total }}</h4></td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
+                        
+                        <!-- Información del comprador -->
+                        <div class="card border-0 bg-light mt-4">
+                            <div class="card-body">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-user me-2"></i>Información del comprador
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <small class="text-muted">Nombre:</small>
+                                        <p class="mb-0 fw-bold">{{ request.session.nombre_usuario|default:"No disponible" }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <small class="text-muted">Correo:</small>
+                                        <p class="mb-0 fw-bold">{{ request.session.correo_usuario|default:"No disponible" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     {% else %}
-                        <p class="text-center empty-subtitle">No hay productos en el carrito</p>
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay productos en el carrito</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -55,66 +102,84 @@
         
         <!-- Métodos de pago -->
         <div class="col-lg-4">
-            <div class="card card-innovacion publish-card">
-                <div class="card-header bg-success text-white publish-header">
-                    <h4 class="mb-0 form-title"><i class="fas fa-credit-card me-2"></i>Método de Pago</h4>
+            <div class="eco-card mb-4">
+                <div class="card-header-eco">
+                    <h4 class="mb-0">
+                        <i class="fas fa-credit-card me-2"></i>Método de Pago
+                    </h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{% url 'crear_orden' %}" id="checkout-form" class="login-form">
+                    <form method="post" action="{% url 'crear_orden' %}" id="checkout-form">
                         {% csrf_token %}
                         
                         <div class="mb-4">
-                            <h5 class="form-title">Selecciona tu método de pago:</h5>
+                            <h5 class="text-primary mb-3">Selecciona tu método de pago:</h5>
                             
                             {% for metodo in metodos_pago %}
-                            <div class="form-check mb-3 border rounded p-3 metodo-pago-option">
-                                <input class="form-check-input" type="radio" 
-                                       name="metodo_pago" id="metodo_{{ metodo.id }}" 
-                                       value="{{ metodo.id }}" required>
-                                <label class="form-check-label w-100" for="metodo_{{ metodo.id }}">
-                                    <div class="d-flex align-items-center">
-                                        <i class="{{ metodo.icono }} fa-2x me-3"></i>
-                                        <div>
-                                            <h6 class="mb-0 form-label">{{ metodo.nombre }}</h6>
-                                            <small class="text-muted caption">
-                                                {% if metodo.id == 'paypal' %}
-                                                    Paga de forma segura con PayPal
-                                                {% elif metodo.id == 'tarjeta' %}
-                                                    Tarjeta de crédito o débito
-                                                {% endif %}
-                                            </small>
+                            <div class="payment-option-card mb-3 border rounded-3 p-3 {% if forloop.first %}border-primary{% endif %}" 
+                                 onclick="selectPaymentMethod('{{ metodo.id }}')">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="metodo_pago" id="metodo_{{ metodo.id }}" 
+                                           value="{{ metodo.id }}" required 
+                                           {% if forloop.first %}checked{% endif %}>
+                                    <label class="form-check-label w-100" for="metodo_{{ metodo.id }}">
+                                        <div class="d-flex align-items-center">
+                                            <div class="payment-icon me-3">
+                                                <i class="{{ metodo.icono }} fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">{{ metodo.nombre }}</h6>
+                                                <small class="text-muted">
+                                                    {% if metodo.id == 'paypal' %}
+                                                        Paga de forma segura con PayPal
+                                                    {% elif metodo.id == 'tarjeta' %}
+                                                        Tarjeta de crédito o débito
+                                                    {% elif metodo.id == 'efectivo' %}
+                                                        Pago en efectivo al recibir
+                                                    {% endif %}
+                                                </small>
+                                            </div>
                                         </div>
-                                    </div>
-                                </label>
+                                    </label>
+                                </div>
                             </div>
                             {% endfor %}
                         </div>
                         
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg login-btn" 
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-eco btn-lg" 
                                     {% if not items %}disabled{% endif %}>
                                 <i class="fas fa-lock me-2"></i>
-                                Proceder al Pago
+                                Proceder al Pago - ${{ total }}
                             </button>
-                        </div>
-                        
-                        <div class="mt-3 text-center">
-                            <a href="{% url 'carrito' %}" class="text-decoration-none forgot-link">
-                                <i class="fas fa-arrow-left me-1"></i> Volver al carrito
+                            <a href="{% url 'carrito' %}" class="btn btn-eco-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i> Volver al carrito
                             </a>
                         </div>
                     </form>
                 </div>
             </div>
             
-            <!-- Información adicional -->
-            <div class="card mt-3 publish-card">
-                <div class="card-body">
-                    <h6 class="form-label"><i class="fas fa-shield-alt me-2 text-success"></i>Compra Segura</h6>
-                    <p class="small mb-0 caption">
-                        Tu información está protegida con encriptación SSL de 256 bits.
+            <!-- Información de seguridad -->
+            <div class="eco-card">
+                <div class="card-body text-center">
+                    <div class="security-badge mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-success"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">
+                        <i class="fas fa-lock me-2"></i>Compra 100% Segura
+                    </h6>
+                    <p class="small text-muted mb-3">
+                        Tu información está protegida con encriptación SSL. 
                         Nunca almacenamos datos de tu tarjeta.
                     </p>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-visa fa-2x me-3 text-primary"></i>
+                        <i class="fab fa-cc-mastercard fa-2x me-3 text-danger"></i>
+                        <i class="fab fa-cc-amex fa-2x me-3 text-info"></i>
+                        <i class="fab fa-paypal fa-2x text-primary"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,36 +187,182 @@
 </div>
 
 <style>
-.metodo-pago-option {
-    transition: all 0.3s;
-    cursor: pointer;
-    background: var(--color-input);
-    border: 1px solid var(--color-panel) !important;
-}
-.metodo-pago-option:hover {
-    background-color: #f8f9fa;
-    border-color: var(--color-primary) !important;
-}
-.metodo-pago-option input[type="radio"]:checked + label {
-    color: var(--color-primary);
-}
+    .payment-option-card {
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #f8f9fa;
+        border: 2px solid #e9ecef !important;
+    }
+    
+    .payment-option-card:hover {
+        background: white;
+        border-color: #4CAF50 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .payment-option-card.active {
+        background: #E8F5E9;
+        border-color: #4CAF50 !important;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .payment-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+        border-radius: 10px;
+    }
+    
+    .security-badge {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .payment-icons i {
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    }
+    
+    .payment-icons i:hover {
+        opacity: 1;
+    }
+    
+    .table-eco tbody tr:hover {
+        background-color: #F1F8E9;
+    }
+    
+    .btn-eco {
+        background: linear-gradient( #FF5722);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 3px 6px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #F57C00, #E64A19);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(255, 152, 0, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .badge-eco {
+        background: linear-gradient(135deg, var(--accent-color), #8BC34A);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Mejorar experiencia de selección de método de pago
-    const options = document.querySelectorAll('.metodo-pago-option');
-    options.forEach(option => {
+    const paymentOptions = document.querySelectorAll('.payment-option-card');
+    
+    function selectPaymentMethod(methodId) {
+        // Marcar el radio button correspondiente
+        const radio = document.getElementById(`metodo_${methodId}`);
+        if (radio) radio.checked = true;
+        
+        // Remover clase activa de todas las opciones
+        paymentOptions.forEach(option => option.classList.remove('active', 'border-primary'));
+        
+        // Agregar clase activa a la opción seleccionada
+        const selectedOption = document.querySelector(`.payment-option-card input[value="${methodId}"]`).closest('.payment-option-card');
+        if (selectedOption) {
+            selectedOption.classList.add('active', 'border-primary');
+        }
+    }
+    
+    // Configurar clic en tarjetas de pago
+    paymentOptions.forEach(option => {
         option.addEventListener('click', function() {
             const radio = this.querySelector('input[type="radio"]');
-            radio.checked = true;
-            
-            // Remover clase activa de todas las opciones
-            options.forEach(opt => opt.classList.remove('border-primary', 'bg-light'));
-            
-            // Agregar clase activa a la opción seleccionada
-            this.classList.add('border-primary', 'bg-light');
+            selectPaymentMethod(radio.value);
         });
+    });
+    
+    // Marcar la primera opción como activa inicialmente
+    if (paymentOptions.length > 0) {
+        const firstRadio = paymentOptions[0].querySelector('input[type="radio"]');
+        if (firstRadio) {
+            selectPaymentMethod(firstRadio.value);
+        }
+    }
+    
+    // Validación del formulario
+    const checkoutForm = document.getElementById('checkout-form');
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+            const items = {{ items|length|default:"0" }};
+            
+            if (items === 0) {
+                e.preventDefault();
+                alert('No hay productos en el carrito');
+                return false;
+            }
+            
+            // Mostrar confirmación
+            if (!confirm('¿Confirmar la compra por ${{ total }}?')) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Mostrar loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Procesando...';
+            submitBtn.disabled = true;
+            
+            // Restaurar después de 5 segundos si hay error
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+    }
+    
+    // Animación de aparición para las filas de productos
+    document.querySelectorAll('.table-eco tbody tr').forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        row.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+        }, 100 + (index * 100));
     });
 });
 </script>

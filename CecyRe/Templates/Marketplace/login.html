@@ -1,69 +1,303 @@
 {% extends './navegación.html' %}
 {% block pag %}
-<div class="login-container">
-    <div class="card login-card">
-        <h2 class="login-title">Iniciar Sesión</h2>
-        
-        <form method="POST" class="login-form">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="correo" class="form-label">Correo electrónico:</label>
-                <input type="email" 
-                       id="correo" 
-                       name="correo" 
-                       class="form-control login-input"
-                       required 
-                       placeholder="tu@ejemplo.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" 
-                       id="password" 
-                       name="password" 
-                       class="form-control login-input"
-                       required 
-                       placeholder="Ingresa tu contraseña">
-            </div>
-            
-            <div class="form-group form-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="remember">
-                    <span>Recordar sesión</span>
-                </label>
-                
-               <!-- <a href="#" class="forgot-link">
-                    ¿Olvidaste tu contraseña?
-                </a>-->
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary login-btn">
-                    <i class="fas fa-sign-in-alt me-2"></i> Entrar
-                </button>
-            </div>
-            
-            <div class="login-divider">
-                <span>¿No tienes cuenta?</span>
-            </div>
-            
-            <div class="login-register">
-                <a href="{% url 'registro' %}" class="btn btn-secondary register-btn">
-                    <i class="fas fa-user-plus me-2"></i> Crear cuenta
-                </a>
-            </div>
-        </form>
-
-        {% if messages %}
-            <div class="login-messages">
-                {% for m in messages %}
-                    <div class="alert alert-danger login-alert" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i> {{ m }}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="eco-card">
+                <div class="card-header-eco text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="login-icon-circle me-3">
+                            <i class="fas fa-sign-in-alt fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1">Iniciar Sesión</h2>
+                            <p class="mb-0 opacity-90">Accede a tu cuenta</p>
+                        </div>
                     </div>
-                {% endfor %}
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input type="email" 
+                                       id="correo" 
+                                       name="correo" 
+                                       class="form-control form-control-eco"
+                                       placeholder="tu@ejemplo.com"
+                                       required>
+                                <label for="correo">
+                                    <i class="fas fa-envelope me-2"></i>Correo electrónico
+                                </label>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu correo electrónico.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-floating position-relative">
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       class="form-control form-control-eco"
+                                       placeholder="Ingresa tu contraseña"
+                                       required>
+                                <label for="password">
+                                    <i class="fas fa-lock me-2"></i>Contraseña
+                                </label>
+                                <button type="button" class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-3" 
+                                        onclick="togglePasswordVisibility()">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </button>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu contraseña.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                                <label class="form-check-label" for="remember">
+                                    <i class="fas fa-check-circle me-1"></i>Recordar sesión
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-eco btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i> Entrar
+                            </button>
+                        </div>
+                        
+                        {% if messages %}
+                        <div class="mb-4">
+                            {% for m in messages %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i> {{ m }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="text-center">
+                            <p class="text-muted mb-0">¿No tienes cuenta?</p>
+                            <a href="{% url 'registro' %}" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-user-plus me-2"></i> Crear cuenta
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Tu información está protegida con encriptación SSL
+                    </small>
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
 </div>
+
+<style>
+    .login-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .form-control-eco {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 16px 15px;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control-eco:focus {
+        border-color: #4CAF50;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4CAF50;
+        font-weight: 500;
+    }
+    
+    .btn-eco {
+        background: linear-gradient(135deg, #FF5722);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #F57C00, #E64A19);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 152, 0, 0.4);
+    }
+    
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 10px;
+    }
+    
+    .form-check-input:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+        border-radius: 10px;
+        padding: 8px 20px;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+        .login-icon-circle {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .login-icon-circle i {
+            font-size: 1.5rem;
+        }
+        
+        .form-control-eco {
+            padding: 14px 15px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle para mostrar/ocultar contraseña
+        window.togglePasswordVisibility = function() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        };
+        
+        // Validación de formulario
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const email = document.getElementById('correo');
+            const password = document.getElementById('password');
+            
+            if (!email.value || !password.value) {
+                e.preventDefault();
+                
+                if (!email.value) {
+                    email.classList.add('is-invalid');
+                }
+                if (!password.value) {
+                    password.classList.add('is-invalid');
+                }
+                
+                // Animación de error
+                const inputs = [email, password];
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        input.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => {
+                            input.classList.remove('animate__animated', 'animate__shakeX');
+                        }, 1000);
+                    }
+                });
+                
+                return false;
+            }
+            
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                e.preventDefault();
+                email.classList.add('is-invalid');
+                email.nextElementSibling.textContent = 'Por favor ingresa un correo válido.';
+                email.classList.add('animate__animated', 'animate__shakeX');
+                setTimeout(() => {
+                    email.classList.remove('animate__animated', 'animate__shakeX');
+                }, 1000);
+                return false;
+            }
+            
+            // Mostrar loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Iniciando sesión...';
+            submitBtn.disabled = true;
+        });
+        
+        // Remover mensaje de error al escribir
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+        
+        // Efecto hover en el icono principal
+        const loginIcon = document.querySelector('.login-icon-circle');
+        loginIcon.style.transition = 'transform 0.3s ease';
+        
+        loginIcon.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        loginIcon.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0)';
+        });
+        
+        // Animación de entrada
+        const card = document.querySelector('.eco-card');
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+        
+        // Auto-focus en el primer campo
+        document.getElementById('correo').focus();
+    });
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 {% endblock %}

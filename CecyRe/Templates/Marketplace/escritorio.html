@@ -2,180 +2,392 @@
 {% load static %}
 
 {% block pag %}
-<div class="desktop-container">
-    <div class="card desktop-card">
-        <div class="desktop-header">
-            <h2 class="desktop-title">Escritorio</h2>
-            <div class="user-welcome">
-                <i class="fas fa-user-circle user-icon"></i>
-                <span class="user-greeting">Bienvenido, {{ usuario.nombre }}</span>
-            </div>
-        </div>
-        
-        <div class="desktop-content">
-            <div class="desktop-section">
-                <h3 class="section-title">Mis Productos</h3>
-                
-                {% if productos %}
-                    <div class="desktop-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-value">{{ productos|length }}</span>
-                                <span class="stat-label">Productos totales</span>
+<div class="container-fluid px-lg-4 py-4">
+    <!-- Encabezado del escritorio -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white py-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h2 class="mb-2">
+                                <i class="fas fa-desktop me-3"></i>Mi Escritorio
+                            </h2>
+                            <p class="mb-0 opacity-90">
+                                <i class="fas fa-user-circle me-2"></i>
+                                Bienvenido, {{ usuario.nombre }}
+                                <span class="badge bg-light text-primary ms-2">{{ usuario.get_rol_display }}</span>
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'agregar_producto' %}" class="btn btn-light">
+                                    <i class="fas fa-plus-circle me-2"></i>Nuevo Producto
+                                </a>
+                                <a href="{% url 'perfil' %}" class="btn btn-outline-light">
+                                    <i class="fas fa-cog me-2"></i>Configuración
+                                </a>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="productos-grid">
-                        {% for prod in productos %}
-                            <div class="producto-card desktop-product-card">
-                                <div class="producto-imagen">
-                                    {% if prod.imagenes.all %}
-                                        <img src="{{ prod.imagenes.first.imagen.url }}" 
-                                             alt="{{ prod.nombre }}"
-                                             class="producto-img">
-                                    {% else %}
-                                        <div class="sin-imagen desktop-no-image">
-                                            <i class="fas fa-image"></i>
-                                            <span>Sin imagen</span>
-                                        </div>
-                                    {% endif %}
-                                    {% if prod.estado == 'disponible' %}
-                                        <span class="producto-badge badge-disponible">Disponible</span>
-                                    {% elif prod.estado == 'vendido' %}
-                                        <span class="producto-badge badge-vendido">Vendido</span>
-                                    {% else %}
-                                        <span class="producto-badge badge-otro">{{ prod.get_estado_display }}</span>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="producto-info">
-                                    <h4 class="producto-nombre">{{ prod.nombre|truncatechars:40 }}</h4>
-                                    <div class="producto-detalles">
-                                        <div class="detalle-item">
-                                            <i class="fas fa-dollar-sign detalle-icon"></i>
-                                            <span class="detalle-text">
-                                                <strong>${{ prod.precio_kg }}</strong> / kg
-                                            </span>
-                                        </div>
-                                        <div class="detalle-item">
-                                            <i class="fas fa-weight detalle-icon"></i>
-                                            <span class="detalle-text">{{ prod.peso_disponible_kg }} kg</span>
-                                        </div>
-                                        <div class="detalle-item">
-                                            <i class="fas fa-filter detalle-icon"></i>
-                                            <span class="detalle-text">{{ prod.get_pureza_display }}</span>
-                                        </div>
-                                        <div class="detalle-item">
-                                            <i class="fas fa-calendar detalle-icon"></i>
-                                            <span class="detalle-text">{{ prod.fecha_publicacion|date:"d/m/Y" }}</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="producto-acciones">
-                                        <a href="{% url 'actualizar_producto' prod.id_producto %}" 
-                                           class="btn btn-sm btn-primary desktop-btn-edit">
-                                            <i class="fas fa-edit me-1"></i> Editar
-                                        </a>
-                                        
-                                        <!-- Modal de eliminación -->
-                                        <button type="button" 
-                                                class="btn btn-sm btn-danger desktop-btn-delete" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalEliminar{{ prod.id_producto }}">
-                                            <i class="fas fa-trash me-1"></i> Eliminar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal de eliminación -->
-                            <div class="modal fade desktop-modal" id="modalEliminar{{ prod.id_producto }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content desktop-modal-content">
-                                        <div class="modal-header desktop-modal-header">
-                                            <h5 class="modal-title desktop-modal-title">
-                                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                                Confirmar Eliminación
-                                            </h5>
-                                            <button type="button" class="btn-close desktop-modal-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body desktop-modal-body">
-                                            <div class="modal-warning">
-                                                <i class="fas fa-exclamation-circle modal-warning-icon"></i>
-                                                <p>¿Estás seguro de eliminar el producto <strong>"{{ prod.nombre }}"</strong>?</p>
-                                            </div>
-                                            <div class="modal-details">
-                                                <p><strong>Precio:</strong> ${{ prod.precio_kg }} / kg</p>
-                                                <p><strong>Peso disponible:</strong> {{ prod.peso_disponible_kg }} kg</p>
-                                                <p><strong>Estado:</strong> {{ prod.get_estado_display }}</p>
-                                            </div>
-                                            <div class="alert alert-warning modal-alert">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                Esta acción no se puede deshacer.
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer desktop-modal-footer">
-                                            <button type="button" class="btn btn-secondary desktop-btn-cancel" data-bs-dismiss="modal">
-                                                <i class="fas fa-times me-1"></i> Cancelar
-                                            </button>
-                                            <form action="{% url 'eliminar_producto' prod.id_producto %}" method="post" class="modal-form">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-danger desktop-btn-confirm">
-                                                    <i class="fas fa-trash me-1"></i> Sí, eliminar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state desktop-empty-state">
-                        <div class="empty-content">
-                            <i class="fas fa-box-open empty-icon"></i>
-                            <h3 class="empty-title">No tienes productos</h3>
-                            <p class="empty-text">Comienza agregando tu primer producto</p>
-                            <a href="{% url 'agregar_producto' %}" class="btn btn-primary empty-btn">
-                                <i class="fas fa-plus me-1"></i> Agregar primer producto
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div class="desktop-actions">
-                <a href="{% url 'agregar_producto' %}" class="btn btn-primary desktop-btn-add">
-                    <i class="fas fa-plus-circle me-2"></i> Agregar nuevo producto
-                </a>
-                
-                <div class="quick-actions">
-                    <h4 class="quick-actions-title">Acciones rápidas</h4>
-                    <div class="quick-actions-grid">
-                        {% if usuario.rol == 'admin' %}
-                        <a href="#" class="quick-action-card">
-                            <i class="fas fa-chart-line quick-action-icon"></i>
-                            <span class="quick-action-text">Ver Dashboard</span>
-                        </a>
-                        {% else %}
-                        <a href="#" class="quick-action-card">
-                            <i class="fas fa-chart-bar quick-action-icon"></i>
-                            <span class="quick-action-text">Ver mi Estadística</span>
-                        </a>
-                        {% endif %}
-                        
-                        <a href="#" class="quick-action-card">
-                            <i class="fas fa-cog quick-action-icon"></i>
-                            <span class="quick-action-text">Configuración</span>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Estadísticas CORREGIDAS -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
+                                <i class="fas fa-box fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0">{{ productos|length }}</h3>
+                            <p class="text-muted mb-0">Productos totales</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0">{{ disponibles }}</h3>
+                            <p class="text-muted mb-0">Disponibles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0">
+                                ${{ max_precio }}
+                            </h3>
+                            <p class="text-muted mb-0">Mayor precio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 text-info rounded-circle p-3">
+                                <i class="fas fa-weight-hanging fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0">
+                                {{ max_peso }} kg
+                            </h3>
+                            <p class="text-muted mb-0">Mayor peso</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-light border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-boxes me-2"></i>Mis Productos
+                        </h4>
+                        <div>
+                            <span class="badge bg-primary rounded-pill fs-6 px-3 py-2">
+                                {{ productos|length }} productos
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if productos %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="products-container">
+                            {% for prod in productos %}
+                                <div class="col" id="product-{{ prod.id_producto }}">
+                                    <div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
+                                        <!-- Imagen del producto -->
+                                        <div class="product-image-container position-relative overflow-hidden" style="height: 180px;">
+                                            {% if prod.imagenes.all %}
+                                                <img src="{{ prod.imagenes.first.imagen.url }}" 
+                                                     alt="{{ prod.nombre }}"
+                                                     class="img-fluid w-100 h-100 object-fit-cover"
+                                                     loading="lazy">
+                                            {% else %}
+                                                <div class="d-flex align-items-center justify-content-center bg-gradient-light h-100">
+                                                    <div class="text-center">
+                                                        <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                                        <p class="text-muted small mb-0">Sin imagen</p>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <!-- Badge de estado -->
+                                            <div class="position-absolute top-0 end-0 m-3">
+                                                {% if prod.estado == 'disponible' %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check-circle me-1"></i>Disponible
+                                                    </span>
+                                                {% elif prod.estado == 'vendido' %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-check me-1"></i>Vendido
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">
+                                                        {{ prod.get_estado_display }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Información del producto -->
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title text-dark fw-bold mb-2">
+                                                {{ prod.nombre|truncatechars:30 }}
+                                            </h5>
+                                            
+                                            <div class="mb-3">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <h4 class="text-success fw-bold mb-0 me-2">
+                                                        ${{ prod.precio_kg }}
+                                                    </h4>
+                                                    <small class="text-muted">/kg</small>
+                                                </div>
+                                                <div class="d-flex justify-content-between text-muted small">
+                                                    <span>
+                                                        <i class="fas fa-weight me-1"></i>
+                                                        {{ prod.peso_disponible_kg }} kg
+                                                    </span>
+                                                    <span>
+                                                        <i class="fas fa-certificate me-1"></i>
+                                                        {{ prod.get_pureza_display }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Botones de acción -->
+                                            <div class="mt-auto">
+                                                <div class="d-grid gap-2">
+                                                    <a href="{% url 'actualizar_producto' prod.id_producto %}" 
+                                                       class="btn btn-outline-primary">
+                                                        <i class="fas fa-edit me-2"></i>Editar
+                                                    </a>
+                                                    
+                                                    <!-- BOTÓN SIMPLE: Directo a la página de confirmación -->
+                                                    <a href="{% url 'eliminar_producto' prod.id_producto %}" 
+                                                       class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash me-2"></i>Eliminar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Estado vacío -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-box-open fa-4x text-muted"></i>
+                            </div>
+                            <h3 class="text-primary mb-3">No tienes productos</h3>
+                            <p class="text-muted mb-4 lead">Comienza agregando tu primer producto al marketplace</p>
+                            <a href="{% url 'agregar_producto' %}" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-plus-circle me-2"></i>Agregar Primer Producto
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Footer con acciones rápidas -->
+                {% if productos %}
+                <div class="card-footer bg-light border-0 py-4">
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <h5 class="mb-3">
+                                <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                            </h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'agregar_producto' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Nuevo Producto
+                                </a>
+                                {% if usuario.rol == 'admin' %}
+                                <a href="{% url 'dashboardadmin' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-chart-line me-2"></i>Dashboard
+                                </a>
+                                {% else %}
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-chart-bar me-2"></i>Estadísticas
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'perfil' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-cog me-2"></i>Configuración
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-lg-end">
+                            <div class="text-muted small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Última actualización: {% now "d/m/Y H:i" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Estilos específicos -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #198754 100%) !important;
+    }
+    
+    .bg-gradient-light {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .card {
+        border-radius: 15px !important;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.15) !important;
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(13, 110, 253, 0.2) !important;
+    }
+    
+    .product-image-container {
+        background: #f8f9fa;
+    }
+    
+    .btn-primary {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+    }
+    
+    .btn-outline-primary:hover,
+    .btn-outline-danger:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<!-- Script SIMPLIFICADO (solo animaciones) -->
+<script>
+// Cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado - Inicializando...');
+    
+    // 1. Animar tarjetas de productos
+    animateProductCards();
+    
+    // 2. Animar contadores
+    animateCounters();
+});
+
+// ============================================
+// FUNCIONES PRINCIPALES
+// ============================================
+
+function animateProductCards() {
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 50 * index);
+    });
+}
+
+function animateCounters() {
+    const counters = [
+        { element: document.getElementById('counter-total'), value: parseInt('{{ productos|length }}') || 0 },
+        { element: document.getElementById('counter-disponibles'), value: parseInt('{{ disponibles }}') || 0 },
+        { element: document.getElementById('counter-precio'), value: parseFloat('{{ max_precio }}') || 0, isCurrency: true },
+        { element: document.getElementById('counter-peso'), value: parseFloat('{{ max_peso }}') || 0, isWeight: true }
+    ];
+    
+    counters.forEach(counter => {
+        if (!counter.element) return;
+        
+        const originalText = counter.element.textContent;
+        let targetValue = counter.value;
+        
+        if (targetValue === 0) return;
+        
+        let current = 0;
+        const increment = targetValue / 20;
+        const interval = setInterval(() => {
+            current += increment;
+            if (current >= targetValue) {
+                current = targetValue;
+                clearInterval(interval);
+            }
+            
+            if (counter.isCurrency) {
+                counter.element.textContent = '$' + current.toFixed(0);
+            } else if (counter.isWeight) {
+                counter.element.textContent = current.toFixed(1) + ' kg';
+            } else {
+                counter.element.textContent = Math.round(current);
+            }
+        }, 50);
+    });
+}
+</script>
+
+<!-- Bootstrap JS (debe estar cargado en navegación.html) -->
 {% endblock %}

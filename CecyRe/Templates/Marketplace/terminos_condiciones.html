@@ -1,530 +1,831 @@
 {% extends './navegación.html' %}
 
 {% block pag %}
-<div class="terms-container">
-    <h2 class="terms-main-title">Términos y Condiciones</h2>
-    <p class="terms-update-date">Última actualización: {{ current_date|date:"d/m/Y" }}</p>
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold text-primary mb-3">
+                <i class="fas fa-file-contract me-3"></i>Términos y Condiciones
+            </h1>
+            <p class="lead text-muted">
+                Última actualización: {{ current_date|date:"d/m/Y" }}
+            </p>
+        </div>
+    </div>
     
-    <div class="contenedor-terms">
-        <!-- Tarjeta de advertencia -->
-        <div class="card card-eco">
-            <div class="card-content">
-                <div class="warning-header">
-                    <i class="fas fa-exclamation-triangle warning-icon"></i>
-                    <h3 class="warning-title h3">Importante</h3>
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <!-- Navegación lateral -->
+            <div class="eco-card sticky-top" style="top: 20px;">
+                <div class="card-header-eco">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Contenido
+                    </h5>
                 </div>
-                <p class="warning-text">Lee detenidamente estos términos antes de usar nuestros servicios</p>
-            </div>
-        </div>
-        
-        <!-- Secciones de términos -->
-        <div class="terms-sections">
-            <!-- Sección 1 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">1. Aceptación de los Términos</h3>
-                <div class="terms-section-content">
-                    <p>Al acceder y usar esta plataforma, aceptas estar sujeto a estos términos y condiciones.</p>
-                </div>
-            </div>
-            
-            <!-- Sección 2 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">2. Uso del Servicio</h3>
-                <div class="terms-section-content">
-                    <p>Debes usar el servicio de manera responsable y legal. No puedes:</p>
-                    <ul class="terms-list">
-                        <li>Publicar contenido falso o engañoso</li>
-                        <li>Violar derechos de propiedad intelectual</li>
-                        <li>Realizar actividades fraudulentas</li>
-                        <li>Interferir con el funcionamiento del sitio</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Sección 3 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">3. Responsabilidades del Usuario</h3>
-                <div class="terms-section-content">
-                    <p>Eres responsable de:</p>
-                    <ul class="terms-list">
-                        <li>Mantener la confidencialidad de tu cuenta</li>
-                        <li>Proporcionar información veraz</li>
-                        <li>Cumplir con las leyes aplicables</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Sección 4 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">4. Propiedad Intelectual</h3>
-                <div class="terms-section-content">
-                    <p>Todo el contenido de la plataforma (logos, diseño, software) es propiedad nuestra.</p>
-                </div>
-            </div>
-            
-            <!-- Sección 5 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">5. Limitación de Responsabilidad</h3>
-                <div class="terms-section-content">
-                    <p>No nos hacemos responsables por:</p>
-                    <ul class="terms-list">
-                        <li>Interrupciones temporales del servicio</li>
-                        <li>Contenido publicado por otros usuarios</li>
-                        <li>Daños indirectos o consecuentes</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Sección 6 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">6. Modificaciones</h3>
-                <div class="terms-section-content">
-                    <p>Podemos modificar estos términos en cualquier momento. Te notificaremos de cambios importantes.</p>
-                </div>
-            </div>
-            
-            <!-- Sección 7 -->
-            <div class="card card-eco">
-                <h3 class="terms-section-title h3">7. Contacto</h3>
-                <div class="terms-section-content">
-                    <p>Para preguntas sobre estos términos: contacto@empresa.com</p>
+                <div class="card-body p-0">
+                    <nav class="nav flex-column terms-nav">
+                        <a class="nav-link" href="#section1">
+                            <i class="fas fa-chevron-right me-2"></i>Aceptación de los Términos
+                        </a>
+                        <a class="nav-link" href="#section2">
+                            <i class="fas fa-chevron-right me-2"></i>Uso del Servicio
+                        </a>
+                        <a class="nav-link" href="#section3">
+                            <i class="fas fa-chevron-right me-2"></i>Responsabilidades del Usuario
+                        </a>
+                        <a class="nav-link" href="#section4">
+                            <i class="fas fa-chevron-right me-2"></i>Propiedad Intelectual
+                        </a>
+                        <a class="nav-link" href="#section5">
+                            <i class="fas fa-chevron-right me-2"></i>Limitación de Responsabilidad
+                        </a>
+                        <a class="nav-link" href="#section6">
+                            <i class="fas fa-chevron-right me-2"></i>Modificaciones
+                        </a>
+                        <a class="nav-link" href="#section7">
+                            <i class="fas fa-chevron-right me-2"></i>Contacto
+                        </a>
+                    </nav>
                 </div>
             </div>
         </div>
         
-        <!-- Formulario de aceptación -->
-        <div class="card card-innovacion">
-            <div class="card-content">
-                <h3 class="accept-title h3">Aceptación de Términos</h3>
-                
-                <form method="post" class="terms-form">
-                    {% csrf_token %}
+        <div class="col-lg-9">
+            <!-- Introducción -->
+            <div class="eco-card mb-4">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle fa-4x text-warning mb-3"></i>
+                        <h3 class="text-warning">Importante</h3>
+                    </div>
+                    <p class="lead text-center mb-0">
+                        En <strong>CECyTEM Recicla - Marketplace</strong> los términos y condiciones establecen las reglas para el uso de nuestra plataforma. 
+                        Lee detenidamente antes de usar nuestros servicios.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Secciones de términos -->
+            <div id="section1" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">1</span>
+                            Aceptación de los Términos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Al acceder y usar esta plataforma, aceptas estar sujeto a estos términos y condiciones en su totalidad. Si no estás de acuerdo con alguna parte de estos términos, no podrás usar nuestros servicios.</p>
+                        <div class="mt-3">
+                            <div class="info-type-card">
+                                <div class="info-type-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div>
+                                    <h6>Condición obligatoria</h6>
+                                    <p class="small text-muted mb-0">El uso del servicio implica la aceptación completa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section2" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">2</span>
+                            Uso del Servicio
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Debes usar el servicio de manera responsable y legal. Se prohíben las siguientes actividades:</p>
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="warning-card">
+                                    <div class="warning-icon">
+                                        <i class="fas fa-ban"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Contenido falso</h6>
+                                        <p class="small text-muted mb-0">Publicar información engañosa</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="warning-card">
+                                    <div class="warning-icon">
+                                        <i class="fas fa-copyright"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Violación de derechos</h6>
+                                        <p class="small text-muted mb-0">Usar contenido protegido sin permiso</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="warning-card">
+                                    <div class="warning-icon">
+                                        <i class="fas fa-user-secret"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Actividades fraudulentas</h6>
+                                        <p class="small text-muted mb-0">Engañar o estafar a otros usuarios</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="warning-card">
+                                    <div class="warning-icon">
+                                        <i class="fas fa-server"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Interferencia con el sitio</h6>
+                                        <p class="small text-muted mb-0">Afectar el funcionamiento normal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section3" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">3</span>
+                            Responsabilidades del Usuario
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Como usuario, eres responsable de:</p>
+                        <div class="rights-grid">
+                            <div class="right-item">
+                                <i class="fas fa-lock text-success"></i>
+                                <span>Mantener la confidencialidad de tu cuenta</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-user-check text-success"></i>
+                                <span>Proporcionar información veraz</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-balance-scale text-success"></i>
+                                <span>Cumplir con las leyes aplicables</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-exclamation-triangle text-warning"></i>
+                                <span>Informar actividades sospechosas</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-sync-alt text-info"></i>
+                                <span>Actualizar tu información personal</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-handshake text-primary"></i>
+                                <span>Cumplir compromisos comerciales</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section4" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">4</span>
+                            Propiedad Intelectual
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info bg-info bg-opacity-10 border-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Todos los derechos reservados.</strong> El contenido de la plataforma es propiedad de CECyTEM Recicla o de sus licenciantes.
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="security-feature-card">
+                                    <div class="security-feature-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Diseño y logotipos</h6>
+                                        <p class="small text-muted mb-0">Elementos visuales protegidos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="security-feature-card">
+                                    <div class="security-feature-icon">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Software y código</h6>
+                                        <p class="small text-muted mb-0">Plataforma desarrollada internamente</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="security-feature-card">
+                                    <div class="security-feature-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Contenido textual</h6>
+                                        <p class="small text-muted mb-0">Documentación y textos originales</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="security-feature-card">
+                                    <div class="security-feature-icon">
+                                        <i class="fas fa-cube"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Funcionalidades únicas</h6>
+                                        <p class="small text-muted mb-0">Características exclusivas de la plataforma</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section5" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">5</span>
+                            Limitación de Responsabilidad
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>No nos hacemos responsables por:</p>
+                        <ul class="terms-list">
+                            <li>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Interrupciones temporales del servicio</strong> - Mantenimientos programados o fallas técnicas
+                            </li>
+                            <li>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Contenido publicado por otros usuarios</strong> - Verificamos pero no garantizamos contenido de terceros
+                            </li>
+                            <li>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Daños indirectos o consecuentes</strong> - Pérdidas de negocio, datos o ingresos
+                            </li>
+                            <li>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <strong>Actos de fuerza mayor</strong> - Situaciones fuera de nuestro control
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section6" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">6</span>
+                            Modificaciones
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning bg-warning bg-opacity-10 border-warning">
+                            <i class="fas fa-bell me-2"></i>
+                            <strong>Podemos modificar estos términos en cualquier momento.</strong> Te notificaremos de cambios importantes a través de la plataforma.
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-primary">
+                                        <i class="fas fa-bullhorn fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Notificación de cambios</h6>
+                                        <p class="small text-muted mb-0">Se notificarán cambios significativos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-success">
+                                        <i class="fas fa-history fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Versiones anteriores</h6>
+                                        <p class="small text-muted mb-0">Disponibles en el historial de términos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section7" class="terms-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">7</span>
+                            Contacto
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Para consultas sobre estos términos:</p>
+                        <div class="contact-info">
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-envelope text-primary me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Correo electrónico</h6>
+                                    <p class="mb-0">terminos@cecytemrecicla.edu.mx</p>
+                                </div>
+                            </div>
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-phone text-success me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Teléfono de contacto</h6>
+                                    <p class="mb-0">+52 555 123 4567</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-clock text-warning me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Horario de atención</h6>
+                                    <p class="mb-0">Lunes a Viernes: 9:00 - 18:00 hrs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de aceptación -->
+            <div class="eco-card">
+                <div class="card-header-eco">
+                    <h4 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Aceptación de Términos
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success bg-success bg-opacity-10 border-success">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Al continuar, aceptas los términos y condiciones de uso de CECyTEM Recicla Marketplace.
+                    </div>
                     
-                    <div class="accept-options">
-                        <div class="accept-item">
-                            <input type="checkbox" name="accept_terms" id="accept_terms" required class="accept-checkbox">
-                            <label for="accept_terms" class="accept-label">
-                                <span class="accept-text">Acepto los términos y condiciones</span>
+                    <div class="consent-options mt-4">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="termsRead" required>
+                            <label class="form-check-label fw-bold" for="termsRead">
+                                He leído y comprendo los Términos y Condiciones
                             </label>
                         </div>
                         
-                        <div class="accept-item">
-                            <input type="checkbox" name="confirm_age" id="confirm_age" required class="accept-checkbox">
-                            <label for="confirm_age" class="accept-label">
-                                <span class="accept-text">Confirmo que soy mayor de edad</span>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="ageConfirm" required>
+                            <label class="form-check-label fw-bold" for="ageConfirm">
+                                Confirmo que soy mayor de edad (18+ años)
                             </label>
                         </div>
                     </div>
                     
-                    <div class="consent-buttons">
-                        <a href="{% url 'registro' %}" class="btn btn-primary">
-                            <i class="fas fa-home me-1"></i> Aceptar Y continuar
-                        </a>
-                        
-                        <a href="{% url 'home' %}" class="btn btn-secondary">
-                            <i class="fas fa-home me-1"></i> Volver al Inicio
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-eco btn-lg" onclick="acceptTerms()">
+                            <i class="fas fa-check-circle me-2"></i>Aceptar y Continuar
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-eco-secondary btn-lg">
+                            <i class="fas fa-home me-2"></i>Volver al Inicio
                         </a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Contenedor principal */
-    .terms-container {
-        padding: var(--space-4) 0;
-        min-height: calc(100vh - 220px);
-        background: linear-gradient(135deg, var(--color-background) 0%, #8a8a8a 100%);
+    /* Estilos consistentes con política.html */
+    .eco-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
     }
     
-    .terms-main-title {
-        text-align: center;
-        color: var(--color-text-primary);
-        margin-bottom: var(--space-2);
-        font-family: var(--font-heading);
-        font-size: var(--text-2xl);
-        font-weight: bold;
-        text-transform: uppercase;
+    .eco-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     }
     
-    .terms-update-date {
-        text-align: center;
-        color: var(--color-text-secondary);
-        margin-bottom: var(--space-4);
-        font-size: var(--text-base);
-        font-style: italic;
-        background: var(--color-input);
-        padding: var(--space-2) var(--space-4);
-        border-radius: var(--radius-md);
-        display: inline-block;
-        margin-left: 50%;
-        transform: translateX(-50%);
+    .card-header-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px 12px 0 0 !important;
+        border-bottom: none;
     }
     
-    .contenedor-terms {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 var(--space-4);
+    /* Navegación lateral */
+    .terms-nav .nav-link {
+        padding: 12px 20px;
+        color: #495057;
+        border-left: 3px solid transparent;
+        transition: all 0.3s;
     }
     
-    /* Tarjeta de advertencia */
-    .warning-header {
-        display: flex;
-        align-items: center;
-        gap: var(--space-3);
-        margin-bottom: var(--space-2);
+    .terms-nav .nav-link:hover {
+        background-color: #F1F8E9;
+        color: #4CAF50;
+        border-left-color: #4CAF50;
+        padding-left: 25px;
     }
     
-    .warning-icon {
-        color: var(--color-warning);
-        font-size: 1.5rem;
+    .terms-nav .nav-link i {
+        transition: transform 0.3s;
     }
     
-    .warning-title {
-        color: var(--color-warning);
-        margin: 0;
-    }
-    
-    .warning-text {
-        color: var(--color-text-primary);
-        font-size: var(--text-base);
-        line-height: 1.5;
-        margin: 0;
-    }
-    
-    /* Secciones de términos */
-    .terms-sections {
-        display: grid;
-        gap: var(--space-4);
-        margin: var(--space-4) 0;
-    }
-    
-    .card-eco {
-        background: var(--color-input);
-        border: 1px solid var(--color-panel);
-    }
-    
-    .card-eco:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-lg);
-        border-color: var(--color-primary);
-    }
-    
-    .card-content {
-        padding: var(--space-4);
-    }
-    
-    .terms-section-title {
-        color: var(--color-text-primary);
-        margin-bottom: var(--space-3);
-        border-bottom: 2px solid var(--color-primary);
-        padding-bottom: var(--space-1);
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-    }
-    
-    .terms-section-title:before {
-        content: "•";
-        color: var(--color-primary);
-        font-size: 1.5rem;
-    }
-    
-    .terms-section-content {
-        margin-top: var(--space-3);
-    }
-    
-    .terms-section-content p {
-        color: var(--color-text-primary);
-        line-height: 1.6;
-        margin-bottom: var(--space-3);
-    }
-    
-    .terms-list {
-        list-style: none;
-        padding-left: 1.5rem;
-        margin: var(--space-3) 0;
-    }
-    
-    .terms-list li {
-        padding: var(--space-1) 0;
-        color: var(--color-text-primary);
-        position: relative;
-        line-height: 1.5;
-    }
-    
-    .terms-list li:before {
-        content: "✓";
-        color: var(--color-success);
-        position: absolute;
-        left: -1.5rem;
-        font-weight: bold;
-    }
-    
-    /* Formulario de aceptación */
-    .card-innovacion {
-        background: var(--color-input);
-        border: 1px solid var(--color-info);
-    }
-    
-    .accept-title {
-        color: var(--color-text-primary);
-        margin-bottom: var(--space-4);
-        text-align: center;
-        border-bottom: 2px solid var(--color-info);
-        padding-bottom: var(--space-2);
-    }
-    
-    .accept-options {
-        margin-bottom: var(--space-4);
-    }
-    
-    .accept-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: var(--space-3);
-        padding: var(--space-3);
-        background: var(--color-panel);
-        border-radius: var(--radius-md);
-        border: 1px solid var(--color-input);
-        transition: all 0.3s ease;
-    }
-    
-    .accept-item:hover {
-        background: rgba(16, 185, 129, 0.05);
-        border-color: var(--color-primary);
+    .terms-nav .nav-link:hover i {
         transform: translateX(3px);
     }
     
-    .accept-checkbox {
-        margin-top: 2px;
-        margin-right: var(--space-3);
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        accent-color: var(--color-primary);
+    /* Números de sección */
+    .section-number {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #FF9800, #F57C00);
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        margin-right: 15px;
+        font-weight: bold;
     }
     
-    .accept-label {
-        flex: 1;
-        cursor: pointer;
-    }
-    
-    .accept-text {
-        color: var(--color-text-primary);
-        font-size: var(--text-base);
-        font-weight: 500;
-        line-height: 1.4;
-    }
-    
-    .accept-buttons {
+    /* Tarjetas de información */
+    .info-type-card {
         display: flex;
-        gap: var(--space-3);
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .info-type-card:hover {
+        background: white;
+        border-color: #4CAF50;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .info-type-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        flex-wrap: wrap;
+        color: #4CAF50;
+        margin-right: 15px;
+        font-size: 1.2rem;
     }
     
-    /* Responsive */
-    @media (max-width: 1200px) {
-        .contenedor-terms {
-            padding: 0 var(--space-3);
-        }
+    /* Tarjetas de advertencia */
+    .warning-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
     }
     
-    @media (max-width: 992px) {
-        .terms-sections {
-            grid-template-columns: 1fr;
-        }
-        
-        .accept-buttons {
-            flex-direction: column;
-        }
-        
-        .btn-primary,
-        .btn-secondary {
-            width: 100%;
-            justify-content: center;
-        }
+    .warning-card:hover {
+        background: white;
+        border-color: #dc3545;
+        transform: translateY(-3px);
+    }
+    
+    .warning-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #dc3545;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+    
+    /* Listas de términos */
+    .terms-list {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .terms-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+        line-height: 1.6;
+    }
+    
+    .terms-list li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Características de seguridad */
+    .security-feature-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .security-feature-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2196F3;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+    
+    /* Casos de compartir */
+    .sharing-case {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .sharing-icon {
+        margin-right: 15px;
+        min-width: 50px;
+    }
+    
+    /* Derechos */
+    .rights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .right-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .right-item:hover {
+        background: #F1F8E9;
+        border-color: #4CAF50;
+        transform: translateX(5px);
+    }
+    
+    .right-item i {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        width: 30px;
+        text-align: center;
+    }
+    
+    /* Información de contacto */
+    .contact-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .contact-item:hover {
+        background: white;
+        border-color: #4CAF50;
+        transform: translateX(5px);
+    }
+    
+    /* Botones */
+    .btn-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #43A047, #1B5E20);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Checkboxes */
+    .form-check-input:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+    
+    .form-check-input:checked:focus {
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.25);
     }
     
     @media (max-width: 768px) {
-        .terms-container {
-            padding: var(--space-3) 0;
+        .section-number {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            font-size: 0.9rem;
         }
         
-        .terms-main-title {
-            font-size: var(--text-xl);
-            padding: 0 var(--space-3);
+        .rights-grid {
+            grid-template-columns: 1fr;
         }
         
-        .terms-update-date {
-            font-size: var(--text-sm);
-            padding: var(--space-1) var(--space-3);
-            margin-bottom: var(--space-3);
-        }
-        
-        .contenedor-terms {
-            padding: 0 var(--space-2);
-        }
-        
-        .card-content {
-            padding: var(--space-3);
-        }
-        
-        .terms-section-title {
-            font-size: var(--text-base);
-        }
-        
-        .terms-section-content p,
-        .accept-text {
-            font-size: var(--text-sm);
-        }
-        
-        .accept-item {
-            padding: var(--space-2);
-        }
-        
-        .accept-checkbox {
-            width: 16px;
-            height: 16px;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .terms-main-title {
-            font-size: var(--text-lg);
-        }
-        
-        .warning-header {
+        .contact-item {
             flex-direction: column;
             text-align: center;
-            gap: var(--space-1);
         }
         
-        .warning-icon {
-            font-size: 1.2rem;
+        .contact-item i {
+            margin-bottom: 10px;
+            margin-right: 0;
         }
         
-        .warning-title {
-            font-size: var(--text-base);
-        }
-        
-        .warning-text {
-            font-size: var(--text-sm);
-        }
-        
-        .accept-buttons {
-            gap: var(--space-2);
-        }
-    }
-    
-    @media (min-width: 992px) {
-        .terms-sections {
-            grid-template-columns: repeat(2, 1fr);
+        .terms-nav {
+            font-size: 0.9rem;
         }
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Efecto hover en tarjetas
-        document.querySelectorAll('.card-eco').forEach(function(card) {
+        // Smooth scroll para navegación
+        document.querySelectorAll('.terms-nav .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Resaltar sección activa en navegación
+        const sections = document.querySelectorAll('.terms-section');
+        const navLinks = document.querySelectorAll('.terms-nav .nav-link');
+        
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                const sectionHeight = section.clientHeight;
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = '#' + section.id;
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentSection) {
+                    link.classList.add('active');
+                    link.style.borderLeftColor = '#4CAF50';
+                    link.style.color = '#4CAF50';
+                    link.style.backgroundColor = '#F1F8E9';
+                } else {
+                    link.style.borderLeftColor = '';
+                    link.style.color = '';
+                    link.style.backgroundColor = '';
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', highlightActiveSection);
+        highlightActiveSection(); // Inicializar
+        
+        // Animación de entrada para las secciones
+        sections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, 200 + (index * 100));
+        });
+        
+        // Función para aceptar términos
+        window.acceptTerms = function() {
+            const termsRead = document.getElementById('termsRead');
+            const ageConfirm = document.getElementById('ageConfirm');
+            
+            if (!termsRead.checked || !ageConfirm.checked) {
+                // Animación de error
+                const checkboxes = [termsRead, ageConfirm];
+                checkboxes.forEach(checkbox => {
+                    if (!checkbox.checked) {
+                        checkbox.closest('.form-check').classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => {
+                            checkbox.closest('.form-check').classList.remove('animate__animated', 'animate__shakeX');
+                        }, 1000);
+                    }
+                });
+                
+                alert('Debes aceptar ambos términos para continuar.');
+                return;
+            }
+            
+            // Aquí iría la lógica para guardar el consentimiento
+            alert('Términos y condiciones aceptados. ¡Gracias!');
+            
+            // Redirigir a inicio
+            setTimeout(() => {
+                window.location.href = "{% url 'home' %}";
+            }, 1000);
+        };
+        
+        // Efecto hover en las tarjetas de información
+        document.querySelectorAll('.info-type-card, .warning-card, .security-feature-card, .sharing-case, .right-item, .contact-item').forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = 'var(--shadow-lg)';
+                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
             });
             
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'var(--shadow-md)';
+                this.style.boxShadow = 'none';
             });
         });
         
-        // Validación del formulario
-        const termsForm = document.querySelector('.terms-form');
-        if (termsForm) {
-            termsForm.addEventListener('submit', function(e) {
-                const acceptTerms = document.getElementById('accept_terms');
-                const confirmAge = document.getElementById('confirm_age');
-                
-                if (!acceptTerms.checked || !confirmAge.checked) {
-                    e.preventDefault();
-                    
-                    // Resaltar casillas no marcadas
-                    const unmarkedItems = [];
-                    if (!acceptTerms.checked) {
-                        acceptTerms.closest('.accept-item').style.borderColor = 'var(--color-error)';
-                        acceptTerms.closest('.accept-item').style.backgroundColor = 'rgba(220, 38, 38, 0.1)';
-                        unmarkedItems.push('los Términos y Condiciones');
-                    }
-                    
-                    if (!confirmAge.checked) {
-                        confirmAge.closest('.accept-item').style.borderColor = 'var(--color-error)';
-                        confirmAge.closest('.accept-item').style.backgroundColor = 'rgba(220, 38, 38, 0.1)';
-                        unmarkedItems.push('confirmar que eres mayor de edad');
-                    }
-                    
-                    // Mostrar alerta
-                    alert(`Debes aceptar ${unmarkedItems.join(' y ')} para continuar.`);
-                    
-                    // Restaurar estilos después de 3 segundos
-                    setTimeout(() => {
-                        if (!acceptTerms.checked) {
-                            acceptTerms.closest('.accept-item').style.borderColor = '';
-                            acceptTerms.closest('.accept-item').style.backgroundColor = '';
-                        }
-                        if (!confirmAge.checked) {
-                            confirmAge.closest('.accept-item').style.borderColor = '';
-                            confirmAge.closest('.accept-item').style.backgroundColor = '';
-                        }
-                    }, 3000);
-                }
-            });
-        }
-        
-        // Animación de aparición escalonada para las tarjetas
-        const cards = document.querySelectorAll('.card-eco');
-        cards.forEach(function(card, index) {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            
+        // Auto-scroll al inicio de la sección si hay hash en la URL
+        if (window.location.hash) {
             setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 100 + (index * 150));
-        });
-        
-        // Efecto en casillas de verificación
-        document.querySelectorAll('.accept-item').forEach(function(item) {
-            const checkbox = item.querySelector('.accept-checkbox');
-            
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    item.style.borderColor = 'var(--color-success)';
-                    item.style.backgroundColor = 'rgba(5, 150, 105, 0.1)';
-                } else {
-                    item.style.borderColor = '';
-                    item.style.backgroundColor = '';
+                const targetElement = document.querySelector(window.location.hash);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
                 }
-            });
-        });
-        
-        // Efecto de pulso en la tarjeta de advertencia
-        const warningCard = document.querySelector('.card-eco:first-child');
-        if (warningCard) {
-            setTimeout(() => {
-                warningCard.style.transform = 'scale(1.02)';
-                warningCard.style.boxShadow = 'var(--shadow-lg)';
-                
-                setTimeout(() => {
-                    warningCard.style.transform = 'scale(1)';
-                    warningCard.style.boxShadow = 'var(--shadow-md)';
-                }, 500);
-            }, 1000);
+            }, 500);
         }
     });
 </script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 {% endblock pag %}

@@ -70,6 +70,19 @@ class CrearUsuario(CreateView):
     form_class = UsuarioForm
     template_name = 'Marketplace/usuario.html'
     success_url = '/success/'  
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        
+        usuario = form.instance
+        
+        self.request.session["usuario_id"] = usuario.id_usuario
+        self.request.session["usuario_nombre"] = usuario.nombre
+        self.request.session["usuario_rol"] = usuario.rol
+        
+        messages.success(self.request, f'¡Registro exitoso! Bienvenido/a {usuario.nombre}')
+        
+        return redirect('home')
 
 @method_decorator(login_requerido, name='dispatch')
 class AgregarProducto(CreateView):
@@ -147,17 +160,28 @@ class ProductoDetailView(DetailView):
         context["imagenes"] = ImagenProducto.objects.filter(id_producto=self.object)
         return context
 
+from django.db.models import Max
+
 @login_requerido
 def escritorio_view(request):
     usuario_id = request.session['usuario_id']
     usuario = Usuario.objects.get(id_usuario=usuario_id)
     productos = Producto.objects.filter(id_usuario=usuario)
+    
+    # Calcular estadísticas
+    max_precio = productos.aggregate(Max('precio_kg'))['precio_kg__max']
+    max_peso = productos.aggregate(Max('peso_disponible_kg'))['peso_disponible_kg__max']
+    
+    # Contar productos disponibles
+    disponibles = productos.filter(estado='disponible').count()
 
     return render(request, 'MarketPlace/escritorio.html', {
         'usuario': usuario,
         'productos': productos,
+        'max_precio': max_precio if max_precio else 0,
+        'max_peso': max_peso if max_peso else 0,
+        'disponibles': disponibles,
     })
-
 @method_decorator(login_requerido, name='dispatch')
 class ProductoUpdateView(UpdateView):
     model = Producto
@@ -203,7 +227,7 @@ class ProductoUpdateView(UpdateView):
         messages.success(self.request, 'Producto actualizado correctamente.')
         return super().form_valid(form)
 
-1
+
 @method_decorator(login_requerido, name='dispatch')
 class ProductoDeleteView(DeleteView):
     model = Producto

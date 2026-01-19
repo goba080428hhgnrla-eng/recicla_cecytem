@@ -1,247 +1,568 @@
 {% extends './navegación.html' %}
 {% block pag %}
-<!-- Filtros rápidos en home -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="mb-0">Encuentra materiales reciclables</h5>
-                        <p class="text-muted mb-0 small">Filtra por categoría o nivel de pureza</p>
-                    </div>
-                    <div class="col-md-4">
-                        <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
-                            <input type="text" 
-                                   name="q" 
-                                   class="form-control me-2" 
-                                   placeholder="Buscar productos..."
-                                   value="{{ request.GET.q|default:'' }}">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </form>
+<div class="container-fluid px-lg-5">
+    <!-- Panel de búsqueda mejorado -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card search-panel border-0 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white py-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 class="mb-2">
+                                <i class="fas fa-search me-3"></i>Encuentra Materiales Reciclables
+                            </h3>
+                            <p class="mb-0 opacity-90">Filtra por categoría, pureza o busca productos específicos</p>
+                        </div>
+                        <div class="col-lg-4">
+                            <form method="GET" action="{% url 'buscar_productos' %}" class="search-form">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-0">
+                                        <i class="fas fa-search text-primary"></i>
+                                    </span>
+                                    <input type="text" 
+                                           name="q" 
+                                           class="form-control border-0 shadow-none" 
+                                           placeholder="Buscar productos..."
+                                           value="{{ request.GET.q|default:'' }}"
+                                           aria-label="Buscar productos">
+                                    <button type="submit" class="btn btn-light">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Filtros rápidos -->
-                <div class="row mt-3">
-                    <div class="col-auto">
-                        <div class="btn-group" role="group">
-                            <a href="{% url 'buscar_productos' %}?ordenar_por=recientes" 
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-clock me-1"></i> Recientes
-                            </a>
-                            <a href="{% url 'buscar_productos' %}?ordenar_por=precio_asc" 
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-sort-amount-down me-1"></i> Menor precio
-                            </a>
-                            <a href="{% url 'buscar_productos' %}?ordenar_por=precio_desc" 
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-sort-amount-up me-1"></i> Mayor precio
-                            </a>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-sort-amount-down me-2"></i>Ordenar por
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'buscar_productos' %}?ordenar_por=recientes" 
+                                   class="btn btn-outline-primary rounded-pill">
+                                    <i class="fas fa-clock me-1"></i> Recientes
+                                </a>
+                                <a href="{% url 'buscar_productos' %}?ordenar_por=precio_asc" 
+                                   class="btn btn-outline-primary rounded-pill">
+                                    <i class="fas fa-sort-amount-down me-1"></i> Menor precio
+                                </a>
+                                <a href="{% url 'buscar_productos' %}?ordenar_por=precio_desc" 
+                                   class="btn btn-outline-primary rounded-pill">
+                                    <i class="fas fa-sort-amount-up me-1"></i> Mayor precio
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="col-auto">
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-                                    type="button" 
-                                    data-bs-toggle="dropdown">
-                                <i class="fas fa-filter me-1"></i> Categorías
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'home' %}">Todas</a></li>
-                                {% for categoria in categorias %}
-                                <li>
-                                    <a class="dropdown-item" 
-                                       href="{% url 'buscar_productos' %}?categoria={{ categoria.id_categoria }}">
-                                        {{ categoria.nombre }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                        
+                        <div class="col-lg-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-filter me-2"></i>Categorías
+                            </h6>
+                            <div class="dropdown">
+                                <button class="btn btn-light border rounded-pill w-100 text-start d-flex justify-content-between align-items-center" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span>
+                                        <i class="fas fa-layer-group me-2"></i>Seleccionar categoría
+                                    </span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <ul class="dropdown-menu w-100 shadow">
+                                    <li><a class="dropdown-item" href="{% url 'home' %}">
+                                        <i class="fas fa-layer-group me-2"></i>Todas las categorías
+                                    </a></li>
+                                    {% for categoria in categorias %}
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="{% url 'buscar_productos' %}?categoria={{ categoria.id_categoria }}">
+                                            <i class="fas fa-folder me-2"></i>{{ categoria.nombre }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="col-auto">
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-                                    type="button" 
-                                    data-bs-toggle="dropdown">
-                                <i class="fas fa-flask me-1"></i> Pureza
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'home' %}">Todos</a></li>
-                                {% for key, value in PUREZA_CHOICES %}
-                                <li>
-                                    <a class="dropdown-item" 
-                                       href="{% url 'buscar_productos' %}?pureza={{ key }}">
-                                        {{ value }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                        
+                        <div class="col-lg-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-flask me-2"></i>Nivel de Pureza
+                            </h6>
+                            <div class="dropdown">
+                                <button class="btn btn-light border rounded-pill w-100 text-start d-flex justify-content-between align-items-center" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span>
+                                        <i class="fas fa-certificate me-2"></i>Seleccionar pureza
+                                    </span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <ul class="dropdown-menu w-100 shadow">
+                                    <li><a class="dropdown-item" href="{% url 'home' %}">
+                                        <i class="fas fa-asterisk me-2"></i>Todos los niveles
+                                    </a></li>
+                                    {% for key, value in PUREZA_CHOICES %}
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="{% url 'buscar_productos' %}?pureza={{ key }}">
+                                            <i class="fas fa-certificate me-2"></i>{{ value }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="productos-container">
-    <h2 class="productos-title">Productos Disponibles</h2>
-    
-    <div class="contenedor-productos">
-        {% for producto in productos %}
-            <div class="card-prod">
-                <a href="{% url 'producto_detail' producto.id_producto %}" class="card-prod-link">
-                    {% if producto.imagenes.all %}
-                        <div class="card-prod-img-container">
-                            <img src="{{ producto.imagenes.first.imagen.url }}" 
-                                 alt="{{ producto.nombre }}"
-                                 class="card-prod-img">
-                        </div>
-                    {% else %}
-                        <div class="card-prod-img-container card-prod-no-image">
-                            <span class="no-image-text">Sin imagen</span>
-                        </div>
-                    {% endif %}
-                </a>
-                
-                <div class="card-prod-content">
-                    <a href="{% url 'producto_detail' producto.id_producto %}" class="card-prod-title">
-                        <h3 class="card-prod-name">{{ producto.nombre|truncatechars:30 }}</h3>
+
+    <!-- Productos con encabezado mejorado -->
+    <div id="productos" class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 fw-bold text-primary mb-2">
+                        <i class="fas fa-boxes me-3"></i>Productos Destacados
+                    </h2>
+                    <p class="text-muted mb-0">Materiales reciclables de alta calidad disponibles para ti</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary rounded-pill fs-6 px-3 py-2 me-3">
+                        <i class="fas fa-box me-2"></i>{{ productos|length }} productos
+                    </span>
+                    <a href="{% url 'buscar_productos' %}" class="btn btn-outline-primary">
+                        Ver todos <i class="fas fa-arrow-right ms-2"></i>
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de productos mejorado -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mb-5">
+        {% for producto in productos %}
+            <div class="col">
+                <div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
+                    <!-- Badge destacado -->
+                    {% if forloop.counter <= 3 %}
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-star me-1"></i>Destacado
+                        </span>
+                    </div>
+                    {% endif %}
                     
-                    <div class="card-prod-info">
-                        <div class="card-prod-price">
-                            <span class="price-main">${{ producto.precio_kg }}</span>
-                            <span class="price-unit">/kg</span>
-                        </div>
-                        
-                        {% if producto.unidad_medida %}
-                        <div class="card-prod-unit">
-                            <small class="unit-text">{{ producto.unidad_medida }}</small>
-                        </div>
-                        {% endif %}
-                        
-                        {% if producto.categoria %}
-                        <div class="card-prod-category">
-                            <span class="category-badge">{{ producto.categoria.nombre }}</span>
-                        </div>
-                        {% endif %}
+                    <!-- Imagen del producto -->
+                    <div class="product-image-container position-relative overflow-hidden" style="height: 220px;">
+                        <a href="{% url 'producto_detail' producto.id_producto %}" class="text-decoration-none">
+                            {% if producto.imagenes.all %}
+                                <img src="{{ producto.imagenes.first.imagen.url }}" 
+                                     alt="{{ producto.nombre }}"
+                                     class="img-fluid w-100 h-100 object-fit-cover product-image">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center bg-gradient-light h-100">
+                                    <div class="text-center">
+                                        <i class="fas fa-recycle fa-4x text-muted mb-3"></i>
+                                        <p class="text-muted mb-0">Imagen no disponible</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </a>
+                        <div class="product-overlay position-absolute top-0 start-0 w-100 h-100"></div>
                     </div>
                     
-                    {% if producto.estado == 'disponible' %}
-                        <form method="POST" action="{% url 'agregar_al_carrito' producto.id_producto %}" class="d-inline-block">
-                            {% csrf_token %}
-                            <input type="hidden" name="cantidad" value="1">
-                            <input type="hidden" name="next" value="home">
-                            <button type="submit" class="btn btn-primary btn-add-to-cart">
-                                <i class="fas fa-cart-plus me-1"></i> Agregar
-                            </button>
-                        </form>
-                    {% else %}
-                        <button class="btn btn-secondary btn-add-to-cart" disabled>
-                            <i class="fas fa-ban me-1"></i> No disponible
-                        </button>
-                    {% endif %}
+                    <!-- Cuerpo de la tarjeta -->
+                    <div class="card-body d-flex flex-column p-4">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a href="{% url 'producto_detail' producto.id_producto %}" class="text-decoration-none">
+                                    <h5 class="card-title text-dark fw-bold mb-1 product-title">
+                                        {{ producto.nombre|truncatechars:35 }}
+                                    </h5>
+                                </a>
+                            </div>
+                            
+                            <p class="text-muted small mb-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ producto.descripcion|truncatechars:60|default:"Sin descripción" }}
+                            </p>
+                        </div>
+                        
+                        <!-- Precio -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h4 class="text-success fw-bold mb-0">
+                                        ${{ producto.precio_kg }}
+                                        <small class="text-muted fs-6">/kg</small>
+                                    </h4>
+                                    {% if producto.stock_disponible %}
+                                    <small class="text-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        {{ producto.stock_disponible }} kg disponibles
+                                    </small>
+                                    {% endif %}
+                                </div>
+                                {% if producto.unidad_medida %}
+                                <span class="badge bg-light text-dark border">
+                                    {{ producto.unidad_medida }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Categoría y Pureza -->
+                        <div class="mb-4">
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if producto.categoria %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3">
+                                    <i class="fas fa-tag me-1"></i>{{ producto.categoria.nombre }}
+                                </span>
+                                {% endif %}
+                                
+                                {% if producto.pureza %}
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-3">
+                                    <i class="fas fa-certificate me-1"></i>{{ producto.get_pureza_display }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción -->
+                        <div class="mt-auto">
+                            {% if producto.estado == 'disponible' %}
+                                <form method="POST" action="{% url 'agregar_al_carrito' producto.id_producto %}" class="add-to-cart-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cantidad" value="1">
+                                    <input type="hidden" name="next" value="home">
+                                    <button type="submit" class="btn btn-primary w-100 btn-add-to-cart">
+                                        <i class="fas fa-cart-plus me-2"></i>Agregar al Carrito
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-outline-secondary w-100" disabled>
+                                    <i class="fas fa-clock me-2"></i>Próximamente
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         {% empty %}
-            <div class="empty-products">
-                <div class="empty-state">
-                    <i class="fas fa-box-open empty-icon"></i>
-                    <h3 class="empty-title">No hay productos disponibles</h3>
-                    <p class="empty-subtitle">Pronto agregaremos nuevos productos</p>
+            <!-- Estado vacío mejorado -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5 px-4">
+                        <div class="empty-state-icon mb-4">
+                            <i class="fas fa-recycle fa-5x text-muted"></i>
+                        </div>
+                        <h3 class="text-primary mb-3">¡Oh no! No hay productos disponibles</h3>
+                        <p class="text-muted mb-4 lead">Parece que aún no hay materiales reciclables en el marketplace.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{% url 'buscar_productos' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-redo me-2"></i>Recargar productos
+                            </a>
+                            {% if request.session.usuario_id %}
+                            <a href="{% url 'agregar_producto' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>Agregar producto
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         {% endfor %}
     </div>
     
+    <!-- Paginación mejorada -->
     {% if productos.has_other_pages %}
-    <nav aria-label="Navegación de productos" class="pagination-container">
-        <ul class="pagination">
-            {% if productos.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ productos.previous_page_number }}" aria-label="Anterior">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo;</span>
-                </li>
-            {% endif %}
-            
-            {% for i in productos.paginator.page_range %}
-                {% if productos.number == i %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ i }}</span>
-                    </li>
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-            
-            {% if productos.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ productos.next_page_number }}" aria-label="Siguiente">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&raquo;</span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="Navegación de productos" class="d-flex justify-content-center">
+                <ul class="pagination shadow-sm">
+                    {% if productos.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link border-0 rounded-start" href="?page={{ productos.previous_page_number }}" aria-label="Anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link border-0 rounded-start">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        </li>
+                    {% endif %}
+                    
+                    {% for i in productos.paginator.page_range %}
+                        {% if productos.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link border-0 bg-primary">{{ i }}</span>
+                            </li>
+                        {% elif i > productos.number|add:'-3' and i < productos.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link border-0" href="?page={{ i }}">{{ i }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if productos.has_next %}
+                        <li class="page-item">
+                            <a class="page-link border-0 rounded-end" href="?page={{ productos.next_page_number }}" aria-label="Siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link border-0 rounded-end">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
     {% endif %}
 </div>
 
+<!-- Estilos CSS adicionales -->
+<style>
+    .hero-marketplace {
+        background: linear-gradient(135deg, #0d6efd 0%, #198754 100%);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #198754 100%) !important;
+    }
+    
+    .bg-gradient-light {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .step-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-top: 4px solid #0d6efd !important;
+    }
+    
+    .step-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.15) !important;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #0d6efd, #198754);
+        border-radius: 2px;
+    }
+    
+    .search-panel {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .search-form .input-group {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+        border-radius: 15px !important;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(13, 110, 253, 0.15) !important;
+    }
+    
+    .product-image-container {
+        background: #f8f9fa;
+    }
+    
+    .product-image {
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-overlay {
+        background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 30%);
+        pointer-events: none;
+    }
+    
+    .product-title {
+        transition: color 0.3s ease;
+    }
+    
+    .product-title:hover {
+        color: #0d6efd !important;
+    }
+    
+    .btn-add-to-cart {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+    }
+    
+    .btn-add-to-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+    }
+    
+    .floating-icon {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .empty-state-icon {
+        opacity: 0.5;
+    }
+    
+    .pagination .page-link {
+        padding: 10px 15px;
+        margin: 0 2px;
+        border-radius: 8px !important;
+    }
+    
+    .pagination .active .page-link {
+        background: linear-gradient(135deg, #0d6efd, #198754);
+        border: none;
+    }
+</style>
+
+<!-- Scripts adicionales -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Manejar el clic en botones de agregar al carrito
-        document.querySelectorAll('.btn-add-to-cart').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const productCard = this.closest('.card-prod');
-                const productName = productCard.querySelector('.card-prod-name').textContent;
-                const productPrice = productCard.querySelector('.price-main').textContent;
-                
-                // Mostrar mensaje temporal
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-check me-1"></i> Agregado';
-                this.classList.add('btn-success');
-                this.classList.remove('btn-primary');
-                
-                // Aquí iría la lógica para agregar al carrito
-                console.log('Producto agregado:', productName, productPrice);
-                
-                // Restaurar botón después de 2 segundos
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.classList.remove('btn-success');
-                    this.classList.add('btn-primary');
-                }, 2000);
+        // Smooth scroll para anclas
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
             });
         });
         
-        // Efecto hover en tarjetas de productos
-        document.querySelectorAll('.card-prod').forEach(function(card) {
+        // Efecto hover mejorado para tarjetas
+        document.querySelectorAll('.product-card').forEach(function(card) {
+            const image = card.querySelector('.product-image');
+            const title = card.querySelector('.product-title');
+            
             card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px)';
-                this.style.boxShadow = 'var(--shadow-lg)';
+                if(image) image.style.transform = 'scale(1.05)';
+                if(title) title.style.color = '#0d6efd';
             });
             
             card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'var(--shadow-md)';
+                if(image) image.style.transform = 'scale(1)';
+                if(title) title.style.color = '';
             });
         });
+        
+        // Animación para botones de agregar al carrito
+        document.querySelectorAll('.btn-add-to-cart').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+                const originalText = this.innerHTML;
+                
+                // Crear efecto de éxito
+                this.innerHTML = '<i class="fas fa-check me-2"></i>¡Agregado!';
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-success');
+                this.disabled = true;
+                
+                // Agregar animación de "pulse"
+                this.classList.add('animate__animated', 'animate__pulse');
+                
+                // Enviar formulario después de animación
+                setTimeout(() => {
+                    form.submit();
+                }, 800);
+                
+                // Restaurar después de 3 segundos
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success', 'animate__animated', 'animate__pulse');
+                    this.classList.add('btn-primary');
+                    this.disabled = false;
+                }, 3000);
+            });
+        });
+        
+        // Tooltips para botones de filtro
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Contador animado para productos
+        const productCount = document.querySelector('.badge.bg-primary .fas.fa-box');
+        if(productCount) {
+            let count = 0;
+            const target = {{ productos|length }};
+            const interval = setInterval(() => {
+                count++;
+                productCount.parentElement.querySelector('span').textContent = count;
+                if(count >= target) clearInterval(interval);
+            }, 50);
+        }
+        
+        // Parallax effect para hero banner
+        const hero = document.querySelector('.hero-marketplace');
+        if(hero) {
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * 0.5;
+                hero.style.transform = `translateY(${rate}px)`;
+            });
+        }
     });
 </script>
+
+<!-- CDN de Animate.css para más animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 {% endblock %}
