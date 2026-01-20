@@ -237,11 +237,11 @@ class ReportesCLAS(CreateView):
 
 # from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
-from xhtml2pdf import pisa
+#from xhtml2pdf import pisa
 from .models import Gastos, VentaExterna
 
 from django.template.loader import get_template
-from xhtml2pdf import pisa
+#from xhtml2pdf import pisa
 from django.http import HttpResponse
 
 def generar_reporte_gasto(request, id):
@@ -254,10 +254,10 @@ def generar_reporte_gasto(request, id):
 
     template = get_template(template_path)
     html = template.render(context)  # HTML crudo
-    pisa_status = pisa.CreatePDF(html, dest=response)
+ #   pisa_status = pisa.CreatePDF(html, dest=response)
 
-    if pisa_status.err:
-        return HttpResponse('Error al generar PDF', status=500)
+  #  if pisa_status.err:
+   #     return HttpResponse('Error al generar PDF', status=500)
     return response
 
 
