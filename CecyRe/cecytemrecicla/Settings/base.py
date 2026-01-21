@@ -4,7 +4,7 @@ import os
 import dj_database_url
 
 # BASE_DIR apunta a la carpeta raíz del proyecto
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-secreta')
 
@@ -38,7 +38,7 @@ ROOT_URLCONF = 'cecytemrecicla.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent / 'Templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
