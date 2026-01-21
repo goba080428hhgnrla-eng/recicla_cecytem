@@ -1,0 +1,756 @@
+{% extends './navegación.html' %}
+{% load custom_filters %}
+{% block pag %}
+<div class="container py-4">
+    <!-- Encabezado del perfil -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="eco-card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <div class="profile-avatar-large mb-3">
+                                <div class="avatar-inner">
+                                    <i class="fas fa-user fa-2x"></i>
+                                </div>
+                                <button type="button" class="btn-avatar-edit" id="avatarEditBtn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h1 class="h2 text-primary mb-2">{{ usuario_info.nombre }}</h1>
+                            <div class="d-flex flex-wrap gap-3 mb-3">
+                                <span class="badge-eco" style="color: #2196F3;">
+                                    <i class="fas fa-user-tag me-1"></i>{{ usuario_info.get_rol_display }}
+                                </span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                                    <i class="fas fa-envelope me-1"></i>{{ usuario_info.correo }}
+                                </span>
+                            </div>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                Miembro desde: {{ usuario_info.fecha_registro|date:"d/m/Y" }}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="stat-circle-large mb-3">
+                                    <span>{{ productos_count }}</span>
+                                    <small>Productos</small>
+                                </div>
+                                <div class="badge-rank">
+                                    <i class="fas fa-star me-1"></i>Nivel {{ productos_count|divisibleby:5|default:"1" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pestañas de navegación -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="profile-tabs-container">
+                <ul class="nav nav-tabs nav-eco" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="edit-tab" data-bs-toggle="tab" 
+                                data-bs-target="#editTab" type="button" role="tab">
+                            <i class="fas fa-user-edit me-2"></i>Editar Perfil
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" 
+                                data-bs-target="#securityTab" type="button" role="tab">
+                            <i class="fas fa-shield-alt me-2"></i>Seguridad
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contenido de las pestañas -->
+    <div class="tab-content" id="profileTabsContent">
+        <!-- Pestaña de Editar Perfil -->
+        <div class="tab-pane fade show active" id="editTab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="eco-card mb-4">
+                        <div class="card-header-eco">
+                            <h4 class="mb-0">
+                                <i class="fas fa-user-edit me-2"></i>Información Personal
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" class="profile-form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {{ form.nombre }}
+                                            <label for="{{ form.nombre.id_for_label }}">
+                                                <i class="fas fa-user me-2"></i>Nombre Completo
+                                            </label>
+                                            {% if form.nombre.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.nombre.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {{ form.correo }}
+                                            <label for="{{ form.correo.id_for_label }}">
+                                                <i class="fas fa-envelope me-2"></i>Correo Electrónico
+                                            </label>
+                                            {% if form.correo.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.correo.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {{ form.teléfono }}
+                                            <label for="{{ form.teléfono.id_for_label }}">
+                                                <i class="fas fa-phone me-2"></i>Teléfono
+                                            </label>
+                                            {% if form.teléfono.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.teléfono.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="submit" class="btn btn-eco">
+                                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                                    </button>
+                                    <button type="reset" class="btn btn-eco-secondary">
+                                        <i class="fas fa-undo me-2"></i>Restablecer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Estadísticas rápidas -->
+                    <div class="eco-card">
+                        <div class="card-header-eco">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Tus Estadísticas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid">
+                                <div class="stat-item text-center mb-4">
+                                    <div class="stat-icon-circle mb-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <span class="stat-value d-block">{{ productos_count }}</span>
+                                    <span class="stat-label">Productos totales</span>
+                                </div>
+                                
+                                <div class="stat-item text-center mb-4">
+                                    <div class="stat-icon-circle mb-2">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <span class="stat-value d-block">{{ productos_activos }}</span>
+                                    <span class="stat-label">Productos activos</span>
+                                </div>
+                                
+                                <div class="stat-item text-center mb-4">
+                                    <div class="stat-icon-circle mb-2">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <span class="stat-value d-block">{{ usuario_info.fecha_registro|timesince|split:","|first }}</span>
+                                    <span class="stat-label">Tiempo como miembro</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pestaña de Seguridad -->
+        <div class="tab-pane fade" id="securityTab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="eco-card">
+                        <div class="card-header-eco">
+                            <h4 class="mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>Seguridad de la Cuenta
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Cambiar contraseña -->
+                            <div class="mb-5">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                </h5>
+                                <form method="post" class="password-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="change_password">
+                                    
+                                    <div class="form-floating mb-3">
+                                        <input type="password" name="current_password" 
+                                               class="form-control form-control-eco" 
+                                               placeholder="Contraseña actual" required>
+                                        <label>
+                                            <i class="fas fa-lock me-2"></i>Contraseña Actual
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-floating mb-3">
+                                        <input type="password" name="new_password1" 
+                                               class="form-control form-control-eco" 
+                                               placeholder="Nueva contraseña" required>
+                                        <label>
+                                            <i class="fas fa-lock me-2"></i>Nueva Contraseña
+                                        </label>
+                                        <div class="form-text">
+                                            Mínimo 8 caracteres con letras y números
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-floating mb-3">
+                                        <input type="password" name="new_password2" 
+                                               class="form-control form-control-eco" 
+                                               placeholder="Confirmar nueva contraseña" required>
+                                        <label>
+                                            <i class="fas fa-lock me-2"></i>Confirmar Nueva Contraseña
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-eco">
+                                            <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Acciones de seguridad -->
+                            <div>
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-user-shield me-2"></i>Acciones de Seguridad
+                                </h5>
+                                <div class="security-actions">
+                                    <div class="security-action-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">
+                                                    <i class="fas fa-sign-out-alt me-2 text-primary"></i>
+                                                    Cerrar Sesión 
+                                                </h6>
+                                                <p class="text-muted small mb-0">
+                                                    Cierra tu sesión actual 
+                                                </p>
+                                            </div>
+                                            <form method="post" action="{% url 'logout' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-sign-out-alt me-1"></i> Cerrar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Información de seguridad -->
+                    <div class="eco-card">
+                        <div class="card-header-eco">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Consejos de Seguridad
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="security-tips">
+                                <li class="mb-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="small">Usa contraseñas fuertes y únicas</span>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="small">No compartas tus credenciales</span>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="small">Cierra sesión en dispositivos públicos</span>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="small">Actualiza tu información regularmente</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="small">Reporta actividades sospechosas</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para eliminar cuenta -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-danger">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Eliminar Cuenta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger mb-4">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>¡Advertencia!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p class="fw-bold">Al eliminar tu cuenta:</p>
+                <ul class="text-danger mb-4">
+                    <li>Todos tus productos serán eliminados</li>
+                    <li>Tu historial de compras/ventas se perderá</li>
+                    <li>No podrás recuperar tu cuenta</li>
+                    <li>Todos tus datos serán eliminados permanentemente</li>
+                </ul>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="confirmDeleteAccount">
+                    <label class="form-check-label" for="confirmDeleteAccount">
+                        Entiendo que esta acción es permanente e irreversible
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAccountBtn" disabled>
+                    <i class="fas fa-trash me-2"></i> Sí, eliminar cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos específicos para perfil */
+    .profile-avatar-large {
+        position: relative;
+        width: 120px;
+        margin: 0 auto;
+    }
+    
+    .avatar-inner {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        border: 4px solid white;
+    }
+    
+    .btn-avatar-edit {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #FF9800, #F57C00);
+        border: 2px solid white;
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-avatar-edit:hover {
+        transform: scale(1.1);
+        box-shadow: 0 3px 10px rgba(255, 152, 0, 0.4);
+    }
+    
+    .stat-circle-large {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4CAF50, #8BC34A);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .stat-circle-large span {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    
+    .stat-circle-large small {
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+    
+    .badge-rank {
+        background: linear-gradient(135deg, #FFC107, #FF9800);
+        color: #333;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
+    }
+    
+    .badge-eco {
+        background: linear-gradient(135deg, var(--accent-color), #8BC34A);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    /* Pestañas */
+    .nav-eco .nav-link {
+        color: #6c757d;
+        font-weight: 500;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.3s;
+    }
+    
+    .nav-eco .nav-link:hover {
+        color: #4CAF50;
+        background: #F1F8E9;
+    }
+    
+    .nav-eco .nav-link.active {
+        color: #4CAF50;
+        background: white;
+        border-bottom: 3px solid #4CAF50;
+        font-weight: 600;
+    }
+    
+    /* Estadísticas */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .stat-icon-circle {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2196F3;
+        margin: 0 auto;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #333;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    
+    /* Seguridad */
+    .security-action-item {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .security-action-item:hover {
+        background: white;
+        border-color: #dee2e6;
+        transform: translateX(5px);
+    }
+    
+    .security-tips {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .security-tips li {
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .security-tips li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Formularios */
+    .form-control-eco {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 16px 15px;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control-eco:focus {
+        border-color: #4CAF50;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .btn-eco {
+        background: linear-gradient(135deg, #FF5722);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 3px 6px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #F57C00, #E64A19);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(255, 152, 0, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .profile-avatar-large {
+            width: 100px;
+        }
+        
+        .avatar-inner {
+            width: 100px;
+            height: 100px;
+            font-size: 2rem;
+        }
+        
+        .stat-circle-large {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .stat-circle-large span {
+            font-size: 1.5rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .nav-eco .nav-link {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Agregar clases Bootstrap a los inputs
+        document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
+            if (!el.classList.contains('form-control')) {
+                el.classList.add('form-control');
+            }
+        });
+        
+        // Configurar el avatar edit button
+        const avatarEditBtn = document.getElementById('avatarEditBtn');
+        if (avatarEditBtn) {
+            avatarEditBtn.addEventListener('click', function() {
+                // Aquí iría la lógica para cambiar avatar
+                const modalHtml = `
+                    <div class="modal fade" id="avatarModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Cambiar foto de perfil</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <p>Funcionalidad en desarrollo</p>
+                                    <p class="small text-muted">Pronto podrás subir tu propia foto de perfil</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const modalContainer = document.createElement('div');
+                modalContainer.innerHTML = modalHtml;
+                document.body.appendChild(modalContainer);
+                
+                const modal = new bootstrap.Modal(document.getElementById('avatarModal'));
+                modal.show();
+                
+                modalContainer.addEventListener('hidden.bs.modal', function() {
+                    modalContainer.remove();
+                });
+            });
+        }
+        
+        // Manejo del modal de eliminar cuenta
+        const confirmDeleteCheckbox = document.getElementById('confirmDeleteAccount');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteAccountBtn');
+        
+        if (confirmDeleteCheckbox && confirmDeleteBtn) {
+            confirmDeleteCheckbox.addEventListener('change', function() {
+                confirmDeleteBtn.disabled = !this.checked;
+            });
+            
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (confirmDeleteCheckbox.checked) {
+                    if (confirm('¿Estás completamente seguro de que deseas eliminar tu cuenta permanentemente?')) {
+                        alert('Funcionalidad de eliminar cuenta aún no implementada. Esto eliminaría tu cuenta permanentemente.');
+                        // Aquí iría la llamada AJAX para eliminar la cuenta
+                        bootstrap.Modal.getInstance(document.getElementById('deleteAccountModal')).hide();
+                    }
+                }
+            });
+        }
+        
+        // Validación del formulario de perfil
+        const profileForm = document.querySelector('.profile-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                const nombre = document.getElementById('{{ form.nombre.id_for_label }}');
+                const correo = document.getElementById('{{ form.correo.id_for_label }}');
+                
+                if (!nombre.value.trim()) {
+                    e.preventDefault();
+                    nombre.classList.add('is-invalid');
+                    nombre.focus();
+                    return false;
+                }
+                
+                if (!correo.value.trim()) {
+                    e.preventDefault();
+                    correo.classList.add('is-invalid');
+                    correo.focus();
+                    return false;
+                }
+                
+                // Validar formato de correo
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(correo.value)) {
+                    e.preventDefault();
+                    correo.classList.add('is-invalid');
+                    correo.nextElementSibling.textContent = 'Por favor ingresa un correo válido.';
+                    correo.focus();
+                    return false;
+                }
+                
+                // Mostrar loading
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Guardando...';
+                submitBtn.disabled = true;
+            });
+        }
+        
+        // Remover mensajes de error al escribir
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+        
+        // Efecto hover en el avatar
+        const avatarInner = document.querySelector('.avatar-inner');
+        if (avatarInner) {
+            avatarInner.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            avatarInner.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Animación de entrada para las tarjetas
+        document.querySelectorAll('.eco-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (index * 100));
+        });
+        
+        // Cambiar pestaña en URL hash
+        const hash = window.location.hash;
+        if (hash) {
+            const tab = document.querySelector(`button[data-bs-target="${hash}"]`);
+            if (tab) {
+                tab.click();
+            }
+        }
+    });
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}

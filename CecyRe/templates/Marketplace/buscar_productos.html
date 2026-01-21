@@ -1,0 +1,573 @@
+{% extends './navegación.html' %}
+{% block pag %}
+<div class="container-fluid px-lg-4 py-4">
+    <div class="row">
+        <!-- Sidebar de filtros -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-gradient-primary text-white py-3 rounded-top-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-filter me-2"></i> Filtros
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="GET" action="{% url 'buscar_productos' %}" id="filtros-form">
+                        <!-- Búsqueda -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-search me-1"></i> Buscar
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" 
+                                       name="q" 
+                                       class="form-control border-start-0" 
+                                       placeholder="Nombre o descripción..."
+                                       value="{{ query }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Categorías -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-tags me-1"></i> Categoría
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-folder text-muted"></i>
+                                </span>
+                                <select name="categoria" class="form-select border-start-0">
+                                    <option value="">Todas las categorías</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id_categoria }}" 
+                                            {% if filtros.categoria_id == categoria.id_categoria|stringformat:"i" %}selected{% endif %}>
+                                        {{ categoria.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Pureza -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-flask me-1"></i> Nivel de Pureza
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-certificate text-muted"></i>
+                                </span>
+                                <select name="pureza" class="form-select border-start-0">
+                                    <option value="">Todos los niveles</option>
+                                    {% for key, value in PUREZA_CHOICES %}
+                                    <option value="{{ key }}" 
+                                            {% if filtros.pureza == key %}selected{% endif %}>
+                                        {{ value }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Rango de precio -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-dollar-sign me-1"></i> Precio por kg
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">Min</span>
+                                        <input type="number" 
+                                               name="precio_min" 
+                                               class="form-control" 
+                                               placeholder="0" 
+                                               step="0.01"
+                                               value="{{ filtros.precio_min }}">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">Max</span>
+                                        <input type="number" 
+                                               name="precio_max" 
+                                               class="form-control" 
+                                               placeholder="1000" 
+                                               step="0.01"
+                                               value="{{ filtros.precio_max }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Estado -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-check-circle me-1"></i> Estado
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-info-circle text-muted"></i>
+                                </span>
+                                <select name="estado" class="form-select border-start-0">
+                                    {% for key, value in ESTADO_CHOICES %}
+                                    <option value="{{ key }}" 
+                                            {% if filtros.estado == key %}selected{% endif %}>
+                                        {{ value }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Ordenar por -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-sort me-1"></i> Ordenar por
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-sort-amount-down text-muted"></i>
+                                </span>
+                                <select name="ordenar_por" class="form-select border-start-0">
+                                    <option value="recientes" {% if filtros.ordenar_por == 'recientes' %}selected{% endif %}>
+                                        Más recientes primero
+                                    </option>
+                                    <option value="precio_asc" {% if filtros.ordenar_por == 'precio_asc' %}selected{% endif %}>
+                                        Precio: menor a mayor
+                                    </option>
+                                    <option value="precio_desc" {% if filtros.ordenar_por == 'precio_desc' %}selected{% endif %}>
+                                        Precio: mayor a menor
+                                    </option>
+                                    <option value="nombre" {% if filtros.ordenar_por == 'nombre' %}selected{% endif %}>
+                                        Nombre A-Z
+                                    </option>
+                                    <option value="peso" {% if filtros.ordenar_por == 'peso' %}selected{% endif %}>
+                                        Mayor peso disponible
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-2">
+                                <i class="fas fa-search me-1"></i> Aplicar filtros
+                            </button>
+                            <a href="{% url 'buscar_productos' %}" class="btn btn-outline-secondary btn-lg py-2">
+                                <i class="fas fa-times me-1"></i> Limpiar filtros
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <!-- Mostrar filtros activos -->
+                    {% if query or filtros.categoria_id or filtros.pureza or filtros.precio_min or filtros.precio_max %}
+                    <div class="mt-4 pt-4 border-top">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-filter me-2"></i> Filtros activos
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2" id="filtros-activos">
+                            {% if query %}
+                            <span class="badge bg-info bg-gradient d-flex align-items-center" data-param="q" data-value="{{ query }}">
+                                "{{ query }}"
+                                <button type="button" class="btn-close btn-close-white btn-close-filtro ms-2" 
+                                        style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                            </span>
+                            {% endif %}
+                            
+                            {% if filtros.categoria_id %}
+                            {% for categoria in categorias %}
+                                {% if categoria.id_categoria|stringformat:"i" == filtros.categoria_id %}
+                                <span class="badge bg-primary bg-gradient d-flex align-items-center" data-param="categoria" data-value="{{ categoria.id_categoria }}">
+                                    {{ categoria.nombre }}
+                                    <button type="button" class="btn-close btn-close-white btn-close-filtro ms-2" 
+                                            style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                                </span>
+                                {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            
+                            {% if filtros.pureza %}
+                            <span class="badge bg-secondary bg-gradient d-flex align-items-center" data-param="pureza" data-value="{{ filtros.pureza }}">
+                                Pureza: {{ filtros.pureza|title }}
+                                <button type="button" class="btn-close btn-close-white btn-close-filtro ms-2" 
+                                        style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                            </span>
+                            {% endif %}
+                            
+                            {% if filtros.precio_min or filtros.precio_max %}
+                            <span class="badge bg-warning text-dark d-flex align-items-center" data-param="precio">
+                                ${% if filtros.precio_min %}{{ filtros.precio_min }}{% endif %}
+                                {% if filtros.precio_min and filtros.precio_max %} - {% endif %}
+                                {% if filtros.precio_max %}{{ filtros.precio_max }}{% endif %}
+                                <button type="button" class="btn-close btn-close-dark btn-close-filtro ms-2" 
+                                        style="font-size: 0.7rem;" aria-label="Eliminar"></button>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resultados de búsqueda -->
+        <div class="col-lg-9">
+            <!-- Encabezado -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="h3 mb-1 text-primary">
+                                {% if query %}
+                                    <i class="fas fa-search me-2"></i>Resultados para "{{ query }}"
+                                {% else %}
+                                    <i class="fas fa-boxes me-2"></i>Productos Disponibles
+                                {% endif %}
+                            </h2>
+                            <p class="text-muted mb-0">
+                                <span class="badge bg-primary rounded-pill px-3 py-1">
+                                    {{ productos.paginator.count }} productos
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <!-- Botón para mostrar/ocultar filtros en móvil -->
+                        <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosMobile">
+                            <i class="fas fa-filter me-1"></i> Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros móviles (colapsable) -->
+            <div class="collapse d-lg-none mb-4" id="filtrosMobile">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="GET" action="{% url 'buscar_productos' %}">
+                            <div class="input-group mb-3">
+                                <input type="text" 
+                                       name="q" 
+                                       class="form-control" 
+                                       placeholder="Buscar..."
+                                       value="{{ query }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <select name="categoria" class="form-select mb-3">
+                                <option value="">Todas las categorías</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.id_categoria }}">{{ categoria.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista de productos -->
+            {% if productos %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                {% for producto in productos %}
+                <div class="col">
+                    <div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
+                        <!-- Imagen del producto -->
+                        <div class="position-relative" style="height: 200px; overflow: hidden;">
+                            <a href="{% url 'producto_detail' producto.id_producto %}" class="text-decoration-none">
+                                {% if producto.imagenes.all %}
+                                    <img src="{{ producto.imagenes.first.imagen.url }}" 
+                                         alt="{{ producto.nombre }}"
+                                         class="img-fluid w-100 h-100 object-fit-cover product-image">
+                                {% else %}
+                                    <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-image fa-3x mb-2"></i>
+                                            <p class="mb-0">Sin imagen</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </a>
+                            {% if producto.estado == 'disponible' %}
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                <i class="fas fa-check-circle me-1"></i> Disponible
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Contenido de la tarjeta -->
+                        <div class="card-body d-flex flex-column p-4">
+                            <a href="{% url 'producto_detail' producto.id_producto %}" class="text-decoration-none">
+                                <h5 class="card-title text-dark fw-bold mb-2 product-title">
+                                    {{ producto.nombre|truncatechars:30 }}
+                                </h5>
+                            </a>
+                            
+                            <div class="mb-3">
+                                <h4 class="text-success fw-bold mb-0">
+                                    ${{ producto.precio_kg }}
+                                    <small class="text-muted">/kg</small>
+                                </h4>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                {% if producto.id_categoria %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3">
+                                    <i class="fas fa-tag me-1"></i>{{ producto.id_categoria.nombre }}
+                                </span>
+                                {% endif %}
+                                
+                                {% if producto.pureza %}
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-3">
+                                    <i class="fas fa-certificate me-1"></i>{{ producto.get_pureza_display }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-muted small mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="fas fa-weight me-1"></i> {{ producto.peso_disponible_kg }} kg</span>
+                                    <span><i class="fas fa-calendar me-1"></i> {{ producto.fecha_publicacion|date:"d/m/y" }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                {% if producto.estado == 'disponible' %}
+                                    <form method="POST" action="{% url 'agregar_al_carrito' producto.id_producto %}" class="add-to-cart-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="cantidad" value="1">
+                                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <button type="submit" class="btn btn-primary w-100 btn-add-to-cart">
+                                            <i class="fas fa-cart-plus me-2"></i> Agregar al Carrito
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary w-100" disabled>
+                                        <i class="fas fa-ban me-2"></i> No disponible
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Paginación -->
+            {% if productos.has_other_pages %}
+            <nav aria-label="Navegación de productos" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if productos.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ productos.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}" aria-label="Anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                        </li>
+                    {% endif %}
+                    
+                    {% for i in productos.paginator.page_range %}
+                        {% if productos.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ i }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}">{{ i }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if productos.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ productos.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode|cut:'page=' }}{% endif %}" aria-label="Siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+            {% else %}
+            <!-- Estado vacío -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state-icon mb-4">
+                        <i class="fas fa-search fa-4x text-muted"></i>
+                    </div>
+                    <h3 class="text-primary mb-3">
+                        {% if query %}
+                            No se encontraron productos
+                        {% else %}
+                            No hay productos disponibles
+                        {% endif %}
+                    </h3>
+                    <p class="text-muted mb-4 lead">
+                        {% if query %}
+                            No hay productos que coincidan con "{{ query }}"
+                        {% else %}
+                            No hay productos con los filtros aplicados
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'buscar_productos' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-times me-2"></i> Limpiar filtros
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+        border-radius: 12px !important;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    }
+    
+    .product-image {
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-title {
+        transition: color 0.3s ease;
+        min-height: 3rem;
+    }
+    
+    .product-title:hover {
+        color: #0d6efd !important;
+    }
+    
+    .btn-add-to-cart {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+    
+    .btn-add-to-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+    
+    .bg-gradient {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 1), rgba(0, 86, 214, 1));
+    }
+    
+    .border-dashed {
+        border: 2px dashed #dee2e6 !important;
+    }
+    
+    .page-link {
+        padding: 10px 15px;
+        margin: 0 3px;
+        border-radius: 8px !important;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #0d6efd, #198754);
+        border: none;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Efecto hover en tarjetas
+    document.querySelectorAll('.product-card').forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            const image = this.querySelector('.product-image');
+            const title = this.querySelector('.product-title');
+            
+            if (image) image.style.transform = 'scale(1.05)';
+            if (title) title.style.color = '#0d6efd';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const image = this.querySelector('.product-image');
+            const title = this.querySelector('.product-title');
+            
+            if (image) image.style.transform = 'scale(1)';
+            if (title) title.style.color = '';
+        });
+    });
+    
+    // Animación para botones de agregar al carrito
+    document.querySelectorAll('.btn-add-to-cart').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const originalText = this.innerHTML;
+            
+            // Crear efecto de éxito
+            this.innerHTML = '<i class="fas fa-check me-2"></i>¡Agregado!';
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-success');
+            this.disabled = true;
+            
+            // Enviar formulario después de animación
+            setTimeout(() => {
+                form.submit();
+            }, 800);
+            
+            // Restaurar después de 3 segundos
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('btn-success');
+                this.classList.add('btn-primary');
+                this.disabled = false;
+            }, 3000);
+        });
+    });
+    
+    // Función para remover filtros
+    function removeUrlParameter(url, parameter) {
+        const urlObj = new URL(url, window.location.origin);
+        urlObj.searchParams.delete(parameter);
+        
+        if (parameter === 'precio') {
+            urlObj.searchParams.delete('precio_min');
+            urlObj.searchParams.delete('precio_max');
+        }
+        
+        return urlObj.toString();
+    }
+    
+    // Manejar clic en botones para cerrar filtros
+    document.querySelectorAll('.btn-close-filtro').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const badge = this.closest('.badge');
+            const param = badge.getAttribute('data-param');
+            const currentUrl = window.location.href;
+            const newUrl = removeUrlParameter(currentUrl, param);
+            window.location.href = newUrl;
+        });
+    });
+    
+    // Auto-submit al cambiar algunos filtros
+    document.querySelectorAll('#filtros-form select[name="ordenar_por"], #filtros-form select[name="estado"]').forEach(function(select) {
+        select.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    });
+});
+</script>
+{% endblock %}

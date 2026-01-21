@@ -1,0 +1,238 @@
+
+{% extends 'Incentivos/base.html' %}
+
+{% block title %}Dashboard - Incentivos{% endblock %}
+
+{% block content %}
+
+{% if recolector %}
+<!-- Encabezado  Dashboard -->
+<div class="dashboard-welcome">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1><i class="fas fa-leaf"></i> ¡Hola, {{ request.user.first_name|default:request.user.username }}!</h1>
+            <p class="lead mb-0">Bienvenido al sistema de incentivos CecyRecicla</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <span class="badge badge-rank px-4 py-2 fs-6">
+                <i class="fas fa-trophy"></i> 
+                {{ recolector.rango_actual.nombre|default:"NOVATO" }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+
+
+    <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ puntos_totales }}</div>
+                <div class="stat-label">Puntos Acumulados</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ total_entregas }}</div>
+                <div class="stat-label">Entregas Totales</div>
+                <i class="fas fa-recycle text-success mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ recompensas_canjeadas }}</div>
+                <div class="stat-label">Recompensas Canjeadas</div>
+                <i class="fas fa-gift text-primary mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ total_reciclado }} kg</div>
+                <div class="stat-label">Total Reciclado</div>
+                <i class="fas fa-weight text-info mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Column izquierd con Aaciones rapidas -->
+    <div class="col-lg-4 mb-4">
+        <div class="eco-card">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
+            </div>
+            <div class="card-body p-3">
+                <div class="quick-actions-grid">
+                    <!-- Ac nueva Entrega -->
+                    <a href="{% url 'Incentivos:nueva_entrega' %}" class="quick-action-item">
+                        <div class="action-icon bg-success">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6>Nueva Entrega</h6>
+                            <p class="small text-muted mb-0">Registra materiales reciclados</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Ac canjear Recompensa -->
+                    <a href="{% url 'Incentivos:recompensas' %}" class="quick-action-item">
+                        <div class="action-icon bg-warning">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6>Canjear Recompensa</h6>
+                            <p class="small text-muted mb-0">Usa tus puntos por premios</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- ac  Perfil -->
+                    <a href="{% url 'Incentivos:perfil' %}" class="quick-action-item">
+                        <div class="action-icon bg-info">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6>Mi Perfil</h6>
+                            <p class="small text-muted mb-0">Ver tu información y estadísticas</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- ac Historial -->
+                    <a href="{% url 'Incentivos:historial' %}" class="quick-action-item">
+                        <div class="action-icon bg-primary">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6>Historial</h6>
+                            <p class="small text-muted mb-0">Ver todas tus transacciones</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- el codigo qr -->
+                <div class="qr-section mt-4 pt-3 border-top">
+                    <div class="text-center">
+                        <div class="qr-icon mb-2">
+                            <i class="fas fa-qrcode fa-2x text-secondary"></i>
+                        </div>
+                        <h6 class="mb-1">Mi Código QR</h6>
+                        <p class="text-muted small mb-2">{{ recolector.codigo_qr }}</p>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="alert('QR Code: {{ recolector.codigo_qr }}')">
+                            <i class="fas fa-print me-1"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- colum derecga muestra a atividad reciente -->
+    <div class="col-lg-8">
+        <div class="eco-card mb-4">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+            </div>
+            
+            <div class="card-body">
+                {% if entregas %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Puntos</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entrega in entregas %}
+                                <tr>
+                                    <td>{{ entrega.fecha_hora_entrega|date:"d/m/Y H:i" }}</td>
+                                    <td><span class="badge bg-warning text-dark">+{{ entrega.total_puntos_obtenidos }}</span></td>
+                                    <td><span class="badge bg-success">{{ entrega.estado|title }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No tienes entregas registradas aún.</p>
+                        <a href="{% url 'Incentivos:nueva_entrega' %}" class="btn btn-eco">Registrar primera entrega</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recompensas disponibles -->
+        {% if recompensas_disponibles %}
+        <div class="eco-card">
+            <div class="card-header-eco">
+                <h3><i class="fas fa-gift"></i> Recompensas que puedes canjear</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for recompensa in recompensas_disponibles %}
+                    <div class="col-md-6 mb-3">
+                        <div class="reward-card eco-card h-100">
+                            <div class="card-body">
+                                <div class="reward-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <h5 class="text-center">{{ recompensa.nombre }}</h5>
+                                <p class="text-muted text-center small">{{ recompensa.descripcion|truncatechars:80 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-success">{{ recompensa.costo_puntos }} pts</span>
+                                    <a href="{% url 'Incentivos:canjear_recompensa' recompensa.id %}" 
+                                       class="btn btn-eco btn-sm">
+                                        Canjear
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+<!-- Si no hay recolector,con esto no debería pasar con la nueva vista -->
+<div class="alert alert-danger">
+    <h4><i class="fas fa-exclamation-triangle"></i> Error del Sistema</h4>
+    <p>No se pudo cargar tu perfil de recolector. Por favor:</p>
+    <ol>
+        <li>Contacta al administrador del sistema</li>
+        <li>O intenta <a href="{% url 'Incentivos:logout' %}">cerrar sesión</a> y volver a iniciar</li>
+    </ol>
+</div>
+{% endif %}
+
+{% endblock %}

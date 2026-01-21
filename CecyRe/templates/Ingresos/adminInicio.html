@@ -1,0 +1,209 @@
+
+{% extends 'Ingresos/navegacionmodulos.html' %}
+
+
+
+{% block content %}
+
+<body>
+<div class="dashboard-welcome">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1><i class="fas fa"></i> ¡Hola!</h1>
+            <p class="lead mb-0">Bienvenido al Dashboard de Gestion de Ingresos</p>
+        </div>
+    </div>
+</div><br><br>
+    <nav>
+            {% include "Ingresos/menu_navegacion.html" %}
+    </nav>
+    <br><br>
+    <h3><i class="fa-solid fa-chart-line"></i> Panel de Resumen</h3>
+    
+<section class="contenedor">
+
+
+    <div class="dashderecha">
+    <div id="divdash1" style="width: 100%;">
+        <h3 ><i class="fa-solid fa-dollar-sign"></i> Gráfico de Gastos Mensuales</h3>
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const meses = {{ meses|safe }};
+    const montos = {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1abc9c', 
+                    borderColor: '#145a32',      
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#000000'   
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#000000' }, 
+                        grid: { color: 'rgba(0, 0, 0, 1)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#000000' }, 
+                        grid: { color: 'rgba(0, 0, 0, 1)' } 
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+
+<div id="divdash3" style="width: 100%; height: 100%;">
+    <div class="eco-card mb-4">
+     <div class="card-header-eco">
+        <h2><i class="fa-solid fa-table"></i>Movimientos Recientes</h2>
+            </div>
+
+
+    <div class="table-responsive">
+   <table class="table table-hover">
+    <thead class="table-success">
+    <tr>
+            <th>Tipo</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for venta in ventas_recientes %}
+        <tr>
+            <td><span class="tipo venta">Venta Externa</span></td>
+            <td>{{ venta.descripcion }}</td>
+            <td class="positivo">$ {{ venta.total }}</td>
+            <td>{{ venta.fecha }}</td>
+        </tr>
+        {% endfor %}
+
+        {% for gasto in gastos_recientes %}
+        <tr>
+            <td><span class="tipo gasto">Gasto</span></td>
+            <td>{{ gasto.concepto }}</td>
+            <td class="negativo">- $ {{ gasto.monto }}</td>
+            <td>{{ gasto.fecha }}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+    <div class="dashisquierda">
+<div id="divdash2" style="width: 100%; height: 100%;">
+    <h3><i class="fa-solid fa-file"></i> Panel de Resumen</h3><br>
+<div class="row mb-4">
+          <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">${{ total_ventas_externas }}</div>
+                <div class="stat-label">Total de ventas Externas</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+
+        <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">${{ total_gastos }}</div>
+                <div class="stat-label">Total de Gastos</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+     </div>
+
+       <div class="col-md-3 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ productos_disponibles }}</div>
+                <div class="stat-label">Producto Disponible</div>
+                <i class="fas fa-star text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+</div>
+        
+
+
+    <div id="divdash4" style="width: 100%; height: 100%;">
+    <h2><i class="fa-solid fa-dollar-sign"></i> Gastos por Categoría</h2>
+    <canvas id="graficoCategorias" style="width:100%; height:400px;"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const categorias = {{ categorias|safe }};
+    const montos_categoria = {{ montos_categoria|safe }};
+
+   
+    console.log(categorias, montos_categoria);
+
+    if (categorias.length && montos_categoria.length) {
+        new Chart(document.getElementById('graficoCategorias'), {
+            type: 'pie',
+            data: {
+                labels: categorias,
+                datasets: [{
+                    data: montos_categoria,
+                    backgroundColor: [
+                        '#1abc9c','#3498db','#e74c3c','#f1c40f','#9b59b6','#34495e','#e67e22'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#00000' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                return label + ': $' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</div>
+</div>     
+</section>
+</body>
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends './navegación.html' %}
+
+{% block pag %}
+<div class="container py-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white py-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h3 mb-1" style="color: #0d6efd;">
+                        <i class="fas fa-edit me-2" style="color: #0d6efd;"></i>{{ titulo|default:"Editar Producto" }}
+                    </h2>
+                    <p class="mb-0 opacity-90" style="color: #0d6efd;">Modifica la información de tu producto</p>
+                </div>
+                <a href="{% url 'escritorio' %}" class="btn-eco">
+                    <i class="fas fa-arrow-left me-2"></i> Volver al escritorio
+                </a>
+            </div>
+        </div>
+        
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ form.non_field_errors }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.nombre }}
+                            <label for="{{ form.nombre.id_for_label }}">Nombre del producto</label>
+                            {% if form.nombre.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.nombre.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.precio_kg }}
+                            <label for="{{ form.precio_kg.id_for_label }}">Precio por kg ($)</label>
+                            {% if form.precio_kg.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.precio_kg.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.peso_disponible_kg }}
+                            <label for="{{ form.peso_disponible_kg.id_for_label }}">Peso disponible (kg)</label>
+                            {% if form.peso_disponible_kg.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.peso_disponible_kg.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.id_categoria }}
+                            <label for="{{ form.id_categoria.id_for_label }}">Categoría</label>
+                            {% if form.id_categoria.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.id_categoria.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.pureza }}
+                            <label for="{{ form.pureza.id_for_label }}">Pureza</label>
+                            {% if form.pureza.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.pureza.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.estado }}
+                            <label for="{{ form.estado.id_for_label }}">Estado</label>
+                            {% if form.estado.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.estado.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="form-floating">
+                        {{ form.descripcion }}
+                        <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
+                        {% if form.descripcion.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.descripcion.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Imágenes existentes -->
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary bg-opacity-10 text-primary border-primary">
+                        <h5 class="mb-0">
+                            <i class="fas fa-images me-2"></i>Imágenes actuales
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3" id="current-images">
+                            {% for imagen in object.imagenes.all %}
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="card border h-100">
+                                        <div class="image-container" style="height: 150px;">
+                                            <img src="{{ imagen.imagen.url }}" 
+                                                 alt="Imagen {{ forloop.counter }}"
+                                                 class="img-fluid w-100 h-100 object-fit-cover rounded-top">
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <p class="mb-1 small">Orden: {{ imagen.orden }}</p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="delete_images" value="{{ imagen.id_imagen }}" 
+                                                       id="delete_{{ imagen.id_imagen }}">
+                                                <label class="form-check-label text-danger small" for="delete_{{ imagen.id_imagen }}">
+                                                    <i class="fas fa-trash-alt me-1"></i>Eliminar
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <p class="text-center text-muted">
+                                        <i class="fas fa-image fa-2x mb-3"></i><br>
+                                        No hay imágenes
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Formset para imágenes nuevas 
+                <div class="card border-success mb-4">
+                    <div class="card-header bg-success bg-opacity-10 text-success border-success">
+                        <h5 class="mb-0">
+                           <i class="fas fa-plus-circle me-2"></i>Agregar nuevas imágenes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {{ formset.management_form }}
+                        <div class="row g-4" id="new-images">
+                            {% for form_img in formset %}
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card border-dashed h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-center mb-3">
+                                                <i class="fas fa-image me-1"></i>Imagen {{ forloop.counter }}
+                                            </h6>
+                                            <div class="mb-3">
+                                                <label class="form-label">Imagen</label>
+                                                {{ form_img.imagen }}
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Orden</label>
+                                                {{ form_img.orden }}
+                                            </div>
+                                            {% if form_img.errors %}
+                                                <div class="alert alert-danger mt-2 p-2 small">
+                                                    {{ form_img.errors }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>-->
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-save me-2"></i> Guardar cambios
+                    </button>
+                    <a href="{% url 'escritorio' %}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-times me-2"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-dashed {
+        border: 2px dashed #dee2e6 !important;
+    }
+    
+    .image-container {
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #0d6efd;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 8px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Agregar clases Bootstrap a los inputs
+        document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
+            el.classList.add('form-control');
+        });
+        
+        // Agregar placeholder a los campos
+        document.getElementById('{{ form.nombre.id_for_label }}').placeholder = "Nombre del producto";
+        document.getElementById('{{ form.precio_kg.id_for_label }}').placeholder = "0.00";
+        document.getElementById('{{ form.peso_disponible_kg.id_for_label }}').placeholder = "0.00";
+        document.getElementById('{{ form.descripcion.id_for_label }}').placeholder = "Descripción del producto";
+        
+        // Validación en tiempo real
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                const min = parseFloat(this.min) || 0;
+                
+                if (value < min) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+        
+        // Preview de imágenes al seleccionar
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const parent = this.closest('.card-body');
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let preview = parent.querySelector('.image-preview');
+                        if (!preview) {
+                            preview = document.createElement('div');
+                            preview.className = 'image-preview mt-2';
+                            parent.appendChild(preview);
+                        }
+                        preview.innerHTML = `
+                            <img src="${e.target.result}" 
+                                 alt="Preview" 
+                                 class="img-fluid rounded" 
+                                 style="max-height: 150px;">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+        
+        // Marcar como invalid si hay errores
+        document.querySelectorAll('.invalid-feedback').forEach(feedback => {
+            if (feedback.textContent.trim()) {
+                const input = feedback.previousElementSibling;
+                if (input) {
+                    input.classList.add('is-invalid');
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

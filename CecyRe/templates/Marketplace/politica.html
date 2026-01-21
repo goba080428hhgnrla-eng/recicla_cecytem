@@ -1,0 +1,883 @@
+{% extends './navegación.html' %}
+{% block pag %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold text-primary mb-3">
+                <i class="fas fa-shield-alt me-3"></i>Política de Privacidad
+            </h1>
+            <p class="lead text-muted">
+                Última actualización: {% now "d/m/Y" %}
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <!-- Navegación lateral -->
+            <div class="eco-card sticky-top" style="top: 20px;">
+                <div class="card-header-eco">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Contenido
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <nav class="nav flex-column privacy-nav">
+                        <a class="nav-link" href="#section1">
+                            <i class="fas fa-chevron-right me-2"></i>Información que Recopilamos
+                        </a>
+                        <a class="nav-link" href="#section2">
+                            <i class="fas fa-chevron-right me-2"></i>Cómo Usamos tu Información
+                        </a>
+                        <a class="nav-link" href="#section3">
+                            <i class="fas fa-chevron-right me-2"></i>Protección de Datos
+                        </a>
+                        <a class="nav-link" href="#section4">
+                            <i class="fas fa-chevron-right me-2"></i>Compartir Información
+                        </a>
+                        <a class="nav-link" href="#section5">
+                            <i class="fas fa-chevron-right me-2"></i>Tus Derechos
+                        </a>
+                        <a class="nav-link" href="#section6">
+                            <i class="fas fa-chevron-right me-2"></i>Cookies
+                        </a>
+                        <a class="nav-link" href="#section7">
+                            <i class="fas fa-chevron-right me-2"></i>Retención de Datos
+                        </a>
+                        <!--<a class="nav-link" href="#section8">
+                            <i class="fas fa-chevron-right me-2"></i>Menores de Edad
+                        </a>
+                        <a class="nav-link" href="#section9">
+                            <i class="fas fa-chevron-right me-2"></i>Cambios en esta Política
+                        </a>-->
+                        <a class="nav-link" href="#section10">
+                            <i class="fas fa-chevron-right me-2"></i>Contacto
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-9">
+            <!-- Introducción -->
+            <div class="eco-card mb-4">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-shield fa-4x text-primary mb-3"></i>
+                        <h3 class="text-primary">Tu Privacidad es Importante</h3>
+                    </div>
+                    <p class="lead text-center mb-0">
+                        En <strong>CECyTEM Recicla - Marketplace</strong> nos comprometemos a proteger tu información personal. 
+                        Esta política explica cómo recopilamos, usamos y protegemos tus datos.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Secciones de privacidad -->
+            <div id="section1" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">1</span>
+                            Información que Recopilamos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Para brindarte nuestros servicios, podemos recopilar los siguientes tipos de información:</p>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="info-type-card">
+                                    <div class="info-type-icon">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Información personal</h6>
+                                        <p class="small text-muted mb-0">Nombre, correo electrónico, teléfono</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-type-card">
+                                    <div class="info-type-icon">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Información de cuenta</h6>
+                                        <p class="small text-muted mb-0">Nombre de usuario, contraseña</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-type-card">
+                                    <div class="info-type-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Información de uso</h6>
+                                        <p class="small text-muted mb-0">Cómo interactúas con nuestra plataforma</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-type-card">
+                                    <div class="info-type-icon">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Información técnica</h6>
+                                        <p class="small text-muted mb-0">Dirección IP, tipo de dispositivo, navegador</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section2" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">2</span>
+                            Cómo Usamos tu Información
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Utilizamos tu información para los siguientes propósitos:</p>
+                        <ul class="privacy-list">
+                            <li>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Proporcionar y mejorar nuestros servicios</strong> - Para ofrecerte una experiencia personalizada
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Comunicarnos contigo</strong> - Enviar actualizaciones, notificaciones y soporte
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Garantizar la seguridad</strong> - Prevenir fraudes y actividades maliciosas
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Cumplir con obligaciones legales</strong> - Seguir regulaciones aplicables
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Personalizar tu experiencia</strong> - Mostrar contenido relevante
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section3" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">3</span>
+                            Protección de Datos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="security-features">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="security-feature-card">
+                                        <div class="security-feature-icon">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                        <div>
+                                            <h6>Encriptación de datos</h6>
+                                            <p class="small text-muted mb-0">Datos sensibles protegidos con cifrado AES-256</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="security-feature-card">
+                                        <div class="security-feature-icon">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h6>Acceso restringido</h6>
+                                            <p class="small text-muted mb-0">Solo personal autorizado accede a información personal</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="security-feature-card">
+                                        <div class="security-feature-icon">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div>
+                                            <h6>Revisiones de seguridad</h6>
+                                            <p class="small text-muted mb-0">Auditorías periódicas de nuestros sistemas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="security-feature-card">
+                                        <div class="security-feature-icon">
+                                            <i class="fas fa-hdd"></i>
+                                        </div>
+                                        <div>
+                                            <h6>Copias de seguridad</h6>
+                                            <p class="small text-muted mb-0">Respaldos regulares de la información</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section4" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">4</span>
+                            Compartir Información
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info bg-info bg-opacity-10 border-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>No vendemos tu información personal.</strong> Solo compartimos datos en estos casos:
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-primary">
+                                        <i class="fas fa-gavel fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Requerido por ley</h6>
+                                        <p class="small text-muted mb-0">Cuando es requerido por autoridades competentes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-success">
+                                        <i class="fas fa-handshake fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Proveedores de servicios</h6>
+                                        <p class="small text-muted mb-0">Con proveedores esenciales para operar</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-warning">
+                                        <i class="fas fa-shield-alt fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Proteger derechos</h6>
+                                        <p class="small text-muted mb-0">Para proteger derechos, propiedad o seguridad</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="sharing-case">
+                                    <div class="sharing-icon text-info">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6>Con tu consentimiento</h6>
+                                        <p class="small text-muted mb-0">Cuando nos autorizas explícitamente</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Secciones 5-8 (resumidas) -->
+            <div id="section5" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">5</span>
+                            Tus Derechos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Tienes derecho a:</p>
+                        <div class="rights-grid">
+                            <div class="right-item">
+                                <i class="fas fa-search text-primary"></i>
+                                <span>Acceder a tu información</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-edit text-success"></i>
+                                <span>Corregir datos incorrectos</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-trash-alt text-danger"></i>
+                                <span>Solicitar la eliminación</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-ban text-warning"></i>
+                                <span>Oponerte al procesamiento</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-download text-info"></i>
+                                <span>Portabilidad de datos</span>
+                            </div>
+                            <div class="right-item">
+                                <i class="fas fa-undo text-secondary"></i>
+                                <span>Retirar tu consentimiento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cookies -->
+            <div id="section6" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">6</span>
+                            Cookies y Tecnologías Similares
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <p>Utilizamos cookies para mejorar tu experiencia:</p>
+                                <ul class="privacy-list">
+                                    <li><strong>Cookies esenciales:</strong> Para el funcionamiento básico del sitio</li>
+                                    <li><strong>Cookies de rendimiento:</strong> Para analizar el uso del sitio</li>
+                                    <li><strong>Cookies de funcionalidad:</strong> Para recordar tus preferencias</li>
+                                </ul>
+                                <p class="mt-3 mb-0">
+                                    Puedes controlar el uso de cookies desde la configuración de tu navegador.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="cookie-icon">
+                                    <i class="fas fa-cookie-bite fa-5x text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Secciones 7-9 (resumidas) -->
+            <div id="section7" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">7</span>
+                            Retención de Datos
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Conservamos tu información solo durante el tiempo necesario para:</p>
+                        <div class="retention-reasons">
+                            <div class="reason-item">
+                                <i class="fas fa-clock text-primary me-3"></i>
+                                <div>
+                                    <h6>Proporcionar servicios</h6>
+                                    <p class="small text-muted mb-0">Mientras seas usuario activo</p>
+                                </div>
+                            </div>
+                            <div class="reason-item">
+                                <i class="fas fa-balance-scale text-success me-3"></i>
+                                <div>
+                                    <h6>Cumplir obligaciones</h6>
+                                    <p class="small text-muted mb-0">Según requerimientos legales</p>
+                                </div>
+                            </div>
+                            <div class="reason-item">
+                                <i class="fas fa-shield-alt text-warning me-3"></i>
+                                <div>
+                                    <h6>Mantener seguridad</h6>
+                                    <p class="small text-muted mb-0">Para prevenir fraudes y abusos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contacto -->
+            <div id="section10" class="privacy-section mb-4">
+                <div class="eco-card">
+                    <div class="card-header-eco">
+                        <h4 class="mb-0">
+                            <span class="section-number">8</span>
+                            Contacto
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Para ejercer tus derechos o consultas sobre privacidad:</p>
+                        <div class="contact-info">
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-envelope text-primary me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Correo electrónico</h6>
+                                    <p class="mb-0">privacidad@cecytemrecicla.edu.mx</p>
+                                </div>
+                            </div>
+                            <div class="contact-item mb-3">
+                                <i class="fas fa-map-marker-alt text-success me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Dirección</h6>
+                                    <p class="mb-0">CECyTEM Recicla Marketplace<br>Departamento de Privacidad</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-clock text-warning me-3 fa-lg"></i>
+                                <div>
+                                    <h6>Horario de atención</h6>
+                                    <p class="mb-0">Lunes a Viernes: 9:00 - 18:00 hrs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de consentimiento -->
+            <div class="eco-card">
+                <div class="card-header-eco">
+                    <h4 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Confirmación de Consentimiento
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success bg-success bg-opacity-10 border-success">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Al usar nuestra plataforma, aceptas los términos de esta Política de Privacidad.
+                    </div>
+                    
+                    <div class="consent-options mt-4">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="privacyRead" required>
+                            <label class="form-check-label fw-bold" for="privacyRead">
+                                He leído y comprendo la Política de Privacidad
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="dataConsent" required>
+                            <label class="form-check-label fw-bold" for="dataConsent">
+                                Acepto el tratamiento de mis datos según esta política
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-eco btn-lg" onclick="acceptPrivacy()">
+                            <i class="fas fa-check-circle me-2"></i>Aceptar y Continuar
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-eco-secondary btn-lg">
+                            <i class="fas fa-home me-2"></i>Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Navegación lateral */
+    .privacy-nav .nav-link {
+        padding: 12px 20px;
+        color: #495057;
+        border-left: 3px solid transparent;
+        transition: all 0.3s;
+    }
+    
+    .privacy-nav .nav-link:hover {
+        background-color: #F1F8E9;
+        color: #4CAF50;
+        border-left-color: #4CAF50;
+        padding-left: 25px;
+    }
+    
+    .privacy-nav .nav-link i {
+        transition: transform 0.3s;
+    }
+    
+    .privacy-nav .nav-link:hover i {
+        transform: translateX(3px);
+    }
+    
+    /* Números de sección */
+    .section-number {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        margin-right: 15px;
+        font-weight: bold;
+    }
+    
+    /* Tarjetas de información */
+    .info-type-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .info-type-card:hover {
+        background: white;
+        border-color: #4CAF50;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .info-type-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2196F3;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+    
+    /* Listas de privacidad */
+    .privacy-list {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .privacy-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+        line-height: 1.6;
+    }
+    
+    .privacy-list li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Características de seguridad */
+    .security-feature-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .security-feature-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4CAF50;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+    
+    /* Casos de compartir */
+    .sharing-case {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .sharing-icon {
+        margin-right: 15px;
+        min-width: 50px;
+    }
+    
+    /* Derechos */
+    .rights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .right-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .right-item:hover {
+        background: #F1F8E9;
+        border-color: #4CAF50;
+        transform: translateX(5px);
+    }
+    
+    .right-item i {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        width: 30px;
+        text-align: center;
+    }
+    
+    /* Icono de cookies */
+    .cookie-icon {
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Razones de retención */
+    .retention-reasons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .reason-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #4CAF50;
+    }
+    
+    /* Información de contacto */
+    .contact-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .contact-item:hover {
+        background: white;
+        border-color: #4CAF50;
+        transform: translateX(5px);
+    }
+    
+    /* Botones */
+    .btn-eco {
+        background: linear-gradient(135deg,#FF5722);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #F57C00, #E64A19);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 152, 0, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Checkboxes */
+    .form-check-input:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+    
+    .form-check-input:checked:focus {
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.25);
+    }
+    
+    @media (max-width: 768px) {
+        .section-number {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            font-size: 0.9rem;
+        }
+        
+        .rights-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .contact-item {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .contact-item i {
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+        
+        .privacy-nav {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scroll para navegación
+        document.querySelectorAll('.privacy-nav .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Resaltar sección activa en navegación
+        const sections = document.querySelectorAll('.privacy-section');
+        const navLinks = document.querySelectorAll('.privacy-nav .nav-link');
+        
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                const sectionHeight = section.clientHeight;
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = '#' + section.id;
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentSection) {
+                    link.classList.add('active');
+                    link.style.borderLeftColor = '#4CAF50';
+                    link.style.color = '#4CAF50';
+                    link.style.backgroundColor = '#F1F8E9';
+                } else {
+                    link.style.borderLeftColor = '';
+                    link.style.color = '';
+                    link.style.backgroundColor = '';
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', highlightActiveSection);
+        highlightActiveSection(); // Inicializar
+        
+        // Animación de entrada para las secciones
+        sections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, 200 + (index * 100));
+        });
+        
+        // Función para aceptar política
+        window.acceptPrivacy = function() {
+            const privacyRead = document.getElementById('privacyRead');
+            const dataConsent = document.getElementById('dataConsent');
+            
+            if (!privacyRead.checked || !dataConsent.checked) {
+                // Animación de error
+                const checkboxes = [privacyRead, dataConsent];
+                checkboxes.forEach(checkbox => {
+                    if (!checkbox.checked) {
+                        checkbox.closest('.form-check').classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => {
+                            checkbox.closest('.form-check').classList.remove('animate__animated', 'animate__shakeX');
+                        }, 1000);
+                    }
+                });
+                
+                alert('Debes aceptar ambos términos para continuar.');
+                return;
+            }
+            
+            // Aquí iría la lógica para guardar el consentimiento
+            alert('Política de privacidad aceptada. ¡Gracias!');
+            
+            // Redirigir a inicio
+            setTimeout(() => {
+                window.location.href = "{% url 'home' %}";
+            }, 1000);
+        };
+        
+        // Efecto hover en las tarjetas de información
+        document.querySelectorAll('.info-type-card, .security-feature-card, .sharing-case, .right-item, .contact-item').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Auto-scroll al inicio de la sección si hay hash en la URL
+        if (window.location.hash) {
+            setTimeout(() => {
+                const targetElement = document.querySelector(window.location.hash);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 500);
+        }
+    });
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}

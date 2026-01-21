@@ -1,0 +1,670 @@
+{% extends './navegación.html' %}
+{% block pag %}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold text-primary mb-3">
+                <i class="fas fa-upload me-3"></i>Publicar Nuevo Producto
+            </h1>
+            <p class="lead text-muted">Completa la información para agregar un nuevo producto a tu catálogo</p>
+        </div>
+    </div>
+
+    <div class="eco-card">
+        <div class="card-header-eco">
+            <h3 class="mb-0">
+                <i class="fas fa-plus-circle me-2"></i>Nuevo Producto
+            </h3>
+        </div>
+        
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate id="productForm">
+                {% csrf_token %}
+                
+                <!-- Errores generales del formulario -->
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show mb-4">
+                        <div class="d-flex">
+                            <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+                            <div>
+                                <h5 class="alert-heading">Corrige los siguientes errores:</h5>
+                                <ul class="mb-0 ps-3">
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <!-- Errores del formset de imágenes -->
+                {% if formset.errors %}
+                    <div class="alert alert-warning alert-dismissible fade show mb-4">
+                        <i class="fas fa-image me-2"></i>
+                        <strong>Problemas con las imágenes:</strong>
+                        <ul class="mb-0 ps-3">
+                            {% for form in formset %}
+                                {% if form.errors %}
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>Imagen {{ forloop.parentloop.counter }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <!-- Columna izquierda: Información básica -->
+                    <div class="col-lg-6">
+                        <div class="info-section mb-4 p-4 bg-light rounded">
+                            <h5 class="mb-4 text-success">
+                                <i class="fas fa-info-circle me-2"></i>Información básica
+                            </h5>
+                            <div class="form-floating mb-4">
+                                {{ form.nombre }}
+                                <label for="{{ form.nombre.id_for_label }}">
+                                    <i class="fas fa-tag me-2"></i>Nombre del Producto
+                                    <span class="text-danger">*</span>
+                                </label>
+                                {% if form.nombre.help_text %}
+                                    <div class="form-text">{{ form.nombre.help_text }}</div>
+                                {% endif %}
+                                {% if form.nombre.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.nombre.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                {{ form.id_categoria }}
+                                <label for="{{ form.id_categoria.id_for_label }}">
+                                    <i class="fas fa-list-alt me-2"></i>Categoría
+                                    <span class="text-danger">*</span>
+                                </label>
+                                {% if form.id_categoria.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.id_categoria.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                {{ form.descripcion }}
+                                <label for="{{ form.descripcion.id_for_label }}">
+                                    <i class="fas fa-align-left me-2"></i>Descripción
+                                </label>
+                                <div class="form-text">Describe tu producto de manera clara y detallada</div>
+                                {% if form.descripcion.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.descripcion.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: Especificaciones y estado -->
+                    <div class="col-lg-6">
+                        <div class="spec-section mb-4 p-4 bg-light rounded">
+                            <h5 class="mb-4 text-success">
+                                <i class="fas fa-balance-scale me-2"></i>Especificaciones
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.peso_disponible_kg }}
+                                        <label for="{{ form.peso_disponible_kg.id_for_label }}">
+                                            <i class="fas fa-weight me-2"></i>Peso (kg)
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="form-text">Peso total disponible</div>
+                                        {% if form.peso_disponible_kg.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.peso_disponible_kg.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.precio_kg }}
+                                        <label for="{{ form.precio_kg.id_for_label }}">
+                                            <i class="fas fa-dollar-sign me-2"></i>Precio ($/kg)
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="form-text">Precio por kilogramo</div>
+                                        {% if form.precio_kg.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.precio_kg.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.pureza }}
+                                        <label for="{{ form.pureza.id_for_label }}">
+                                            <i class="fas fa-filter me-2"></i>Nivel de Pureza
+                                        </label>
+                                        {% if form.pureza.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.pureza.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.estado }}
+                                        <label for="{{ form.estado.id_for_label }}">
+                                            <i class="fas fa-check-circle me-2"></i>Estado
+                                        </label>
+                                        {% if form.estado.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.estado.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Imágenes del producto -->
+                        <div class="images-section p-4 bg-light rounded">
+                            <h5 class="mb-4 text-success">
+                                <i class="fas fa-images me-2"></i>Imágenes del Producto
+                                <span class="badge bg-success ms-2">Máximo 5</span>
+                            </h5>
+                            {{ formset.management_form }}
+                            
+                            <div class="images-grid" id="imagesContainer">
+                                {% for form_img in formset %}
+                                    <div class="image-upload-card mb-3">
+                                        <div class="card border-dashed h-100">
+                                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                                <span class="fw-bold">Imagen {{ forloop.counter }}</span>
+                                                {% if not forloop.first %}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-image" 
+                                                            data-index="{{ forloop.counter0 }}">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-body text-center p-3">
+                                                <div class="image-upload-area mb-3">
+                                                    <label for="{{ form_img.imagen.id_for_label }}" class="image-upload-label">
+                                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                                        <div class="upload-text">Haz clic para seleccionar</div>
+                                                        <div class="upload-hint small text-muted">
+                                                            JPEG, PNG o WEBP (Max. 5MB)
+                                                        </div>
+                                                    </label>
+                                                    {{ form_img.imagen }}
+                                                </div>
+                                                <div class="image-preview" id="preview{{ forloop.counter0 }}">
+                                                    <!-- Preview será insertado por JavaScript -->
+                                                </div>
+                                                {% if form_img.imagen.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {{ form_img.imagen.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-outline-success" id="addImageBtn">
+                                    <i class="fas fa-plus me-2"></i>Agregar otra imagen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-eco">
+                            <i class="fas fa-paper-plane me-2"></i>Publicar Producto
+                        </button>
+                        <button type="reset" class="btn btn-eco-secondary">
+                            <i class="fas fa-undo me-2"></i>Limpiar
+                        </button>
+                    </div>
+                    
+                    <a href="{% url 'escritorio' %}" class="btn btn-eco-secondary">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Template para imágenes adicionales -->
+<template id="imageTemplate">
+    <div class="image-upload-card mb-3">
+        <div class="card border-dashed h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Imagen {number}</span>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-image">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="card-body text-center p-3">
+                <div class="image-upload-area mb-3">
+                    <label class="image-upload-label">
+                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                        <div class="upload-text">Haz clic para seleccionar</div>
+                        <div class="upload-hint small text-muted">
+                            JPEG, PNG o WEBP (Max. 5MB)
+                        </div>
+                    </label>
+                    <input type="file" name="imagenes-{index}-imagen" accept="image/*" class="image-input d-none">
+                </div>
+                <div class="image-preview" id="preview{index}"></div>
+                <input type="hidden" name="imagenes-{index}-id">
+                <input type="hidden" name="imagenes-{index}-DELETE">
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+    /* Estilos consistentes con todos los templates */
+    .eco-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .card-header-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px 12px 0 0 !important;
+        border-bottom: none;
+    }
+    
+    .info-section,
+    .spec-section,
+    .images-section {
+        border: 1px solid #E0E0E0;
+        border-radius: 12px;
+    }
+    
+    .border-dashed {
+        border: 2px dashed #dee2e6 !important;
+    }
+    
+    .border-dashed:hover {
+        border-color: #4CAF50 !important;
+    }
+    
+    .image-upload-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .image-upload-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .image-upload-area {
+        padding: 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .image-upload-area:hover {
+        border-color: #4CAF50;
+        background: #E8F5E9;
+    }
+    
+    .image-upload-label {
+        cursor: pointer;
+        display: block;
+    }
+    
+    .upload-text {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .image-preview {
+        min-height: 80px;
+        margin-top: 10px;
+    }
+    
+    .image-preview img {
+        max-width: 100%;
+        max-height: 120px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-remove-preview {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+    
+    .images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #dee2e6;
+        padding: 16px 15px;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4CAF50;
+        font-weight: 500;
+    }
+    
+    /* Botones */
+    .btn-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #43A047, #1B5E20);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline-success {
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+        border-radius: 10px;
+        padding: 8px 20px;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline-success:hover {
+        background: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        border-radius: 10px;
+        padding: 5px 10px;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .images-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .btn-eco, .btn-eco-secondary {
+            width: 100%;
+        }
+        
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('productForm');
+        const imagesContainer = document.getElementById('imagesContainer');
+        const addImageBtn = document.getElementById('addImageBtn');
+        const imageTemplate = document.getElementById('imageTemplate');
+        const totalFormsInput = document.getElementById('id_imagenes-TOTAL_FORMS');
+        let formCount = parseInt(totalFormsInput.value);
+        const maxImages = 5;
+
+        // Agregar clases Bootstrap a los inputs
+        document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
+            el.classList.add('form-control');
+        });
+
+        // Configurar textarea para descripción
+        const descripcionField = document.getElementById('{{ form.descripcion.id_for_label }}');
+        if (descripcionField) {
+            descripcionField.style.height = '120px';
+        }
+
+        // Configurar eventos para los campos de imagen existentes
+        document.querySelectorAll('.image-upload-area').forEach((area, index) => {
+            const input = area.nextElementSibling;
+            const previewId = `preview${index}`;
+            
+            if (input) {
+                area.addEventListener('click', function() {
+                    input.click();
+                });
+                
+                input.addEventListener('change', function() {
+                    createImagePreview(this, previewId);
+                });
+            }
+        });
+
+        // Función para crear preview de imagen
+        function createImagePreview(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <div class="position-relative d-inline-block">
+                            <img src="${e.target.result}" alt="Preview" class="preview-img">
+                            <button type="button" class="btn-remove-preview">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Botón para eliminar preview
+                    preview.querySelector('.btn-remove-preview').addEventListener('click', function() {
+                        input.value = '';
+                        preview.innerHTML = '';
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Agregar nueva imagen
+        addImageBtn.addEventListener('click', function() {
+            if (formCount >= maxImages) {
+                alert(`Máximo ${maxImages} imágenes permitidas`);
+                return;
+            }
+
+            const template = imageTemplate.innerHTML
+                .replace(/{number}/g, formCount + 1)
+                .replace(/{index}/g, formCount);
+
+            const div = document.createElement('div');
+            div.innerHTML = template;
+            imagesContainer.appendChild(div.firstElementChild);
+
+            // Configurar el nuevo input de imagen
+            const newArea = div.querySelector('.image-upload-area');
+            const newInput = div.querySelector('.image-input');
+            const previewId = `preview${formCount}`;
+            
+            newArea.addEventListener('click', function() {
+                newInput.click();
+            });
+            
+            newInput.addEventListener('change', function() {
+                createImagePreview(this, previewId);
+            });
+
+            // Botón para eliminar imagen
+            div.querySelector('.btn-remove-image').addEventListener('click', function() {
+                this.closest('.image-upload-card').remove();
+                formCount--;
+                totalFormsInput.value = formCount;
+                updateImageNumbers();
+            });
+
+            formCount++;
+            totalFormsInput.value = formCount;
+            updateImageNumbers();
+        });
+
+        // Actualizar números de imágenes
+        function updateImageNumbers() {
+            document.querySelectorAll('.image-upload-card .fw-bold').forEach((span, index) => {
+                span.textContent = `Imagen ${index + 1}`;
+            });
+        }
+
+        // Configurar botones de eliminar existentes
+        document.querySelectorAll('.btn-remove-image').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = this.getAttribute('data-index');
+                const deleteInput = document.querySelector(`input[name="imagenes-${index}-DELETE"]`);
+                
+                if (deleteInput) {
+                    deleteInput.value = 'on';
+                    this.closest('.image-upload-card').style.opacity = '0.5';
+                    this.disabled = true;
+                } else {
+                    this.closest('.image-upload-card').remove();
+                    formCount--;
+                    totalFormsInput.value = formCount;
+                    updateImageNumbers();
+                }
+            });
+        });
+
+        // Validación antes de enviar
+        form.addEventListener('submit', function(e) {
+            const nombre = document.getElementById('{{ form.nombre.id_for_label }}').value.trim();
+            const precio = document.getElementById('{{ form.precio_kg.id_for_label }}').value;
+            const peso = document.getElementById('{{ form.peso_disponible_kg.id_for_label }}').value;
+            
+            if (!nombre) {
+                e.preventDefault();
+                alert('Por favor, ingresa un nombre para el producto');
+                return;
+            }
+            
+            if (!precio || parseFloat(precio) <= 0) {
+                e.preventDefault();
+                alert('Por favor, ingresa un precio válido (mayor a 0)');
+                return;
+            }
+            
+            if (!peso || parseFloat(peso) <= 0) {
+                e.preventDefault();
+                alert('Por favor, ingresa un peso válido (mayor a 0)');
+                return;
+            }
+            
+            // Mostrar loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Publicando...';
+            submitBtn.disabled = true;
+        });
+        
+        // Animación de entrada
+        const cards = document.querySelectorAll('.eco-card, .info-section, .spec-section, .images-section');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (index * 150));
+        });
+    });
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}

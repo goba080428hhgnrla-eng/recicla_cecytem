@@ -1,0 +1,360 @@
+{% extends './navegación.html' %}
+
+{% block pag %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="eco-card">
+                <div class="card-header-eco text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="icon-circle me-3">
+                            <i class="fas fa-user-plus fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1">Crear Cuenta</h2>
+                            <p class="mb-0 opacity-90">Únete a nuestra comunidad</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Mensajes de error globales -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Campos del formulario -->
+                        <div class="form-fields">
+                            {% for field in form %}
+                                <div class="mb-4">
+                                    <div class="form-floating">
+                                        {{ field }}
+                                        <label for="{{ field.id_for_label }}">
+                                            <i class="fas fa-{% if 'email' in field.name %}envelope{% elif 'username' in field.name %}user{% elif 'password' in field.name %}lock{% elif 'name' in field.name %}id-card{% elif 'phone' in field.name %}phone{% else %}pencil-alt{% endif %} me-2"></i>
+                                            {{ field.label }}
+                                            {% if field.field.required %}
+                                                <span class="text-danger">*</span>
+                                            {% endif %}
+                                        </label>
+                                        
+                                        {% if field.help_text %}
+                                            <div class="form-text text-muted mt-2">
+                                                <i class="fas fa-info-circle me-1"></i>{{ field.help_text }}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% if field.errors %}
+                                            <div class="invalid-feedback d-block mt-2">
+                                                {% for error in field.errors %}
+                                                    <i class="fas fa-times-circle me-1"></i>{{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Términos y condiciones -->
+                        <div class="form-terms mb-4">
+                            <div class="form-check p-3 bg-light rounded">
+                                <input type="checkbox" class="form-check-input" id="acceptTerms" name="accept_terms" required>
+                                <label class="form-check-label" for="acceptTerms">
+                                    Acepto los 
+                                    <a href="{% url 'terminos_condiciones' %}" class="text-decoration-none text-success fw-bold">
+                                        términos y condiciones
+                                    </a> 
+                                    y la 
+                                    <a href="{% url 'politica' %}" class="text-decoration-none text-success fw-bold">
+                                        política de privacidad
+                                    </a>
+                                </label>
+                                <div class="invalid-feedback">
+                                    Debes aceptar los términos y condiciones para continuar
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-eco btn-lg">
+                                <i class="fas fa-user-plus me-2"></i> Crear Cuenta
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-muted mb-0">¿Ya tienes una cuenta?</p>
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Tu información está protegida con encriptación SSL
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos consistentes con login.html */
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .eco-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .card-header-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        padding: 1.5rem 1.5rem;
+        border-radius: 12px 12px 0 0 !important;
+        border-bottom: none;
+    }
+    
+    /* Formularios */
+    .form-control {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 16px 15px;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        border-color: #4CAF50;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4CAF50;
+        font-weight: 500;
+    }
+    
+    /* Checkbox de términos */
+    .form-check {
+        transition: background-color 0.3s ease;
+    }
+    
+    .form-check:hover {
+        background-color: #E8F5E9 !important;
+    }
+    
+    .form-check-input {
+        width: 1.3rem;
+        height: 1.3rem;
+        cursor: pointer;
+        margin-top: 0.3rem;
+    }
+    
+    .form-check-input:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+    
+    /* Botones */
+    .btn-eco {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #43A047, #1B5E20);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+        border-radius: 10px;
+        padding: 8px 20px;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    /* Alertas */
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .icon-circle i {
+            font-size: 1.5rem;
+        }
+        
+        .form-control {
+            padding: 14px 15px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Agregar clases Bootstrap a los campos
+        document.querySelectorAll('input, select, textarea').forEach(function(field) {
+            if (!field.classList.contains('form-control')) {
+                field.classList.add('form-control');
+            }
+        });
+        
+        // Mostrar/ocultar contraseña para campos de contraseña
+        document.querySelectorAll('input[type="password"]').forEach(function(field) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'position-relative';
+            
+            const toggleBtn = document.createElement('button');
+            toggleBtn.type = 'button';
+            toggleBtn.className = 'btn btn-sm position-absolute end-0 top-50 translate-middle-y me-3';
+            toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            toggleBtn.style.background = 'none';
+            toggleBtn.style.border = 'none';
+            toggleBtn.style.color = '#666';
+            
+            toggleBtn.addEventListener('click', function() {
+                const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+                field.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            field.parentNode.insertBefore(wrapper, field);
+            wrapper.appendChild(field);
+            wrapper.appendChild(toggleBtn);
+        });
+        
+        // Validación del formulario
+        const form = document.querySelector('.needs-validation');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const termsCheckbox = document.getElementById('acceptTerms');
+                
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    termsCheckbox.closest('.form-check').style.border = '2px solid #dc3545';
+                    termsCheckbox.closest('.form-check').style.backgroundColor = 'rgba(220, 53, 69, 0.1)';
+                    
+                    // Animación de error
+                    termsCheckbox.closest('.form-check').classList.add('animate__animated', 'animate__shakeX');
+                    setTimeout(() => {
+                        termsCheckbox.closest('.form-check').classList.remove('animate__animated', 'animate__shakeX');
+                    }, 1000);
+                    
+                    // Mostrar alerta
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger alert-dismissible fade show mb-3';
+                    alertDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Debes aceptar los términos y condiciones para continuar.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    form.querySelector('.form-terms').prepend(alertDiv);
+                    
+                    return false;
+                }
+                
+                // Mostrar loading
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creando cuenta...';
+                submitBtn.disabled = true;
+            });
+        }
+        
+        // Efecto para checkbox de términos
+        const termsCheckbox = document.getElementById('acceptTerms');
+        if (termsCheckbox) {
+            termsCheckbox.addEventListener('change', function() {
+                const formCheck = this.closest('.form-check');
+                if (this.checked) {
+                    formCheck.style.border = '2px solid #198754';
+                    formCheck.style.backgroundColor = 'rgba(25, 135, 84, 0.1)';
+                } else {
+                    formCheck.style.border = '';
+                    formCheck.style.backgroundColor = '';
+                }
+            });
+        }
+        
+        // Animación de entrada
+        const card = document.querySelector('.eco-card');
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+        
+        // Efecto hover en el icono principal
+        const iconCircle = document.querySelector('.icon-circle');
+        iconCircle.style.transition = 'transform 0.3s ease';
+        
+        iconCircle.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        iconCircle.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0)';
+        });
+        
+        // Auto-focus en el primer campo
+        const firstField = document.querySelector('input:not([type="hidden"])');
+        if (firstField) {
+            firstField.focus();
+        }
+    });
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}

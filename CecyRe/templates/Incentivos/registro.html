@@ -1,0 +1,64 @@
+{% extends 'Incentivos/base.html' %}
+
+{% block title %}Registro - Incentivos{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="eco-card">
+            <div class="card-header-eco">
+                <h3 class="text-center mb-0">Crear Cuenta Nueva</h3>
+            </div>
+            
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Usuario *</label>
+                            <input type="text" name="username" class="form-control form-control-eco" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control form-control-eco" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contraseña *</label>
+                            <input type="password" name="password1" class="form-control form-control-eco" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Confirmar Contraseña *</label>
+                            <input type="password" name="password2" class="form-control form-control-eco" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre (opcional)</label>
+                            <input type="text" name="first_name" class="form-control form-control-eco">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Apellido (opcional)</label>
+                            <input type="text" name="last_name" class="form-control form-control-eco">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-eco">
+                            <i class="fas fa-user-plus"></i> Registrarse
+                        </button>
+                        
+                        <a href="{% url 'Incentivos:login' %}" class="btn btn-eco-secondary">
+                            <i class="fas fa-sign-in-alt"></i> Ya tengo cuenta
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

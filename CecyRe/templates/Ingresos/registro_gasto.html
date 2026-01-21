@@ -1,0 +1,163 @@
+{% extends 'Ingresos/navegacionmodulos.html' %}
+
+
+
+{% block content %}
+
+
+
+<body>
+    <header  class="">
+     <div class="col-md-8">
+            <h1><i class="fas fa"></i>Registrar Gastos</h1>
+            <p class="lead mb-0">Registro de gastos realizados</p>
+    </header>
+    <br><br>
+ <nav>
+            {% include "Ingresos/menu_navegacion.html" %}
+    </nav>
+
+
+
+
+<section class="contenedor">
+
+<div class="gasizquierda">
+    <form method="POST">
+            {% csrf_token %}
+
+     <div class="gastos1">
+                        <h3 class="text-center mb-0"><i class="fa-solid fa-plus"></i>Nuevo</h3>
+            <div class="">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Concepto</label>
+                            {{ form.concepto }}
+                        </div>
+                        </div>
+
+                         <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Monto</label>
+                            {{ form.monto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha</label> 
+                        {{ form.fecha }}                       
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripción</label>
+                            {{ form.descripcion }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Categoría del gasto</label>
+                            {{ form.id_categoria_gasto }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                        <label class="form-label">Usuario Responsable</label> 
+                        {{ form.id_usuario }}                      
+                        </div>
+                    </div>
+       
+
+  <button type="submit"class="btnguardar">
+        Registrar Gasto
+    </button>
+    </form>
+</div>
+</form>
+</div>
+
+<div class="gasderecha">
+<h3 ><i class="fa-solid fa-dollar-sign"></i> Gráfico de Gastos Mensuales</h3>
+
+       <div class="gastos2">
+    <canvas id="graficoGastos" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const meses= {{ meses|safe }};
+    const montos= {{ montos|safe }};
+
+    if (meses.length && montos.length) {
+        new Chart(document.getElementById('graficoGastos'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Total de gastos ($)',
+                    data: montos,
+                    backgroundColor: '#1abc9c', // CORREGIDO: mayúscula
+                    borderColor: '#145a32',      // opcional: borde más oscuro
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#00000'   // Color de la leyenda en blanco
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#00000' }, // Color de etiquetas eje X
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#00000' }, // Color de etiquetas eje Y
+                        grid: { color: 'rgba(0, 0, 0, 1)' } // Líneas de grilla
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<div class="gastos3" style=" height: 100%;">
+<h2><i class="fa-solid fa-table"></i>Registro de Gastos</h2>
+
+    <table class="table table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Usuario</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+        {% for gasto in gastos %}
+        <tr>
+            <td>{{ gasto.concepto }}</td>
+            <td>{{ gasto.monto }}</td>
+            <td>{{ gasto.fecha }}</td>
+            <td>{{ gasto.id_categoria_gasto }}</td>
+            <td>{{ gasto.id_usuario }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No hay gastos registrados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+</div> 
+</section>
+    
+
+</body>
+{% endblock %}

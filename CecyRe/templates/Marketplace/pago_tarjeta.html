@@ -1,0 +1,394 @@
+<!-- templates/MarketPlace/pago_tarjeta.html -->
+{% extends "./navegación.html" %}
+{% load static %}
+
+{% block pag %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="eco-card">
+                <div class="card-header-eco">
+                    <div class="d-flex align-items-center">
+                        <div class="payment-icon-circle me-3">
+                            <i class="fas fa-credit-card fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">Pago con Tarjeta</h3>
+                            <p class="mb-0 opacity-90">Orden #{{ orden.id_orden }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Resumen de la orden -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary bg-opacity-10 text-primary border-primary">
+                            <h5 class="mb-0">
+                                <i class="fas fa-receipt me-2"></i>Resumen de la compra
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Número de orden</small>
+                                        <span class="fw-bold">#{{ orden.id_orden }}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Fecha</small>
+                                        <span class="fw-bold">{{ orden.fecha|date:"d/m/Y H:i" }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Total a pagar</small>
+                                        <h3 class="text-success mb-0">${{ orden.total }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulario de tarjeta -->
+                    <form method="post" id="tarjeta-form" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <h5 class="text-primary mb-4">
+                            <i class="fas fa-credit-card me-2"></i>Información de la tarjeta
+                        </h5>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control form-control-eco" 
+                                           id="numero_tarjeta"
+                                           name="numero_tarjeta" 
+                                           placeholder="1234 5678 9012 3456" 
+                                           required
+                                           maxlength="19">
+                                    <label for="numero_tarjeta">
+                                        <i class="fas fa-credit-card me-2"></i>Número de Tarjeta
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        Por favor ingresa el número de tu tarjeta.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="month" 
+                                           class="form-control form-control-eco" 
+                                           id="fecha_expiracion"
+                                           name="fecha_expiracion" 
+                                           required>
+                                    <label for="fecha_expiracion">
+                                        <i class="fas fa-calendar-alt me-2"></i>Fecha de Expiración
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona la fecha de expiración.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control form-control-eco" 
+                                           id="cvv"
+                                           name="cvv" 
+                                           placeholder="123" 
+                                           required
+                                           maxlength="4"
+                                           pattern="\d{3,4}">
+                                    <label for="cvv">
+                                        <i class="fas fa-lock me-2"></i>CVV
+                                    </label>
+                                    <div class="invalid-feedback">
+                                        Por favor ingresa el código CVV (3 o 4 dígitos).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input type="text" 
+                                       class="form-control form-control-eco" 
+                                       id="nombre_titular"
+                                       name="nombre_titular" 
+                                       value="{{ usuario.nombre }} {{ usuario.apellido_paterno }}"
+                                       placeholder="Nombre del titular" 
+                                       required>
+                                <label for="nombre_titular">
+                                    <i class="fas fa-user me-2"></i>Nombre del Titular
+                                </label>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa el nombre del titular de la tarjeta.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de seguridad -->
+                        <div class="alert alert-info border-info bg-info bg-opacity-10 mb-4">
+                            <div class="d-flex">
+                                <i class="fas fa-shield-alt fa-2x text-info me-3"></i>
+                                <div>
+                                    <h6 class="alert-heading">Pago 100% Seguro</h6>
+                                    <p class="mb-0 small">
+                                        <strong>Nota:</strong> Esta es una simulación. En producción, 
+                                        integrarías con una pasarela de pago segura como Stripe. 
+                                        Tu información está protegida con encriptación SSL.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-eco btn-lg">
+                                <i class="fas fa-lock me-2"></i>
+                                Pagar ${{ orden.total }}
+                            </button>
+                            <a href="{% url 'checkout' %}" class="btn btn-eco-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Tarjetas aceptadas -->
+                <div class="card-footer bg-light">
+                    <div class="text-center">
+                        <h6 class="mb-3">Tarjetas aceptadas</h6>
+                        <div class="payment-icons-large">
+                            <i class="fab fa-cc-visa fa-3x me-3 text-primary"></i>
+                            <i class="fab fa-cc-mastercard fa-3x me-3 text-danger"></i>
+                            <i class="fab fa-cc-amex fa-3x me-3 text-info"></i>
+                            <i class="fab fa-cc-discover fa-3x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #3F51B5, #2196F3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+    }
+    
+    .form-control-eco {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 16px 15px;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control-eco:focus {
+        border-color: #4CAF50;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+    
+    .payment-icons-large i {
+        opacity: 0.8;
+        transition: all 0.3s;
+    }
+    
+    .payment-icons-large i:hover {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+    
+    .btn-eco {
+        background: linear-gradient(135deg, #FF5722);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn-eco:hover {
+        background: linear-gradient(135deg, #F57C00, #E64A19);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 152, 0, 0.4);
+    }
+    
+    .btn-eco-secondary {
+        background: linear-gradient(135deg, #607D8B, #455A64);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-eco-secondary:hover {
+        background: linear-gradient(135deg, #546E7A, #37474F);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .payment-icon-circle {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .payment-icon-circle i {
+            font-size: 1.5rem;
+        }
+        
+        .payment-icons-large i {
+            font-size: 2rem;
+            margin: 0 10px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formatear número de tarjeta
+    const tarjetaInput = document.getElementById('numero_tarjeta');
+    tarjetaInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+        e.target.value = formatted.substring(0, 19);
+        
+        // Detectar tipo de tarjeta
+        detectCardType(value);
+    });
+    
+    // Detectar tipo de tarjeta
+    function detectCardType(number) {
+        const cardTypeIcon = document.createElement('div');
+        cardTypeIcon.className = 'position-absolute end-0 top-50 translate-middle-y me-3';
+        
+        let cardType = '';
+        if (/^4/.test(number)) {
+            cardType = 'visa';
+            cardTypeIcon.innerHTML = '<i class="fab fa-cc-visa text-primary"></i>';
+        } else if (/^5[1-5]/.test(number)) {
+            cardType = 'mastercard';
+            cardTypeIcon.innerHTML = '<i class="fab fa-cc-mastercard text-danger"></i>';
+        } else if (/^3[47]/.test(number)) {
+            cardType = 'amex';
+            cardTypeIcon.innerHTML = '<i class="fab fa-cc-amex text-info"></i>';
+        } else if (/^6(?:011|5)/.test(number)) {
+            cardType = 'discover';
+            cardTypeIcon.innerHTML = '<i class="fab fa-cc-discover text-warning"></i>';
+        }
+        
+        // Agregar icono si se detectó el tipo
+        const existingIcon = tarjetaInput.parentElement.querySelector('.position-absolute');
+        if (existingIcon) existingIcon.remove();
+        
+        if (cardType && number.length >= 4) {
+            tarjetaInput.parentElement.appendChild(cardTypeIcon);
+        }
+    }
+    
+    // Validar fecha de expiración
+    const fechaInput = document.getElementById('fecha_expiracion');
+    const today = new Date();
+    const minDate = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+    fechaInput.min = minDate;
+    
+    // Validar formulario
+    const form = document.getElementById('tarjeta-form');
+    form.addEventListener('submit', function(e) {
+        // Validar CVV
+        const cvv = document.getElementById('cvv').value;
+        if (cvv.length < 3 || cvv.length > 4) {
+            e.preventDefault();
+            const cvvInput = document.getElementById('cvv');
+            cvvInput.classList.add('is-invalid');
+            cvvInput.classList.add('animate__animated', 'animate__shakeX');
+            setTimeout(() => {
+                cvvInput.classList.remove('animate__animated', 'animate__shakeX');
+            }, 1000);
+            return false;
+        }
+        
+        // Validar fecha de expiración
+        const fechaValue = fechaInput.value;
+        if (fechaValue) {
+            const [year, month] = fechaValue.split('-');
+            const expiryDate = new Date(year, month - 1);
+            if (expiryDate < today) {
+                e.preventDefault();
+                fechaInput.classList.add('is-invalid');
+                fechaInput.nextElementSibling.textContent = 'La tarjeta ha expirado.';
+                fechaInput.classList.add('animate__animated', 'animate__shakeX');
+                setTimeout(() => {
+                    fechaInput.classList.remove('animate__animated', 'animate__shakeX');
+                }, 1000);
+                return false;
+            }
+        }
+        
+        // Mostrar confirmación
+        if (!confirm(`¿Confirmar pago de $${ {{ orden.total }} }?`)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Mostrar loading
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Procesando pago...';
+        submitBtn.disabled = true;
+        
+        // Simulación de procesamiento
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
+    });
+    
+    // Animación de entrada
+    const card = document.querySelector('.eco-card');
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    
+    setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, 100);
+    
+    // Efecto hover en el icono principal
+    const paymentIcon = document.querySelector('.payment-icon-circle');
+    paymentIcon.style.transition = 'transform 0.3s ease';
+    
+    paymentIcon.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
+    });
+    
+    paymentIcon.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+    });
+});
+</script>
+
+<!-- Animate.css para animaciones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+{% endblock %}
