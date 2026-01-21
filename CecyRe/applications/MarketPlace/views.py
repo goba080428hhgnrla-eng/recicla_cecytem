@@ -56,14 +56,14 @@ def login_view(request):
     return render(request, "Marketplace/login.html")
 
 def terminos(request):
-    return render(request, "MarketPlace/terminos_condiciones.html")
+    return render(request, "Marketplace/terminos_condiciones.html")
 
 def politica(request):
-    return render(request, "MarketPlace/politica.html")
+    return render(request, "Marketplace/politica.html")
 
 def home(request):
     productos = Producto.objects.all()
-    return render(request, "MarketPlace/home.html", {'productos': productos})
+    return render(request, "Marketplace/home.html", {'productos': productos})
 
 class CrearUsuario(CreateView):
     model = Usuario
@@ -88,7 +88,7 @@ class CrearUsuario(CreateView):
 class AgregarProducto(CreateView):
     model = Producto
     form_class = AgregarForm
-    template_name = 'MarketPlace/agregar_producto.html'
+    template_name = 'Marketplace/agregar_producto.html'
     success_url = reverse_lazy('escritorio')
 
     def get_formset(self):
@@ -175,7 +175,7 @@ def escritorio_view(request):
     # Contar productos disponibles
     disponibles = productos.filter(estado='disponible').count()
 
-    return render(request, 'MarketPlace/escritorio.html', {
+    return render(request, 'Marketplace/escritorio.html', {
         'usuario': usuario,
         'productos': productos,
         'max_precio': max_precio if max_precio else 0,
@@ -186,7 +186,7 @@ def escritorio_view(request):
 class ProductoUpdateView(UpdateView):
     model = Producto
     form_class = AgregarForm
-    template_name = 'MarketPlace/actualizar_producto_simple.html'
+    template_name = 'Marketplace/actualizar_producto_simple.html'
     success_url = reverse_lazy('escritorio')
     
     def get_queryset(self):
@@ -231,7 +231,7 @@ class ProductoUpdateView(UpdateView):
 @method_decorator(login_requerido, name='dispatch')
 class ProductoDeleteView(DeleteView):
     model = Producto
-    template_name = 'MarketPlace/confirmar_eliminar.html'
+    template_name = 'Marketplace/confirmar_eliminar.html'
     
     def get_success_url(self):
         return reverse_lazy('escritorio')
@@ -250,7 +250,7 @@ class ProductoDeleteView(DeleteView):
 class PerfilUpdateView(UpdateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'MarketPlace/perfil.html'
+    template_name = 'Marketplace/perfil.html'
     success_url = reverse_lazy('perfil')
     
     def get_object(self, queryset=None):
@@ -321,7 +321,7 @@ def carrito_view(request):
         items = []
         total = Decimal('0.00')
     
-    return render(request, 'MarketPlace/carrito.html', {
+    return render(request, 'Marketplace/carrito.html', {
         'carrito': carrito,
         'items': items,
         'total': total,
@@ -983,7 +983,7 @@ def home(request):
     # Obtener categorías para sidebar
     categorias = Categoria.objects.all()
     
-    return render(request, "MarketPlace/home.html", {
+    return render(request, "Marketplace/home.html", {
         'productos': productos_paginados,
         'categorias': categorias,
         'PUREZA_CHOICES': Producto.PUREZA,
