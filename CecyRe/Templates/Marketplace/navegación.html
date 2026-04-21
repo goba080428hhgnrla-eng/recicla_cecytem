@@ -11,14 +11,13 @@
     
     <link rel="stylesheet" href="{% static 'Incentivos/css/style.css' %}">
     
-    <title>CECyTEM Recicla - Marketplace</title>
+    <title>ReKaNos - Marketplace</title>
 </head>
 <body class="marketplace-body">
-    <!-- NAVBAR ACTUALIZADO CON LOS MISMOS ESTILOS DE base.html -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-store"></i> CecyRecicla - Marketplace
+                <i class="fas fa-store"></i> ReKaNos - Marketplace
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMarketplace">
@@ -26,7 +25,6 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarMarketplace">
-                <!-- BARRA DE BÚSQUEDA (manteniendo la funcionalidad) -->
                 <div class="mx-3 flex-grow-1 d-none d-lg-block">
                     <form method="GET" action="{% url 'buscar_productos' %}" class="d-flex">
                         <div class="input-group">
@@ -166,7 +164,7 @@
     <!-- Footer (manteniendo tu estilo pero simplificado) -->
     <footer class="footer mt-5 py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">CECyTEM Recicla - Marketplace &copy; {% now "Y" %}</span>
+            <span class="text-muted">ReKaNos - Marketplace &copy; {% now "Y" %}</span>
         </div>
     </footer>
 

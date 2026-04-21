@@ -25,6 +25,7 @@ class Gastos(models.Model):
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateField()
     descripcion = models.TextField()
+    factura_adjunto = models.FileField(upload_to='facturas/', null=True, blank=True)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_categoria_gasto = models.ForeignKey(CategoriaGasto, on_delete=models.CASCADE)
 
@@ -63,6 +64,7 @@ class DetalleVentaExterna(models.Model):
     materia = models.CharField(max_length=1, choices=MATERIA_CHOICES)
     cantidad_kg = models.DecimalField(max_digits=10, decimal_places=2)
     precio_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     id_venta_externa = models.ForeignKey(VentaExterna, on_delete=models.CASCADE)
 
     class Meta:

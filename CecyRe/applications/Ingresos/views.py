@@ -109,6 +109,8 @@ class DashAdminCLAS(CreateView):
         context['montos_categoria'] = [float(g['total']) for g in gastos_por_categoria]
 
         return context
+    
+from django.db import transaction
 
 class VentaExternaView(FormView):
     template_name = "Ingresos/ventas_externas.html"
@@ -116,23 +118,39 @@ class VentaExternaView(FormView):
     success_url = reverse_lazy('Ingresos:ventaexterna')
 
     def form_valid(self, form):
-        usuario = form.cleaned_data['id_usuario']
+        with transaction.atomic():
 
-        venta = VentaExterna.objects.create(
-            descripcion=form.cleaned_data['descripcion'],
-            cliente_nombre=form.cleaned_data['cliente_nombre'],
-            cliente_contacto=form.cleaned_data['cliente_contacto'],
-            total=form.cleaned_data['total'],
-            fecha=form.cleaned_data['fecha'],
-            id_usuario=usuario
-        )
+            usuario = form.cleaned_data['id_usuario']
 
-        DetalleVentaExterna.objects.create(
-            materia=form.cleaned_data['materia'],
-            cantidad_kg=form.cleaned_data['cantidad_kg'],
-            precio_kg=form.cleaned_data['precio_kg'],
-            id_venta_externa=venta
-        )
+            # Crear la venta (inicia en 0)
+            venta = VentaExterna.objects.create(
+                descripcion=form.cleaned_data['descripcion'],
+                cliente_nombre=form.cleaned_data['cliente_nombre'],
+                cliente_contacto=form.cleaned_data['cliente_contacto'],
+                total=0,
+                fecha=form.cleaned_data['fecha'],
+                id_usuario=usuario
+            )
+
+            # Obtener datos
+            cantidad = form.cleaned_data['cantidad_kg']
+            precio = form.cleaned_data['precio_kg']
+
+            # 🔥 Calcular subtotal (CLAVE PARA EVITAR EL ERROR)
+            subtotal = cantidad * precio
+
+            # Crear detalle
+            detalle = DetalleVentaExterna.objects.create(
+                materia=form.cleaned_data['materia'],
+                cantidad_kg=cantidad,
+                precio_kg=precio,
+                subtotal=subtotal,  # 👈 IMPORTANTE
+                id_venta_externa=venta
+            )
+
+            # Actualizar total de la venta
+            venta.total = subtotal
+            venta.save()
 
         return super().form_valid(form)
 
@@ -146,14 +164,6 @@ class VentaExternaView(FormView):
         )
 
         return context
-
-
-        
-
-
-
-
-
 # views de gastos
 class GastosCLAS(FormView):
     template_name = "Ingresos/registro_gasto.html"
