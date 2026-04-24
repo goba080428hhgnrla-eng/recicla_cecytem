@@ -27,10 +27,10 @@
             <div class="card-body">
                 <!-- imagen local según tipo de recompensa -->
                 <div class="reward-image-container">
-                    {% if "cupón" in recompensa.nombre|lower or "descuento" in recompensa.nombre|lower %}
-                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="Cupón" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                    {% if recompensa.imagen %}
+                        <img src="{{ recompensa.imagen.url }}" class="reward-img">
                     {% else %}
-                        <img src="{% static 'Incentivos/img/recompensas/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="reward-img" onerror="this.onerror=null; this.src='{% static 'Incentivos/img/recompensas/default.jpg' %}'">
+                        <img src="{% static 'Incentivos/img/recompensas/default.jpg' %}" class="reward-img">
                     {% endif %}
                 </div>
                 

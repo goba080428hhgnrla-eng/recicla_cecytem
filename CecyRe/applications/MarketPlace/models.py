@@ -234,7 +234,7 @@ class DetalleOrden(models.Model):
     def __str__(self):
         return f"Detalle {self.id_detalle} de orden {self.id_orden}"
 
-# models.py - Modificar el modelo Pago
+
 class Pago(models.Model):
     METODOS = [
         ('tarjeta', 'Tarjeta'),
@@ -260,12 +260,12 @@ class Pago(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado_pago = models.CharField(max_length=15, choices=ESTADO_PAGO, default='pendiente')
     
-    # Nuevos campos para pagos electrónicos
+    
     transaccion_id = models.CharField(max_length=100, blank=True, null=True)
     referencia_pago = models.CharField(max_length=200, blank=True, null=True)
-    datos_pago = models.JSONField(blank=True, null=True)  # Para almacenar datos adicionales
+    datos_pago = models.JSONField(blank=True, null=True)  
     
-    # Campos específicos para PayPal
+    
     paypal_payment_id = models.CharField(max_length=100, blank=True, null=True)
     paypal_payer_id = models.CharField(max_length=100, blank=True, null=True)
     
