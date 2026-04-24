@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema de Incentivos{% endblock %}</title>
     
-    <!-- boottrap CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- FontAwesome para los iconos -->
+    <!-- FontAwesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- estilos personalizados -->
+    <!-- Estilos personalizados -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'Incentivos/css/style.css' %}">
     
@@ -22,7 +22,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{% url 'Incentivos:dashboard' %}">
-                <i class="fas fa-gift"></i> ReKaNos - Incentivos
+                <i class="fas fa-gift"></i> ReKanos - Incentivos
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,7 +31,7 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <!-- regresar al MarketPlace -->
+                    <!-- Enlace para regresar al MarketPlace -->
                     <li class="nav-item">
                         <a class="nav-link" href="/">
                             <i class="fas fa-store"></i> Ir al MarketPlace
@@ -56,19 +56,17 @@
                         </li>
                         {% if user.is_staff %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin/" target="_blank">
-                                <i class="fas fa-user-shield"></i> Admin
-                            </a>
+                        
                         </li>
                         {% endif %}
-                        <!-- logout -->
+                        
                         <li class="nav-item">
                             <a class="nav-link text-warning" href="{% url 'Incentivos:logout' %}">
                                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                             </a>
                         </li>
                     {% else %}
-                        <!--  login -->
+                       
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'Incentivos:login' %}">
                                 <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
@@ -85,9 +83,9 @@
         </div>
     </nav>
 
-                 <!--  principal -->
+    <!-- Contenido principal -->
     <main class="container mt-4">
-        <!-- Mensajes django -->
+        <!-- mensajes de Django -->
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -106,21 +104,22 @@
             {% endfor %}
         {% endif %}
         
-        <!-- contenido de cada página -->
+
+        
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
     <footer class="footer mt-5 py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">Sistema de Incentivos ReKaNos &copy; {% now "Y" %}</span>
+            <span class="text-muted">Sistema de Incentivos ReKanos &copy; {% now "Y" %}</span>
         </div>
     </footer>
 
-    <!-- Boottrap js -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- scripts personalizados -->
+    <!-- Scripts personalizados -->
     <script src="{% static 'Incentivos/js/main.js' %}"></script>
     
     {% block extra_js %}{% endblock %}

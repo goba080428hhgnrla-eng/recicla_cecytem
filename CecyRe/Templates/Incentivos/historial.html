@@ -1,0 +1,221 @@
+{% extends 'Incentivos/base.html' %}
+
+{% block title %}Mi Historial - Incentivos{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="fas fa-history"></i> Mi Historial</h1>
+        <p class="lead text-muted">Todas tus transacciones y actividad</p>
+    </div>
+    <div class="col-md-4">
+        <div class="points-display">
+            <h4 class="mb-0">Resumen Total</h4>
+            <div class="row text-center">
+                <div class="col-6">
+                    <h5 class="text-success">{{ total_puntos_ganados }}</h5>
+                    <small>Puntos ganados</small>
+                </div>
+                <div class="col-6">
+                    <h5 class="text-warning">{{ total_puntos_gastados }}</h5>
+                    <small>Puntos gastados</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- pestañas -->
+<ul class="nav nav-tabs mb-4" id="historialTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="entregas-tab" data-bs-toggle="tab" data-bs-target="#entregas" type="button">
+            <i class="fas fa-recycle"></i> Entregas ({{ entregas.count }})
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="canjes-tab" data-bs-toggle="tab" data-bs-target="#canjes" type="button">
+            <i class="fas fa-gift"></i> Canjes ({{ canjes.count }})
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="historialTabsContent">
+    <!---entregas -->
+    <div class="tab-pane fade show active" id="entregas" role="tabpanel">
+        <div class="eco-card">
+            <div class="card-header-eco">
+                <h4><i class="fas fa-recycle"></i> Historial de Entregas</h4>
+            </div>
+            <div class="card-body">
+                {% if entregas %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>ID</th>
+                                    <th>Peso Total</th>
+                                    <th>Puntos</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entrega in entregas %}
+                                <tr>
+                                    <td>{{ entrega.fecha_hora_entrega|date:"d/m/Y H:i" }}</td>
+                                    <td>#{{ entrega.id }}</td>
+                                    <td>{{ entrega.peso_total|floatformat:1 }} kg</td>s
+                                    <td><span class="badge bg-warning text-dark">+{{ entrega.total_puntos_obtenidos }}</span></td>
+                                    <td><span class="badge bg-success">{{ entrega.estado|title }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No tienes entregas registradas aún.</p>
+                        <a href="{% url 'Incentivos:nueva_entrega' %}" class="btn btn-eco">Registrar primera entrega</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+
+
+    <div class="tab-pane fade" id="canjes" role="tabpanel">
+        <div class="eco-card">
+            <div class="card-header-eco">
+                <h4><i class="fas fa-gifts"></i> Historial de Canjes</h4>
+            </div>
+            <div class="card-body">
+                {% if canjes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Recompensa</th>
+                                    <th>Puntos</th>
+                                    <th>Código</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for canje in canjes %}
+                                <tr>
+                                    <td>{{ canje.fecha_canje|date:"d/m/Y H:i" }}</td>
+                                    <td>{{ canje.recompensa.nombre }}</td>
+                                    <td><span class="badge bg-danger">-{{ canje.puntos_gastados }}</span></td>
+                                    <td><code>{{ canje.codigo_retiro|default:"Pendiente" }}</code></td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if canje.estado == 'aprobado' %}bg-success
+                                            {% elif canje.estado == 'pendiente' %}bg-warning text-dark
+                                            {% elif canje.estado == 'entregado' %}bg-info
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ canje.estado|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-gift fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No has canjeado recompensas aún.</p>
+                        <a href="{% url 'Incentivos:recompensas' %}" class="btn btn-eco">Ver recompensas disponibles</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen -->
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ kg_total|floatformat:1 }}</div>
+                <div class="stat-label">Total Reciclado (kg)</div>
+                <i class="fas fa-weight text-info mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ total_puntos_ganados }}</div>
+                <div class="stat-label">Puntos Ganados</div>
+                <i class="fas fa-arrow-up text-success mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <div class="stat-number">{{ total_puntos_gastados }}</div>
+                <div class="stat-label">Puntos Gastados</div>
+                <i class="fas fa-arrow-down text-warning mt-2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Boton regreso -->
+<div class="text-center mt-4">
+    <a href="{% url 'Incentivos:dashboard' %}" class="btn btn-eco-secondary">
+        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+
+<style>
+.nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+    border: none;
+    padding: 10px 20px;
+}
+
+.nav-tabs .nav-link.active {
+    color: #2E7D32;
+    border-bottom: 3px solid #2E7D32;
+    background-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #2E7D32;
+}
+
+.points-display {
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #d63384;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tabs de Bootstrap
+    var tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabEls.forEach(function(tabEl) {
+        new bootstrap.Tab(tabEl);
+    });
+});
+</script>
+{% endblock %}

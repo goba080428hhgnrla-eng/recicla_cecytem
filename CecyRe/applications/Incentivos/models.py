@@ -59,9 +59,15 @@ class Entrega(models.Model):
     class Meta:
         verbose_name = 'Entrega'
         verbose_name_plural = 'Entregas'
+
+    def peso_total(self):
+        """Calcula el peso total de la entrega"""
+        return sum(detalle.peso_kg for detalle in self.detalles.all())
     
     def __str__(self):
         return f"Entrega {self.id} - {self.recolector}"
+    
+   
 
 class DetalleEntrega(models.Model):
     entrega = models.ForeignKey(Entrega, on_delete=models.CASCADE, related_name='detalles')

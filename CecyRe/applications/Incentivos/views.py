@@ -145,9 +145,20 @@ def index(request):
 def dashboard(request):
     """Dashboard principal del usuario"""
     try:
+        from django.db.models import Sum
+        
         recolector = Recolector.objects.get(usuario=request.user)
         entregas = Entrega.objects.filter(recolector=recolector).order_by('-fecha_hora_entrega')[:10]
         
+        # Calcular recompensas canjeadas (cantidad de canjes)
+        recompensas_canjeadas = Canje.objects.filter(recolector=recolector).count()
+        
+        # Calcular total reciclado en kg (suma de todos los detalles de entrega)
+        total_reciclado = DetalleEntrega.objects.filter(
+            entrega__recolector=recolector
+        ).aggregate(total=Sum('peso_kg'))['total'] or 0
+        
+        # Recompensas que puede canjear (puntos suficientes)
         recompensas_disponibles = Recompensa.objects.filter(
             activo=True, 
             stock__gt=0, 
@@ -164,6 +175,8 @@ def dashboard(request):
             'entregas': entregas,
             'total_entregas': entregas.count(),
             'puntos_totales': recolector.puntos_acumulados,
+            'recompensas_canjeadas': recompensas_canjeadas,
+            'total_reciclado': total_reciclado,
             'recompensas_disponibles': recompensas_disponibles,
             'canjes_pendientes': canjes_pendientes,
         }

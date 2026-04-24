@@ -1,36 +1,53 @@
 
 {% extends 'Incentivos/base.html' %}
 
+{% load static %}
+
 {% block title %}Dashboard - Incentivos{% endblock %}
 
 {% block content %}
 
 {% if recolector %}
-<!-- Encabezado  Dashboard -->
+
 <div class="dashboard-welcome">
     <div class="row align-items-center">
         <div class="col-md-8">
             <h1><i class="fas fa-leaf"></i> ¡Hola, {{ request.user.first_name|default:request.user.username }}!</h1>
-            <p class="lead mb-0">Bienvenido al sistema de incentivos CecyRecicla</p>
-        </div>
-        <div class="col-md-4 text-md-end">
-            <span class="badge badge-rank px-4 py-2 fs-6">
-                <i class="fas fa-trophy"></i> 
-                {{ recolector.rango_actual.nombre|default:"NOVATO" }}
-            </span>
+            <p class="lead mb-0">Bienvenido al sistema de incentivos ReKanos</p>
         </div>
     </div>
 </div>
 
+
 <div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-weight-hanging text-success fs-1 mb-2"></i>
+                <h3 class="mb-0">{{ total_reciclado|default:"0" }} kg</h3>
+                <p class="text-muted mb-0">Kilogramos Reciclados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="eco-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-trophy text-warning fs-1 mb-2"></i>
+                <h3 class="mb-0">{{ recolector.rango_actual.nombre|default:"Sin rango" }}</h3>
+                <p class="text-muted mb-0">Rango Actual</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-
+<!-- resujma -->
+<div class="row mb-4">
     <div class="col-md-3 mb-3">
         <div class="eco-card h-100">
             <div class="card-body text-center">
-                <div class="stat-number">{{ puntos_totales }}</div>
+                <i class="fas fa-star text-warning fs-2 mb-2"></i>
+                <div class="stat-number">{{ puntos_totales|default:"0" }}</div>
                 <div class="stat-label">Puntos Acumulados</div>
-                <i class="fas fa-star text-warning mt-2 fs-4"></i>
             </div>
         </div>
     </div>
@@ -38,9 +55,9 @@
     <div class="col-md-3 mb-3">
         <div class="eco-card h-100">
             <div class="card-body text-center">
-                <div class="stat-number">{{ total_entregas }}</div>
+                <i class="fas fa-recycle text-success fs-2 mb-2"></i>
+                <div class="stat-number">{{ total_entregas|default:"0" }}</div>
                 <div class="stat-label">Entregas Totales</div>
-                <i class="fas fa-recycle text-success mt-2 fs-4"></i>
             </div>
         </div>
     </div>
@@ -48,9 +65,9 @@
     <div class="col-md-3 mb-3">
         <div class="eco-card h-100">
             <div class="card-body text-center">
-                <div class="stat-number">{{ recompensas_canjeadas }}</div>
+                <i class="fas fa-gift text-primary fs-2 mb-2"></i>
+                <div class="stat-number">{{ recompensas_canjeadas|default:"0" }}</div>
                 <div class="stat-label">Recompensas Canjeadas</div>
-                <i class="fas fa-gift text-primary mt-2 fs-4"></i>
             </div>
         </div>
     </div>
@@ -58,16 +75,16 @@
     <div class="col-md-3 mb-3">
         <div class="eco-card h-100">
             <div class="card-body text-center">
-                <div class="stat-number">{{ total_reciclado }} kg</div>
+                <i class="fas fa-weight text-info fs-2 mb-2"></i>
+                <div class="stat-number">{{ total_reciclado|default:"0" }} kg</div>
                 <div class="stat-label">Total Reciclado</div>
-                <i class="fas fa-weight text-info mt-2 fs-4"></i>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- Column izquierd con Aaciones rapidas -->
+    <!--acciones rápidas -->
     <div class="col-lg-4 mb-4">
         <div class="eco-card">
             <div class="card-header-eco">
@@ -75,7 +92,6 @@
             </div>
             <div class="card-body p-3">
                 <div class="quick-actions-grid">
-                    <!-- Ac nueva Entrega -->
                     <a href="{% url 'Incentivos:nueva_entrega' %}" class="quick-action-item">
                         <div class="action-icon bg-success">
                             <i class="fas fa-plus-circle"></i>
@@ -89,7 +105,6 @@
                         </div>
                     </a>
                     
-                    <!-- Ac canjear Recompensa -->
                     <a href="{% url 'Incentivos:recompensas' %}" class="quick-action-item">
                         <div class="action-icon bg-warning">
                             <i class="fas fa-gift"></i>
@@ -103,7 +118,6 @@
                         </div>
                     </a>
                     
-                    <!-- ac  Perfil -->
                     <a href="{% url 'Incentivos:perfil' %}" class="quick-action-item">
                         <div class="action-icon bg-info">
                             <i class="fas fa-user"></i>
@@ -117,7 +131,6 @@
                         </div>
                     </a>
                     
-                    <!-- ac Historial -->
                     <a href="{% url 'Incentivos:historial' %}" class="quick-action-item">
                         <div class="action-icon bg-primary">
                             <i class="fas fa-history"></i>
@@ -132,12 +145,10 @@
                     </a>
                 </div>
                 
-                <!-- el codigo qr -->
+                <!-- codifo -->
                 <div class="qr-section mt-4 pt-3 border-top">
                     <div class="text-center">
-                        <div class="qr-icon mb-2">
-                            <i class="fas fa-qrcode fa-2x text-secondary"></i>
-                        </div>
+                        <i class="fas fa-qrcode fa-2x text-secondary mb-2"></i>
                         <h6 class="mb-1">Mi Código QR</h6>
                         <p class="text-muted small mb-2">{{ recolector.codigo_qr }}</p>
                         <button class="btn btn-sm btn-outline-secondary" onclick="alert('QR Code: {{ recolector.codigo_qr }}')">
@@ -149,13 +160,12 @@
         </div>
     </div>
     
-    <!-- colum derecga muestra a atividad reciente -->
+    <!--actividad reciente -->
     <div class="col-lg-8">
         <div class="eco-card mb-4">
             <div class="card-header-eco">
                 <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
             </div>
-            
             <div class="card-body">
                 {% if entregas %}
                     <div class="table-responsive">
@@ -188,7 +198,7 @@
             </div>
         </div>
         
-        <!-- Recompensas disponibles -->
+             <!--rcompensas disponibles codigo reutilizado -->
         {% if recompensas_disponibles %}
         <div class="eco-card">
             <div class="card-header-eco">
@@ -197,22 +207,120 @@
             <div class="card-body">
                 <div class="row">
                     {% for recompensa in recompensas_disponibles %}
-                    <div class="col-md-6 mb-3">
-                        <div class="reward-card eco-card h-100">
+                    <div class="col-md-6 mb-4">
+                        <div class="eco-card h-100 reward-card">
                             <div class="card-body">
-                                <div class="reward-icon">
-                                    <i class="fas fa-gift"></i>
+                                <div class="reward-image-container">
+                                    {% if recompensa.imagen and recompensa.imagen.url %}
+                                        <img src="{{ recompensa.imagen.url }}" alt="{{ recompensa.nombre }}" class="reward-img">
+                                    {% else %}
+                                        <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="reward-img">
+                                    {% endif %}
                                 </div>
-                                <h5 class="text-center">{{ recompensa.nombre }}</h5>
-                                <p class="text-muted text-center small">{{ recompensa.descripcion|truncatechars:80 }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold text-success">{{ recompensa.costo_puntos }} pts</span>
-                                    <a href="{% url 'Incentivos:canjear_recompensa' recompensa.id %}" 
-                                       class="btn btn-eco btn-sm">
-                                        Canjear
-                                    </a>
+                                
+                                <h5 class="text-center mt-3">{{ recompensa.nombre }}</h5>
+                                
+                                {% if recompensa.descripcion %}
+                                <p class="text-center text-muted small">{{ recompensa.descripcion|truncatechars:100 }}</p>
+                                {% endif %}
+                                
+                                <div class="text-center mb-3">
+                                    <span class="badge bg-info">General</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <span class="fw-bold fs-4 text-success">{{ recompensa.costo_puntos }}</span>
+                                        <span class="text-muted"> puntos</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-box"></i> Stock: {{ recompensa.stock }}
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                {% if puntos_totales >= recompensa.costo_puntos and recompensa.stock > 0 %}
+                                    <button class="btn btn-eco w-100" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#confirmModal{{ recompensa.id }}">
+                                        <i class="fas fa-shopping-cart"></i> Canjear Ahora
+                                    </button>
+                                {% elif recompensa.stock <= 0 %}
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="fas fa-times-circle"></i> Agotado
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary w-100" disabled>
+                                        <i class="fas fa-lock"></i> 
+                                        Faltan {{ recompensa.costo_puntos|add:"-"|add:puntos_totales }} pts
+                                    </button>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="card-footer text-center">
+                                <small class="text-muted">
+                                    {% if recompensa.stock <= 3 and recompensa.stock > 0 %}
+                                        <i class="fas fa-exclamation-triangle text-warning"></i> ¡Últimas unidades!
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Modal confirma -->
+                        <div class="modal fade" id="confirmModal{{ recompensa.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success text-white">
+                                        <h5 class="modal-title">Confirmar Canje</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center mb-3">
+                                            <div class="modal-image-container">
+                                                {% if recompensa.imagen and recompensa.imagen.url %}
+                                                    <img src="{{ recompensa.imagen.url }}" alt="{{ recompensa.nombre }}" class="modal-reward-img">
+                                                {% else %}
+                                                    <img src="{% static 'Incentivos/img/imgd1.jpg' %}" alt="{{ recompensa.nombre }}" class="modal-reward-img">
+                                                {% endif %}
+                                            </div>
+                                            <h4 class="mt-2">{{ recompensa.nombre }}</h4>
+                                        </div>
+                                        <p>¿Estás seguro de canjear <strong>{{ recompensa.nombre }}</strong> por <strong>{{ recompensa.costo_puntos }} puntos</strong>?</p>
+                                        <div class="alert alert-light border">
+                                            <div class="row text-center">
+                                                <div class="col-6">
+                                                    <strong>Tus puntos:</strong><br>
+                                                    <span class="fs-4 text-success">{{ puntos_totales }}</span>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Después del canje:</strong><br>
+                                                    <span class="fs-4 text-warning">{{ puntos_totales|add:"-"|add:recompensa.costo_puntos }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i> Esta acción no se puede deshacer. Presenta el código de canje para reclamar tu recompensa.
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <a href="{% url 'Incentivos:canjear_recompensa' recompensa.id %}" class="btn btn-eco">
+                                            <i class="fas fa-check"></i> Confirmar Canje
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="text-center py-4">
+                            <i class="fas fa-gift fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay recompensas disponibles para canjear.</p>
+                            <a href="{% url 'Incentivos:nueva_entrega' %}" class="btn btn-eco">
+                                <i class="fas fa-recycle"></i> ¡Recicla para ganar puntos!
+                            </a>
                         </div>
                     </div>
                     {% endfor %}
@@ -223,8 +331,37 @@
     </div>
 </div>
 
+<!-- Estolos solo para imágenes de prueba -->
+<style>
+.reward-image-container {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.reward-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.reward-card {
+    transition: all 0.3s ease;
+}
+
+.reward-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+</style>
+
 {% else %}
-<!-- Si no hay recolector,con esto no debería pasar con la nueva vista -->
 <div class="alert alert-danger">
     <h4><i class="fas fa-exclamation-triangle"></i> Error del Sistema</h4>
     <p>No se pudo cargar tu perfil de recolector. Por favor:</p>
